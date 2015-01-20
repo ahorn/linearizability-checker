@@ -1912,11 +1912,11 @@ namespace state
     }
   };
 
-  template<>
-  class ConflictAnalyzer<Set>
+  template<class S>
+  class PartitionConflictAnalyzer
   {
   private:
-    std::vector<EntryPtr<Set>> m_backtrack_info;
+    std::vector<EntryPtr<S>> m_backtrack_info;
 
     // post: partition < m_backtrack_info.size()
     void resize_vector_if_neccessary(unsigned partition)
@@ -1928,9 +1928,9 @@ namespace state
     }
 
   public:
-    ConflictAnalyzer<Set>() : m_backtrack_info{} {}
+    PartitionConflictAnalyzer<S>() : m_backtrack_info{} {}
 
-    void linearize(EntryPtr<Set> entry_ptr)
+    void linearize(EntryPtr<S> entry_ptr)
     {
       assert(entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -1938,12 +1938,12 @@ namespace state
       const unsigned partition{entry_ptr->op().partition()};
       resize_vector_if_neccessary(partition);
 
-      EntryPtr<Set>& backtrack_entry_ptr = m_backtrack_info[partition];
+      EntryPtr<S>& backtrack_entry_ptr = m_backtrack_info[partition];
       entry_ptr->set_dependency(backtrack_entry_ptr);
       backtrack_entry_ptr = entry_ptr;
     }
 
-    void undo_linearize(EntryPtr<Set> entry_ptr)
+    void undo_linearize(EntryPtr<S> entry_ptr)
     {
       assert(entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -1955,8 +1955,8 @@ namespace state
       entry_ptr->set_dependency(nullptr);
     }
 
-    /// Return entry pointer for the last operation on the same datum, or null.
-    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr) const
+    /// Return entry pointer for the last operation on the same partition, or null.
+    EntryPtr<S> analyze(EntryPtr<S> entry_ptr) const
     {
       assert(not entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -1968,6 +1968,297 @@ namespace state
         return m_backtrack_info[partition];
 
       return nullptr;
+    }
+  };
+
+  template<>
+  class ConflictAnalyzer<Set>
+  {
+  private:
+    PartitionConflictAnalyzer<Set> m_analyzer;
+
+  public:
+    ConflictAnalyzer<Set>() : m_analyzer{} {}
+
+    void linearize(EntryPtr<Set> entry_ptr)
+    {
+      m_analyzer.linearize(entry_ptr);
+    }
+
+    void undo_linearize(EntryPtr<Set> entry_ptr)
+    {
+      m_analyzer.undo_linearize(entry_ptr);
+    }
+
+    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr) const
+    {
+      return m_analyzer.analyze(entry_ptr);
+    }
+  };
+
+  /// Bounded stack
+
+  /// N - stack capacity
+  template<std::size_t N>
+  class Stack
+  {
+  public:
+    typedef char Value;
+
+  private:
+    static constexpr char s_try_push_op_name[] = "try_push";
+    static constexpr char s_try_pop_op_name[] = "try_pop";
+
+    struct TryPushCallOp : public internal::ArgOp<Stack<N>, Value, s_try_push_op_name>
+    {
+      typedef internal::ArgOp<Stack<N>, Value, s_try_push_op_name> Base;
+      TryPushCallOp(Value v) : Base(v) {}
+
+      std::pair<bool, Stack<N>> internal_apply(const Stack<N>& stack, const Op<Stack<N>>& op) override
+      {
+        typedef internal::RetOp<Stack<N>, bool> RetOp;
+
+        const RetOp& try_push_ret = dynamic_cast<const RetOp&>(op);
+        if (not stack.is_full())
+          return {try_push_ret.ret, stack.push(Base::value)};
+
+        return {not try_push_ret.ret, stack};
+      }
+    };
+
+    struct TryPopRetOp : public Op<Stack<N>>
+    {
+      typedef std::pair<bool, Value> Pair;
+      const Pair pair;
+
+      TryPopRetOp(Pair&& p)
+      : Op<Stack<N>>(p.second),
+        pair{std::move(p)} {}
+
+      bool ok() const
+      {
+        return pair.first;
+      }
+
+      Value value() const
+      {
+        return pair.second;
+      }
+
+#ifdef _CLT_DEBUG_
+      std::ostream& print(std::ostream& os) const override
+      {
+        return os << "ret: [ok: " << ok() << ", value: " << std::to_string(value()) << "]";
+      }
+#endif
+    };
+
+    struct TryPopCallOp : public internal::ZeroArgOp<Stack<N>, s_try_pop_op_name>
+    {
+      typedef internal::ZeroArgOp<Stack<N>, s_try_pop_op_name> Base;
+      TryPopCallOp() : Base() {}
+
+      std::pair<bool, Stack<N>> internal_apply(const Stack<N>& stack, const Op<Stack<N>>& op) override
+      {
+        const TryPopRetOp& try_pop_ret = dynamic_cast<const TryPopRetOp&>(op);
+
+        if (stack.is_empty())
+          return {not try_pop_ret.ok(), stack};
+
+        Value value{stack.top()};
+        return {try_pop_ret.ok() and value == try_pop_ret.value(), stack.pop()};
+      }
+    };
+
+    typedef std::unique_ptr<Op<Stack<N>>> StackOpPtr;
+
+    class Node;
+    typedef std::shared_ptr<Node> NodePtr;
+
+    /// Version tree of stacks
+    class Node
+    {
+    private:
+      // if m_prev is null, then m_size is zero
+      const std::size_t m_size;
+
+      // top of stack is defined if m_prev != nullptr
+      const Value m_top;
+      const NodePtr m_prev;
+
+      std::vector<NodePtr> m_vector;
+
+    public:
+      Node()
+      : m_size{0},
+        m_top{},
+        m_prev{nullptr},
+        m_vector{} {}
+
+      Node(std::size_t size, Value value, const NodePtr& prev)
+      : m_size{size},
+        m_top{value},
+        m_prev{prev},
+        m_vector{} {}
+
+      /// Returns non-null pointer
+
+      /// \pre: prev != nullptr
+      const NodePtr& get_or_update_next(Value value, const NodePtr& prev)
+      {
+        assert(prev != nullptr);
+
+        if (m_vector.size() <= value)
+          m_vector.resize(value + 1U);
+
+        assert(value < m_vector.size());
+
+        NodePtr& node_ptr = m_vector[value];
+        if (node_ptr == nullptr)
+          node_ptr = std::make_shared<Node>(prev->size() + 1U, value, prev);
+
+        assert(node_ptr != nullptr);
+        assert(node_ptr->m_top == value);
+        return node_ptr;
+      }
+
+      std::size_t size() const
+      {
+        assert(m_prev != nullptr or m_size == 0);
+        return m_size;
+      }
+
+      const NodePtr& prev() const
+      {
+        return m_prev;
+      }
+
+      /// Defined if prev() != nullptr
+      Value top() const noexcept
+      {
+        return m_top;
+      }
+    };
+
+  public:
+    static StackOpPtr make_try_push_call(Value value)
+    {
+      return make_unique<TryPushCallOp>(value);
+    }
+
+    static StackOpPtr make_try_push_ret(bool ok)
+    {
+      typedef internal::RetOp<Stack<N>, bool> RetOp;
+      return make_unique<RetOp>(ok);
+    }
+
+    static StackOpPtr make_try_pop_call()
+    {
+      return make_unique<TryPopCallOp>();
+    }
+
+    static StackOpPtr make_try_pop_ret(bool ok, Value v)
+    {
+      return make_unique<TryPopRetOp>(std::make_pair(ok, v));
+    }
+
+   private:
+    // never null, m_curr->size() <= N
+    NodePtr m_curr;
+
+    Stack(const NodePtr& curr)
+    : m_curr{curr} {}
+
+   public:
+    Stack()
+    : m_curr{std::make_shared<Node>()} {}
+
+    bool is_empty() const
+    {
+      return m_curr->prev() == nullptr;
+    }
+
+    bool is_full() const
+    {
+      return m_curr->size() == N;
+    }
+
+    Stack<N> push(const Value& value) const
+    {
+      assert(not is_full());
+      return {m_curr->get_or_update_next(value, m_curr)};
+    }
+
+    /// \pre: not is_empty()
+    Stack<N> pop() const
+    {
+      assert(not is_empty());
+      return {m_curr->prev()};
+    }
+
+    Value top() const
+    {
+      assert(not is_empty());
+      return m_curr->top();
+    }
+
+    bool operator==(const Stack<N>& stack) const
+    {
+      return stack.m_curr == m_curr;
+    }
+
+    bool operator!=(const Stack<N>& stack) const
+    {
+      return stack.m_curr != m_curr;
+    }
+
+    std::size_t hash_code() const
+    {
+      // On many platforms (except systems with segmented addressing)
+      // std::size_t is synonymous with std::uintptr_t.
+      //
+      // \see_also http://en.cppreference.com/w/cpp/types/size_t
+      return reinterpret_cast<uintptr_t>(m_curr.get());
+    }
+  };
+
+  template<std::size_t N>
+  constexpr char Stack<N>::s_try_push_op_name[];
+
+  template<std::size_t N>
+  constexpr char Stack<N>::s_try_pop_op_name[];
+
+  template<std::size_t N>
+  struct Hash<Stack<N>>
+  {
+    std::size_t operator()(const Stack<N>& stack) const noexcept
+    {
+      return stack.hash_code();
+    }
+  };
+
+  template<std::size_t N>
+  class ConflictAnalyzer<Stack<N>>
+  {
+  private:
+    PartitionConflictAnalyzer<Stack<N>> m_analyzer;
+
+  public:
+    ConflictAnalyzer<Stack<N>>() : m_analyzer{} {}
+
+    void linearize(EntryPtr<Stack<N>> entry_ptr)
+    {
+      m_analyzer.linearize(entry_ptr);
+    }
+
+    void undo_linearize(EntryPtr<Stack<N>> entry_ptr)
+    {
+      m_analyzer.undo_linearize(entry_ptr);
+    }
+
+    EntryPtr<Set> analyze(EntryPtr<Stack<N>> entry_ptr) const
+    {
+      return m_analyzer.analyze(entry_ptr);
     }
   };
 }
@@ -2132,7 +2423,7 @@ static void test_bitset()
   assert(bitset != another_bitset);
 }
 
-static void test_set()
+static void test_state_set()
 {
   bool ok;
   state::Set set;
@@ -2159,7 +2450,7 @@ static void test_set()
   assert(not set.contains('\1'));
 }
 
-static void test_set_op()
+static void test_state_set_op()
 {
   bool ok;
   state::Set set, new_set;
@@ -2225,6 +2516,162 @@ static void test_set_op()
 
   assert(not std::get<0>(contains_op.apply(new_set, true_ret_op)));
   assert(std::get<0>(contains_op.apply(new_set, false_ret_op)));
+}
+
+static void test_state_stack()
+{
+  constexpr unsigned N = 2;
+
+  state::Stack<N> stack;
+  state::Stack<N> new_stack;
+  state::Stack<N> stack_1, stack_2;
+
+  assert(stack.is_empty());
+  assert(not stack.is_full());
+
+  new_stack = stack.push('\1');
+
+  assert(stack != new_stack);
+  stack = stack_1 = new_stack;
+
+  assert(not stack.is_empty());
+  assert(not stack.is_full());
+
+  assert(stack.top() == '\1');
+
+  new_stack = stack.push('\2');
+
+  assert(stack != new_stack);
+  stack = stack_2 = new_stack;
+
+  assert(stack_1 != stack_2);
+
+  assert(not stack.is_empty());
+  assert(stack.is_full());
+
+  assert(stack.top() == '\2');
+
+  new_stack = stack.pop();
+  assert(new_stack == stack_1);
+
+  stack = new_stack;
+
+  assert(not stack.is_empty());
+  assert(not stack.is_full());
+
+  assert(stack.top() == '\1');
+
+  new_stack = stack.push('\2');
+
+  assert(stack != new_stack);
+  assert(new_stack == stack_2);
+
+  stack = new_stack;
+
+  assert(not stack.is_empty());
+  assert(stack.is_full());
+
+  assert(stack.top() == '\2');
+
+  new_stack = stack.pop();
+  assert(new_stack == stack_1);
+
+  stack = new_stack;
+
+  assert(not stack.is_empty());
+  assert(not stack.is_full());
+
+  assert(stack.top() == '\1');
+
+  new_stack = stack.push('\3');
+
+  assert(stack != new_stack);
+  assert(new_stack != stack_1);
+  assert(new_stack != stack_2);
+
+  stack = new_stack;
+
+  assert(not stack.is_empty());
+  assert(stack.is_full());
+
+  assert(stack.top() == '\3');
+}
+
+static void test_state_stack_op()
+{
+  constexpr unsigned N = 1;
+
+  bool ok;
+  state::Stack<N> stack, new_stack;
+
+  OpPtr<state::Stack<N>> try_push_1_op_ptr, try_push_2_op_ptr;
+  OpPtr<state::Stack<N>> try_pop_op_ptr;
+
+  OpPtr<state::Stack<N>> true_try_push_ret_op_ptr{state::Stack<N>::make_try_push_ret(true)};
+  OpPtr<state::Stack<N>> false_try_push_ret_op_ptr{state::Stack<N>::make_try_push_ret(false)};
+
+  const Op<state::Stack<N>>& true_try_push_ret_op = *true_try_push_ret_op_ptr;
+  const Op<state::Stack<N>>& false_try_push_ret_op = *false_try_push_ret_op_ptr;
+
+  OpPtr<state::Stack<N>> true_1_try_pop_ret_op_ptr{state::Stack<N>::make_try_pop_ret(true, '\1')};
+  OpPtr<state::Stack<N>> true_2_try_pop_ret_op_ptr{state::Stack<N>::make_try_pop_ret(true, '\2')};
+  OpPtr<state::Stack<N>> false_try_pop_ret_op_ptr{state::Stack<N>::make_try_pop_ret(false, '\0')};
+
+  const Op<state::Stack<N>>& true_1_try_pop_ret_op = *true_1_try_pop_ret_op_ptr;
+  const Op<state::Stack<N>>& true_2_try_pop_ret_op = *true_2_try_pop_ret_op_ptr;
+  const Op<state::Stack<N>>& false_try_pop_ret_op = *false_try_pop_ret_op_ptr;
+
+  try_pop_op_ptr = state::Stack<N>::make_try_pop_call();
+  Op<state::Stack<N>>& try_pop_op = *try_pop_op_ptr;
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, false_try_pop_ret_op);
+  assert(stack == new_stack);
+  assert(ok);
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, true_1_try_pop_ret_op);
+  assert(stack == new_stack);
+  assert(not ok);
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, true_2_try_pop_ret_op);
+  assert(stack == new_stack);
+  assert(not ok);
+
+  try_push_2_op_ptr = state::Stack<N>::make_try_push_call('\2');
+  Op<state::Stack<N>>& try_push_2_op = *try_push_2_op_ptr;
+
+  std::tie(ok, new_stack) = try_push_2_op.apply(stack, false_try_push_ret_op);
+  assert(stack != new_stack);
+  assert(not ok);
+
+  std::tie(ok, new_stack) = try_push_2_op.apply(stack, true_try_push_ret_op);
+  assert(stack != new_stack);
+  assert(ok);
+
+  stack = new_stack;
+
+  try_push_1_op_ptr = state::Stack<N>::make_try_push_call('\1');
+  Op<state::Stack<N>>& try_push_1_op = *try_push_1_op_ptr;
+
+  // stack is full
+  std::tie(ok, new_stack) = try_push_1_op.apply(stack, false_try_push_ret_op);
+  assert(stack == new_stack);
+  assert(ok);
+
+  std::tie(ok, new_stack) = try_push_1_op.apply(stack, true_try_push_ret_op);
+  assert(stack == new_stack);
+  assert(not ok);
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, false_try_pop_ret_op);
+  assert(stack != new_stack);
+  assert(not ok);
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, true_1_try_pop_ret_op);
+  assert(stack != new_stack);
+  assert(not ok);
+
+  std::tie(ok, new_stack) = try_pop_op.apply(stack, true_2_try_pop_ret_op);
+  assert(stack != new_stack);
+  assert(ok);
 }
 
 /// The empty log is trivially linearizable.
@@ -3763,9 +4210,11 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 int main()
 {
   test_stack();
-  test_set();
+  test_state_set();
   test_bitset();
-  test_set_op();
+  test_state_set_op();
+  test_state_stack();
+  test_state_stack_op();
 
   test_linearizability_empty_log();
   test_raw_single_contains_is_linearizable();
