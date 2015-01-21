@@ -40,7 +40,9 @@
 #include <algorithm>
 #endif
 
-#define _ENABLE_TBB_
+#ifdef _ENABLE_EMBB_
+#include <embb/containers/lock_free_stack.h>
+#endif
 
 #ifdef _ENABLE_TBB_
 #include "tbb/concurrent_unordered_set.h"
@@ -4139,6 +4141,116 @@ static void fuzzy_functional_test()
   assert(not tester.check(result));
 }
 
+#ifdef _ENABLE_EMBB_
+template<std::size_t N>
+static void embb_worker(
+  const WorkerConfiguration& worker_configuration,
+  ConcurrentLog<state::Stack<N>>& concurrent_log,
+  embb::containers::LockFreeStack<char>& concurrent_stack)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> value_dist('\0', worker_configuration.max_value);
+  std::uniform_int_distribution<> percentage_dist(0, 100);
+
+  // each operation returns false
+  bool ret;
+
+  char value;
+  unsigned percentage;
+  EntryPtr<state::Stack<N>> call_entry_ptr;
+  for (unsigned number_of_ops{0U};
+       number_of_ops < worker_configuration.number_of_ops;
+       ++number_of_ops)
+  {
+    value = value_dist(rd);
+    percentage = percentage_dist(rd);
+    if (percentage < 30)
+    {
+      call_entry_ptr = concurrent_log.push_back(state::Stack<N>::make_try_push_call(value));
+      ret = concurrent_stack.TryPush(value);
+      concurrent_log.push_back(call_entry_ptr, state::Stack<N>::make_try_push_ret(ret));
+    }
+    else
+    {
+      call_entry_ptr = concurrent_log.push_back(state::Stack<N>::make_try_pop_call());
+      ret = concurrent_stack.TryPop(value);
+      concurrent_log.push_back(call_entry_ptr, state::Stack<N>::make_try_pop_ret(ret, value));
+    }
+  }
+}
+
+static void embb_experiment(bool is_linearizable)
+{
+  constexpr std::size_t N = 3000000U;
+  constexpr unsigned number_of_threads = 4U;
+  constexpr WorkerConfiguration worker_configuration = {'\27', 20000U};
+  constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
+
+  std::cout << "embb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
+
+  ConcurrentLog<state::Stack<N>> concurrent_log{2U * log_size};
+  embb::containers::LockFreeStack<char> concurrent_stack(N);
+
+  if (not is_linearizable)
+  {
+    bool ok = concurrent_stack.TryPush(5);
+    assert(ok);
+  }
+
+  // create history
+  start_threads(number_of_threads, embb_worker<N>, std::cref(worker_configuration),
+    std::ref(concurrent_log), std::ref(concurrent_stack));
+
+  const LogInfo<state::Stack<N>> log_info{concurrent_log.info()};
+  // std::cout << log_info << std::endl;
+
+  auto start = std::chrono::system_clock::now();
+  auto end = std::chrono::system_clock::now();
+  std::chrono::seconds seconds;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, false, true> tester{log_copy.info()};
+    assert(tester.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s" << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, false, false> tester{log_copy.info()};
+    assert(tester.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s" << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, true, true> tester{log_copy.info()};
+    assert(tester.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s" << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, true, false> tester{log_copy.info()};
+    assert(tester.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s" << std::endl;
+}
+#endif
+
 #ifdef _ENABLE_TBB_
 // Calls only contains() and insert() on set ADT
 static void tbb_comprehensive_worker(
@@ -4498,6 +4610,10 @@ int main()
 
   concurrent_log();
   fuzzy_functional_test();
+
+#ifdef _ENABLE_EMBB_
+  embb_experiment(true);
+#endif
 
 #ifdef _ENABLE_TBB_
   for (bool a : {true, false})
