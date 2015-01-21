@@ -513,6 +513,11 @@ public:
     return *m_op_ptr;
   }
 
+  const Op<S>* const op_ptr() const noexcept
+  {
+    return m_op_ptr;
+  }
+
   void set_entry_id(unsigned entry_id) noexcept
   {
     m_entry_id = entry_id;
@@ -930,6 +935,7 @@ namespace state
   {
     /// Record the fact that entry_ptr has been linearized
 
+    /// \pre: LinearizabilityTester::lift(entry_ptr) has not been called yet
     /// \pre: entry_ptr->is_call()
     /// \pre: entry_ptr->is_partitionable()
     void linearize(EntryPtr<S> entry_ptr);
@@ -2018,6 +2024,7 @@ namespace state
     static constexpr char s_try_push_op_name[] = "try_push";
     static constexpr char s_try_pop_op_name[] = "try_pop";
 
+  public:
     struct TryPushCallOp : public internal::ArgOp<Stack<N>, Value, s_try_push_op_name>
     {
       typedef internal::ArgOp<Stack<N>, Value, s_try_push_op_name> Base;
@@ -2249,25 +2256,83 @@ namespace state
   template<std::size_t N>
   class ConflictAnalyzer<Stack<N>>
   {
-  private:
-    PartitionConflictAnalyzer<Stack<N>> m_analyzer;
-
   public:
-    ConflictAnalyzer<Stack<N>>() : m_analyzer{} {}
+    static bool is_successful_try_push(EntryPtr<Stack<N>> entry_ptr)
+    {
+      typedef const internal::RetOp<Stack<N>, bool>* const RetOpPtr;
+
+      assert(entry_ptr->is_call());
+      RetOpPtr try_push_ret_ptr = dynamic_cast<RetOpPtr>(entry_ptr->match()->op_ptr());
+      return try_push_ret_ptr != nullptr and try_push_ret_ptr->ret;
+    }
+
+    static bool is_successful_try_pop(EntryPtr<Stack<N>> entry_ptr)
+    {
+      typedef const typename state::Stack<N>::TryPopRetOp* const TryPopRetOpPtr;
+
+      assert(entry_ptr->is_call());
+      TryPopRetOpPtr try_pop_ret_ptr = dynamic_cast<TryPopRetOpPtr>(entry_ptr->match()->op_ptr());
+      return try_pop_ret_ptr != nullptr and try_pop_ret_ptr->ok();
+    }
+
+    PartitionConflictAnalyzer<Stack<N>> m_analyzer;
+    std::vector<std::size_t> m_counter_info;
+
+    // post: partition < m_counter_info.size()
+    void resize_vector_if_neccessary(unsigned partition)
+    {
+      if (m_counter_info.size() <= partition)
+        m_counter_info.resize(partition + 1U);
+
+      assert(partition < m_counter_info.size());
+    }
+
+    ConflictAnalyzer<Stack<N>>()
+    : m_analyzer{},
+      m_counter_info{} {}
 
     void linearize(EntryPtr<Stack<N>> entry_ptr)
     {
-      m_analyzer.linearize(entry_ptr);
+      assert(entry_ptr->is_call());
+      assert(entry_ptr->is_partitionable());
+
+      const unsigned partition{entry_ptr->op().partition()};
+      resize_vector_if_neccessary(partition);
+
+      if (is_successful_try_push(entry_ptr))
+      {
+        ++m_counter_info[partition];
+        m_analyzer.undo_linearize(entry_ptr);
+      }
+      else if (is_successful_try_pop(entry_ptr) and 0 < m_counter_info[partition])
+      {
+        // keep track of try_pop that removes the
+        // last copy of an item in the stack
+        if (--m_counter_info[partition] == 0)
+          m_analyzer.linearize(entry_ptr);
+      }
     }
 
     void undo_linearize(EntryPtr<Stack<N>> entry_ptr)
     {
+      assert(entry_ptr->is_call());
+      assert(entry_ptr->is_partitionable());
+
       m_analyzer.undo_linearize(entry_ptr);
     }
 
     EntryPtr<Stack<N>> analyze(EntryPtr<Stack<N>> entry_ptr) const
     {
-      return m_analyzer.analyze(entry_ptr);
+      assert(not entry_ptr->is_call());
+      assert(entry_ptr->is_partitionable());
+
+      const unsigned partition{entry_ptr->op().partition()};
+      if (is_successful_try_pop(entry_ptr->match()) and
+          partition < m_counter_info.size() and
+          m_counter_info[partition] == 0)
+        return m_analyzer.analyze(entry_ptr);
+
+      return nullptr;
     }
   };
 }
@@ -3573,8 +3638,17 @@ static void test_019(bool insert_ret, bool contains_ret, bool empty_ret)
   assert(t.check(result) == insert_ret);
 }
 
-// push(1):true; push(2):true; pop():1
-static void test_stack_conflict_analyzer()
+// Linearizable:
+//
+//        push(x) : true
+// |------------------------|
+//
+//        push(y) : true
+//   |--------------------|
+//
+//      pop() : (true, x)
+//    |------------------|
+static void test_stack_conflict_analyzer_000()
 {
   constexpr char x = '\1';
   constexpr char y = '\2';
@@ -3583,29 +3657,128 @@ static void test_stack_conflict_analyzer()
   Log<state::Stack<N>> log{6U};
   EntryPtr<state::Stack<N>> try_push_x_call_entry_ptr, try_push_x_ret_entry_ptr;
   EntryPtr<state::Stack<N>> try_push_y_call_entry_ptr, try_push_y_ret_entry_ptr;
-  EntryPtr<state::Stack<N>> try_pop_call_entry_ptr, try_pop_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_x_call_entry_ptr, try_pop_x_ret_entry_ptr;
 
   try_push_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(x));
   try_push_y_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(y));
-  try_pop_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_pop_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
   try_push_x_ret_entry_ptr = log.add_ret(try_push_x_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
   try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
-  try_pop_ret_entry_ptr = log.add_ret(try_pop_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
+  try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
+
+  assert(state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_push_x_call_entry_ptr));
+  assert(state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_push_y_call_entry_ptr));
+  assert(not state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_pop_x_call_entry_ptr));
+
+  assert(state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_pop(try_pop_x_call_entry_ptr));
+  assert(not state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_pop(try_push_x_call_entry_ptr));
+  assert(not state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_pop(try_push_y_call_entry_ptr));
 
   assert(try_push_x_call_entry_ptr->is_partitionable());
   assert(try_push_y_call_entry_ptr->is_partitionable());
-  assert(try_pop_call_entry_ptr->is_partitionable());
+  assert(try_pop_x_call_entry_ptr->is_partitionable());
 
   assert(try_push_x_ret_entry_ptr->is_partitionable());
   assert(try_push_y_ret_entry_ptr->is_partitionable());
-  assert(try_pop_ret_entry_ptr->is_partitionable());
+  assert(try_pop_x_ret_entry_ptr->is_partitionable());
 
   state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_ret_entry_ptr)};
-  assert(conflict_entry_ptr == try_push_x_call_entry_ptr);
+  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr)};
+  assert(conflict_entry_ptr == nullptr);
+
+  LinearizabilityTester<state::Stack<N>> t{log.info()};
+  Result<state::Stack<N>> result;
+  assert(t.check(result));
+}
+
+// push(x):true; push(y):true; pop():x
+static void test_stack_conflict_analyzer_001()
+{
+  constexpr char x = '\1';
+  constexpr char y = '\2';
+  constexpr std::size_t N = 5;
+
+  Log<state::Stack<N>> log{6U};
+  EntryPtr<state::Stack<N>> try_push_x_call_entry_ptr, try_push_x_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_push_y_call_entry_ptr, try_push_y_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_x_call_entry_ptr, try_pop_x_ret_entry_ptr;
+
+  try_push_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(x));
+  try_push_x_ret_entry_ptr = log.add_ret(try_push_x_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_push_y_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(y));
+  try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_pop_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
+
+  assert(try_push_x_call_entry_ptr->is_partitionable());
+  assert(try_push_y_call_entry_ptr->is_partitionable());
+  assert(try_pop_x_call_entry_ptr->is_partitionable());
+
+  assert(try_push_x_ret_entry_ptr->is_partitionable());
+  assert(try_push_y_ret_entry_ptr->is_partitionable());
+  assert(try_pop_x_ret_entry_ptr->is_partitionable());
+
+  state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
+  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
+  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
+
+  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr)};
+  assert(conflict_entry_ptr == nullptr);
+
+  LinearizabilityTester<state::Stack<N>> t{log.info()};
+  Result<state::Stack<N>> result;
+  assert(not t.check(result));
+}
+
+// entry id: 0, thread id: 0x2, call: try_push(x)
+// entry id: 0, thread id: 0x2, return: ret: 1
+// entry id: 1, thread id: 0x3, call: try_push(y)
+// entry id: 2, thread id: 0x4, call: try_pop()
+// entry id: 2, thread id: 0x4, return: ret: [ok: 1, value: x]
+// entry id: 1, thread id: 0x3, return: ret: 1
+static void test_stack_conflict_analyzer_002()
+{
+  constexpr char x = '\1';
+  constexpr char y = '\2';
+  constexpr std::size_t N = 5;
+
+  Log<state::Stack<N>> log{8U};
+  EntryPtr<state::Stack<N>> try_push_x_call_entry_ptr, try_push_x_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_push_y_call_entry_ptr, try_push_y_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_x_call_entry_ptr, try_pop_x_ret_entry_ptr;
+
+  try_push_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(x));
+  try_push_x_ret_entry_ptr = log.add_ret(try_push_x_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_push_y_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(y));
+  try_pop_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
+  try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+
+  assert(try_push_x_call_entry_ptr->is_partitionable());
+  assert(try_push_y_call_entry_ptr->is_partitionable());
+  assert(try_pop_x_call_entry_ptr->is_partitionable());
+
+  assert(try_push_x_ret_entry_ptr->is_partitionable());
+  assert(try_push_y_ret_entry_ptr->is_partitionable());
+  assert(try_pop_x_ret_entry_ptr->is_partitionable());
+
+  assert(try_push_x_call_entry_ptr->op().partition() == x);
+  assert(try_push_y_call_entry_ptr->op().partition() == y);
+  assert(try_pop_x_call_entry_ptr->op().partition() == x);
+
+  assert(try_push_x_ret_entry_ptr->op().partition() == x);
+  assert(try_push_y_ret_entry_ptr->op().partition() == y);
+  assert(try_pop_x_ret_entry_ptr->op().partition() == x);
+
+  state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
+  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
+  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
+
+  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr)};
+  assert(conflict_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   Result<state::Stack<N>> result;
@@ -4308,7 +4481,9 @@ int main()
         test_019(a, b, c);
       }
 
-  test_stack_conflict_analyzer();
+  test_stack_conflict_analyzer_000();
+  test_stack_conflict_analyzer_001();
+  test_stack_conflict_analyzer_002();
 
   test_slice_000();
   test_slice_001();
