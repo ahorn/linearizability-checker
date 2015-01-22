@@ -998,7 +998,7 @@ namespace state
 
     /// \pre: not entry_ptr->is_call()
     /// \pre: entry_ptr->is_partitionable()
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr) const;
+    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const;
   };
 
   /// S - sequential data type
@@ -1017,7 +1017,7 @@ namespace state
       assert(entry_ptr->is_partitionable());
     }
 
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr) const
+    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const
     {
       assert(not entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -1104,21 +1104,29 @@ private:
   // An approximation of the workload
   unsigned long m_number_of_iterations;
 
-  // Temporarily remove call_entry_ptr and call_entry_ptr->match() from the log
+  // Temporarily remove call_entry_ptr from the log
 
   // \pre: call_entry_ptr->is_call()
-  static void lift(const EntryPtr<S> call_entry_ptr)
+  static void lift_call_entry(const EntryPtr<S> call_entry_ptr)
   {
     const Entry<S>& call = *call_entry_ptr;
     assert(call.is_call());
 
-    Entry<S>& match = *call.match();
     call.prev->next = call.next;
     call.next->prev = call.prev;
-    match.prev->next = match.next;
+  }
 
-    if (match.next != nullptr)
-      match.next->prev = match.prev;
+  // Temporarily remove ret_entry_ptr from the log
+
+  // \pre: not ret_entry_ptr->is_call()
+  static void lift_ret_entry(const EntryPtr<S> ret_entry_ptr)
+  {
+    const Entry<S>& ret = *ret_entry_ptr;
+    assert(not ret.is_call());
+
+    ret.prev->next = ret.next;
+    if (ret.next != nullptr)
+      ret.next->prev = ret.prev;
   }
 
   // Reinsert call_entry_ptr and call_entry_ptr->match() into the log
@@ -1130,13 +1138,10 @@ private:
     assert(call.is_call());
 
     Entry<S>& match = *call.match();
-    assert(match.prev->next == match.next);
     match.prev->next = &match;
-
     if (match.next != nullptr)
       match.next->prev = &match;
 
-    assert(call.prev->next == call.next);
     call.prev->next = call_entry_ptr;
     call.next->prev = call_entry_ptr;
   }
@@ -1161,6 +1166,7 @@ private:
     S s, new_s;
     StateCache state_cache;
     bool is_entry_linearizable;
+    unsigned linearized_counter{0};
     EntryPtr<S> entry_ptr = m_log_head.next;
 
     // fixing the size is not merely an optimization but
@@ -1179,12 +1185,16 @@ private:
       {
         assert(not m_calls.is_full());
         assert(entry_ptr->match() != nullptr);
+        assert(not linearized_entries.is_set(entry_ptr->entry_id()));
 
         std::tie(is_entry_linearizable, new_s) =
           entry_ptr->op().apply(s, entry_ptr->match()->op());
 
         if (is_entry_linearizable and cache_state(new_s, entry_ptr, state_cache, linearized_entries))
         {
+          ++linearized_counter;
+          assert(linearized_counter <= m_log_size);
+
           // call entry is always matched up with a return entry
           assert(entry_ptr->next != nullptr);
 
@@ -1199,8 +1209,8 @@ private:
           if (entry_ptr->is_partitionable())
             m_conflict_analyzer.linearize(entry_ptr);
 
-          // provisionally remove the entry from the history
-          lift(entry_ptr);
+          // provisionally remove the call entry from the history
+          lift_call_entry(entry_ptr);
 
           // restart from the beginning of the shortened history
           entry_ptr = m_log_head.next;
@@ -1217,35 +1227,51 @@ private:
       }
       else // handle "return" entry
       {
-        if (m_calls.is_empty())
-          return false;
-
-        EntryPtr<S> conflict_entry_ptr{nullptr};
-        if (entry_ptr->is_partitionable())
-          conflict_entry_ptr = m_conflict_analyzer.analyze(entry_ptr);
-
-        EntryPtr<S> pop_entry_ptr;
-        do
+        if (linearized_counter and linearized_entries.is_set(entry_ptr->entry_id()))
         {
-          assert(not m_calls.is_empty());
+          --linearized_counter;
+          lift_ret_entry(entry_ptr);
 
-          // revert state change
-          std::tie(pop_entry_ptr, s) = m_calls.top();
-          assert(pop_entry_ptr != nullptr);
-          linearized_entries.reset(pop_entry_ptr->entry_id());
-
-          if (pop_entry_ptr->is_partitionable())
-            m_conflict_analyzer.undo_linearize(pop_entry_ptr);
-
-          m_calls.pop();
-
-          // undo the provisional linearization
-          unlift(pop_entry_ptr);
+          // skip over lifted call entries
+          do
+          {
+            entry_ptr = entry_ptr->next;
+          }
+          while (entry_ptr != nullptr and entry_ptr->is_call() and linearized_entries.is_set(entry_ptr->entry_id()));
         }
-        while (conflict_entry_ptr != nullptr and pop_entry_ptr != conflict_entry_ptr);
+        else
+        {
+          if (m_calls.is_empty())
+            return false;
 
-        // continue after the entry to which we have just backtracked
-        entry_ptr = pop_entry_ptr->next;
+          EntryPtr<S> conflict_entry_ptr{nullptr};
+          if (entry_ptr->is_partitionable())
+            conflict_entry_ptr = m_conflict_analyzer.analyze(entry_ptr, 0 < linearized_counter);
+
+          EntryPtr<S> pop_entry_ptr;
+          do
+          {
+            assert(not m_calls.is_empty());
+
+            // revert state change
+            std::tie(pop_entry_ptr, s) = m_calls.top();
+            assert(pop_entry_ptr != nullptr);
+            linearized_entries.reset(pop_entry_ptr->entry_id());
+
+            if (pop_entry_ptr->is_partitionable())
+              m_conflict_analyzer.undo_linearize(pop_entry_ptr);
+
+            m_calls.pop();
+
+            // undo the provisional linearization
+            unlift(pop_entry_ptr);
+          }
+          while (conflict_entry_ptr != nullptr and pop_entry_ptr != conflict_entry_ptr);
+
+          // continue after the entry to which we have just backtracked
+          entry_ptr = pop_entry_ptr->next;
+          linearized_counter = m_calls.size();
+        }
       }
     }
 
@@ -2019,7 +2045,7 @@ namespace state
     }
 
     /// Return entry pointer for the last operation on the same partition, or null.
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr) const
+    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const
     {
       assert(not entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -2053,9 +2079,9 @@ namespace state
       m_analyzer.undo_linearize(entry_ptr);
     }
 
-    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr) const
+    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr, bool happens_concurrently) const
     {
-      return m_analyzer.analyze(entry_ptr);
+      return m_analyzer.analyze(entry_ptr, happens_concurrently);
     }
   };
 
@@ -2072,6 +2098,7 @@ namespace state
     static constexpr char s_try_push_op_name[] = "try_push";
     static constexpr char s_try_pop_op_name[] = "try_pop";
 
+  public:
     struct TryPushCallOp : public internal::ArgOp<Stack<N>, Value, s_try_push_op_name>
     {
       typedef internal::ArgOp<Stack<N>, Value, s_try_push_op_name> Base;
@@ -2114,7 +2141,7 @@ namespace state
 #ifdef _CLT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
-        return os << "ret: [ok: " << ok() << ", value: " << std::to_string(value()) << "]";
+        return os << "ret: [ok: " << ok() << ", value: " << (ok() ? std::to_string(value()) : "undefined") << "]";
       }
 #endif
     };
@@ -2320,6 +2347,15 @@ namespace state
       return try_push_ret_ptr != nullptr and try_push_ret_ptr->ret;
     }
 
+    static bool is_successful_try_pop_ret(EntryPtr<Stack<N>> entry_ptr)
+    {
+      typedef const typename state::Stack<N>::TryPopRetOp* const TryPopRetOpPtr;
+
+      assert(not entry_ptr->is_call());
+      TryPopRetOpPtr try_pop_ret_ptr = dynamic_cast<TryPopRetOpPtr>(entry_ptr->op_ptr());
+      return try_pop_ret_ptr != nullptr and try_pop_ret_ptr->ok();
+    }
+
     ConflictAnalyzer<Stack<N>>()
     : m_analyzer{},
       m_last_linearized_entry_ptr{nullptr} {}
@@ -2346,7 +2382,7 @@ namespace state
       assert(entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
 
-      assert(entry_ptr->linearized_next() == nullptr);
+      entry_ptr->set_linearized_next(nullptr);
       EntryPtr<Stack<N>> linearized_prev{entry_ptr->linearized_prev()};
       if (linearized_prev != nullptr)
         linearized_prev->set_linearized_next(nullptr);
@@ -2354,12 +2390,15 @@ namespace state
       m_analyzer.undo_linearize(entry_ptr);
     }
 
-    EntryPtr<Stack<N>> analyze(EntryPtr<Stack<N>> entry_ptr) const
+    EntryPtr<Stack<N>> analyze(EntryPtr<Stack<N>> entry_ptr, bool happens_concurrently) const
     {
       assert(not entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
 
-      EntryPtr<Stack<N>> conflict_entry_ptr{m_analyzer.analyze(entry_ptr)};
+      if (happens_concurrently or not is_successful_try_pop_ret(entry_ptr))
+        return nullptr;
+
+      EntryPtr<Stack<N>> conflict_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
       if (conflict_entry_ptr == nullptr)
         return nullptr;
 
@@ -3713,27 +3752,27 @@ static void test_stack_conflict_analyzer_000()
   state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
 
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr);
+  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
   assert(conflict_entry_ptr == nullptr);
 
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr);
-  assert(conflict_entry_ptr == try_push_y_call_entry_ptr);
+  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(conflict_entry_ptr == nullptr);
   stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
   stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
 
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr);
+  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
   assert(conflict_entry_ptr == nullptr);
 
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr);
+  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
   assert(conflict_entry_ptr == nullptr);
   stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
 
   stack_conflict_analyzer.linearize(try_pop_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr);
+  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
   assert(conflict_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
@@ -3772,7 +3811,7 @@ static void test_stack_conflict_analyzer_001()
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr)};
+  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, false)};
   assert(conflict_entry_ptr == try_push_y_call_entry_ptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
@@ -3824,13 +3863,57 @@ static void test_stack_conflict_analyzer_002()
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr)};
-  assert(conflict_entry_ptr == try_push_y_call_entry_ptr);
+  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true)};
+  assert(conflict_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   Result<state::Stack<N>> result;
   assert(t.check(result));
 }
+
+// Linearizable:
+//
+//   push(x) : true       pop() : (true, y)
+// |----------------|   |------------------|
+//
+//     push(y) : true                           push(z) : true
+//   |----------------|                |---------------------------------|
+//
+//                                                  pop() : (true, x)     pop() : (true, z)
+//                                               |-------------------| |-------------------|
+static void test_stack_conflict_analyzer_003()
+{
+  constexpr char x = '\1';
+  constexpr char y = '\2';
+  constexpr char z = '\3';
+  constexpr std::size_t N = 5;
+
+  Log<state::Stack<N>> log{12U};
+  EntryPtr<state::Stack<N>> try_push_x_call_entry_ptr, try_push_x_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_push_y_call_entry_ptr, try_push_y_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_push_z_call_entry_ptr, try_push_z_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_x_call_entry_ptr, try_pop_x_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_y_call_entry_ptr, try_pop_y_ret_entry_ptr;
+  EntryPtr<state::Stack<N>> try_pop_z_call_entry_ptr, try_pop_z_ret_entry_ptr;
+
+  try_push_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(x));
+  try_push_y_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(y));
+  try_push_x_ret_entry_ptr = log.add_ret(try_push_x_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_pop_y_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_push_z_call_entry_ptr = log.add_call(state::Stack<N>::make_try_push_call(z));
+  try_pop_y_ret_entry_ptr = log.add_ret(try_pop_y_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, y));
+  try_pop_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
+  try_pop_z_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
+  try_push_z_ret_entry_ptr = log.add_ret(try_push_z_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
+  try_pop_z_ret_entry_ptr = log.add_ret(try_pop_z_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, z));
+
+  LinearizabilityTester<state::Stack<N>> t{log.info()};
+  Result<state::Stack<N>> result;
+  assert(t.check(result));
+}
+
 
 // Let x = '\0' and y = '\1'.
 //
@@ -4641,6 +4724,7 @@ int main()
   test_stack_conflict_analyzer_000();
   test_stack_conflict_analyzer_001();
   test_stack_conflict_analyzer_002();
+  test_stack_conflict_analyzer_003();
 
   test_slice_000();
   test_slice_001();
