@@ -2038,23 +2038,22 @@ namespace state
   class ConflictAnalyzer<Set>
   {
   private:
-    typedef EntryPtr<Set> EntryPtr;
     PartitionConflictAnalyzer<Set> m_analyzer;
 
   public:
     ConflictAnalyzer<Set>() : m_analyzer{} {}
 
-    void linearize(EntryPtr entry_ptr)
+    void linearize(EntryPtr<Set> entry_ptr)
     {
       m_analyzer.linearize(entry_ptr);
     }
 
-    void undo_linearize(EntryPtr entry_ptr)
+    void undo_linearize(EntryPtr<Set> entry_ptr)
     {
       m_analyzer.undo_linearize(entry_ptr);
     }
 
-    EntryPtr analyze(EntryPtr entry_ptr) const
+    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr) const
     {
       return m_analyzer.analyze(entry_ptr);
     }
@@ -2308,13 +2307,11 @@ namespace state
   class ConflictAnalyzer<Stack<N>>
   {
   private:
-    typedef EntryPtr<Stack<N>> EntryPtr;
-
     PartitionConflictAnalyzer<Stack<N>> m_analyzer;
-    EntryPtr m_last_linearized_entry_ptr;
+    EntryPtr<Stack<N>> m_last_linearized_entry_ptr;
 
   public:
-    static bool is_successful_try_push(EntryPtr entry_ptr)
+    static bool is_successful_try_push(EntryPtr<Stack<N>> entry_ptr)
     {
       typedef const internal::RetOp<Stack<N>, bool>* const RetOpPtr;
 
@@ -2327,7 +2324,7 @@ namespace state
     : m_analyzer{},
       m_last_linearized_entry_ptr{nullptr} {}
 
-    void linearize(EntryPtr entry_ptr)
+    void linearize(EntryPtr<Stack<N>> entry_ptr)
     {
       assert(entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
@@ -2344,25 +2341,25 @@ namespace state
       m_analyzer.linearize(entry_ptr);
     }
 
-    void undo_linearize(EntryPtr entry_ptr)
+    void undo_linearize(EntryPtr<Stack<N>> entry_ptr)
     {
       assert(entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
 
       assert(entry_ptr->linearized_next() == nullptr);
-      EntryPtr linearized_prev{entry_ptr->linearized_prev()};
+      EntryPtr<Stack<N>> linearized_prev{entry_ptr->linearized_prev()};
       if (linearized_prev != nullptr)
         linearized_prev->set_linearized_next(nullptr);
 
       m_analyzer.undo_linearize(entry_ptr);
     }
 
-    EntryPtr analyze(EntryPtr entry_ptr) const
+    EntryPtr<Stack<N>> analyze(EntryPtr<Stack<N>> entry_ptr) const
     {
       assert(not entry_ptr->is_call());
       assert(entry_ptr->is_partitionable());
 
-      EntryPtr conflict_entry_ptr{m_analyzer.analyze(entry_ptr)};
+      EntryPtr<Stack<N>> conflict_entry_ptr{m_analyzer.analyze(entry_ptr)};
       if (conflict_entry_ptr == nullptr)
         return nullptr;
 
