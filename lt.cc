@@ -22,12 +22,13 @@
 #include <type_traits>
 #include <unordered_set>
 
+#ifdef _CLT_TIMEOUT_
+#include <chrono>
+#endif
+
 // functional testing and experiments
 #include <random>
 #include <functional>
-
-// experiments
-#include <chrono>
 #include <iostream>
 
 /// Allow users to print out counterexamples
@@ -41,11 +42,13 @@
 #endif
 
 #ifdef _ENABLE_EMBB_
+#define _CLT_TIMEOUT_
 #include <embb/base/thread.h>
 #include <embb/containers/lock_free_stack.h>
 #endif
 
 #ifdef _ENABLE_TBB_
+#define _CLT_TIMEOUT_
 #include "tbb/concurrent_unordered_set.h"
 #endif
 
@@ -887,19 +890,42 @@ private:
   EntryPtr<S> m_log_head_ptr;
 #endif
 
+  bool m_is_timeout;
+  bool m_is_interrupted;
+
 public:
   /// Initially linearizable
   Result()
-  : m_is_linearizable{true}
+  : m_is_linearizable{true},
 #ifdef _CLT_DEBUG_
-    ,m_cutoff_entry_id{0U}
-    ,m_log_head_ptr{nullptr}
+    m_cutoff_entry_id{0U},
+    m_log_head_ptr{nullptr},
 #endif
+    m_is_timeout{false},
+    m_is_interrupted{false}
   {}
 
+  /// \pre: not is_aborted()
   bool is_linearizable() const noexcept
   {
+    assert(not is_aborted());
     return m_is_linearizable;
+  }
+
+  bool is_timeout() const noexcept
+  {
+    return m_is_timeout;
+  }
+
+  bool is_interrupted() const noexcept
+  {
+    return m_is_interrupted;
+  }
+
+  /// is_timeout() or is_interrupted()?
+  bool is_aborted() const noexcept
+  {
+    return m_is_timeout or m_is_interrupted;
   }
 
 #ifdef _CLT_DEBUG_
@@ -1037,6 +1063,28 @@ namespace state
   };
 }
 
+#ifdef _CLT_TIMEOUT_
+template <typename Clock = std::chrono::steady_clock>
+struct Timeout
+{
+  const typename Clock::time_point start_time;
+  const typename Clock::duration max_duration;
+
+  Timeout()
+  : start_time{Clock::now()},
+    max_duration{Clock::duration::max()} {}
+
+  Timeout(typename Clock::duration duration)
+  : start_time{Clock::now()},
+    max_duration{duration} {}
+
+  bool is_expired() const
+  {
+    return max_duration < (Clock::now() - start_time);
+  }
+};
+#endif
+
 /// S - sequential data type
 template<class S, bool enable_conflict_analyzer = true, bool enable_state_cache = true>
 class LinearizabilityTester
@@ -1108,6 +1156,10 @@ private:
   //   from `m_log_head` by following the next pointers.
   Stack<S> m_calls;
 
+#ifdef _CLT_TIMEOUT_
+  Timeout<std::chrono::steady_clock> m_timeout;
+#endif
+
   // Non-chronological backtracking information
   ConflictAnalyzer m_conflict_analyzer;
 
@@ -1170,8 +1222,7 @@ private:
     return std::get<1>(state_cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), new_s));
   }
 
-  /// Is history (i.e. every call/ret entry in the log) linearizable?
-  bool is_linearizable(unsigned& global_linearized_entry_id)
+  void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
   {
     S s, new_s;
     StateCache state_cache;
@@ -1185,8 +1236,19 @@ private:
 
     while (m_log_head.next != nullptr)
     {
-      if (m_interrupt_flag.is_set())
+#ifdef _CLT_TIMEOUT_
+      if (m_timeout.is_expired())
+      {
+        result.m_is_timeout = true;
         break;
+      }
+#endif
+
+      if (m_interrupt_flag.is_set())
+      {
+        result.m_is_interrupted = true;
+        break;
+      }
 
       ++m_number_of_iterations;
 
@@ -1252,7 +1314,7 @@ private:
         else
         {
           if (m_calls.is_empty())
-            return false;
+            break;
 
           EntryPtr<S> conflict_entry_ptr{nullptr};
           if (entry_ptr->is_partitionable())
@@ -1285,10 +1347,8 @@ private:
       }
     }
 
-    assert(m_interrupt_flag.is_set() or m_calls.is_full());
-
-    // all call entries have been linearized
-    return true;
+    // all call entries linearized?
+    result.m_is_linearizable = m_calls.is_full();
   }
 
 public:
@@ -1298,6 +1358,9 @@ public:
     m_interrupt_flag{},
     m_calls{m_log_size},
     m_conflict_analyzer{},
+#ifdef _CLT_TIMEOUT_
+    m_timeout{},
+#endif
     m_number_of_iterations{} {}
 
   LinearizabilityTester(LogInfo<S> log_info,
@@ -1307,7 +1370,22 @@ public:
     m_interrupt_flag{interrupt_flag},
     m_calls{m_log_size},
     m_conflict_analyzer{},
+#ifdef _CLT_TIMEOUT_
+    m_timeout{},
+#endif
     m_number_of_iterations{} {}
+
+#ifdef _CLT_TIMEOUT_
+  LinearizabilityTester(LogInfo<S> log_info,
+    std::chrono::steady_clock::duration max_duration)
+  : m_log_size{log_info.number_of_entries() >> 1},
+    m_log_head{log_info.log_head_ptr()},
+    m_interrupt_flag{},
+    m_calls{m_log_size},
+    m_conflict_analyzer{},
+    m_timeout{max_duration},
+    m_number_of_iterations{} {}
+#endif
 
   /// A rough approximation of the workload
   unsigned long number_of_iterations() const noexcept
@@ -1315,24 +1393,33 @@ public:
     return m_number_of_iterations;
   }
 
-  bool is_linearizable()
+  /// Is history linearizable?
+
+  /// Throws an exception on timeout or interrupt
+  bool check()
   {
+    Result<S> result;
     unsigned disregard_cutoff_entry_id;
-    return is_linearizable(disregard_cutoff_entry_id);
+    internal_check(result, disregard_cutoff_entry_id);
+
+    if (result.is_timeout())
+      throw "Timeout!";
+
+    if (result.is_interrupted())
+      throw "Interrupted!";
+
+    return result.is_linearizable();
   }
 
-  bool check(Result<S>& result)
+  void check(Result<S>& result)
   {
-    bool r;
-
 #ifdef _CLT_DEBUG_
-    r = is_linearizable(result.m_cutoff_entry_id); 
+    internal_check(result, result.m_cutoff_entry_id);
     result.m_log_head_ptr = m_log_head.next;
 #else
-    r = is_linearizable();
+    unsigned disregard_cutoff_entry_id;
+    internal_check(result, disregard_cutoff_entry_id);
 #endif
-
-    return result.m_is_linearizable = r;
   }
 };
 
@@ -1585,13 +1672,24 @@ public:
   : m_number_of_threads{number_of_threads},
     m_slicer{log_info, number_of_partitions} {}
 
-  bool is_linearizable()
+  /// Is history linearizable?
+
+  /// Throws an exception on timeout or interrupt
+  bool check()
   {
     Result<S> result;
-    return check(result);
+    check(result);
+
+    if (result.is_timeout())
+      throw "Timeout!";
+
+    if (result.is_interrupted())
+      throw "Interrupted!";
+
+    return result.is_linearizable();
   }
 
-  bool check(Result<S>& result)
+  void check(Result<S>& result)
   {
     std::atomic<bool> atomic_flag{false};
     InterruptFlag interrupt_flag{atomic_flag};
@@ -1610,8 +1708,6 @@ public:
 
     for (Thread& thread : threads)
       thread.join();
-
-    return result.is_linearizable();
   }
 };
 
@@ -2835,7 +2931,7 @@ static void test_linearizability_empty_log()
   LogInfo<state::Set> log_info;
   LinearizabilityTester<state::Set> t{log_info};
   assert(log_info.is_empty());
-  assert(t.is_linearizable());
+  assert(t.check());
 }
 
 /// a few sanity checks on the raw entry data structure
@@ -2853,7 +2949,7 @@ static void test_raw_single_contains_is_linearizable()
   std::size_t number_of_entries{2U};
   LogInfo<state::Set> log_info{&contains_call, number_of_entries};
   LinearizabilityTester<state::Set> t{log_info};
-  assert(t.is_linearizable());
+  assert(t.check());
 }
 
 static void test_raw_single_contains_is_not_linearizable()
@@ -2870,7 +2966,7 @@ static void test_raw_single_contains_is_not_linearizable()
   std::size_t number_of_entries{2U};
   LogInfo<state::Set> log_info{&contains_call, number_of_entries};
   LinearizabilityTester<state::Set> t{log_info};
-  assert(not t.is_linearizable());
+  assert(not t.check());
 }
 
 static void test_single_contains(bool ret)
@@ -2894,7 +2990,7 @@ static void test_single_contains(bool ret)
   assert(contains_ret_entry_ptr->next == nullptr);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(t.is_linearizable() == (not ret));
+  assert(t.check() == (not ret));
 
   if (ret)
   {
@@ -2972,9 +3068,7 @@ static void test_000(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == insert_ret);
+  assert(t.check() == insert_ret);
 }
 
 //        contains(x) : contains_ret
@@ -3005,8 +3099,7 @@ static void test_001(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-  assert(t.check(result) == insert_ret);
+  assert(t.check() == insert_ret);
 }
 
 //      contains(x) : contains_ret
@@ -3037,8 +3130,7 @@ static void test_002(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-  assert(t.check(result) == insert_ret);
+  assert(t.check() == insert_ret);
 }
 
 //     contains(x) : contains_ret
@@ -3069,9 +3161,7 @@ static void test_003(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == insert_ret);
+  assert(t.check() == insert_ret);
 }
 
 //   insert(x) : insert_ret     contains(x) : contains_ret
@@ -3099,9 +3189,7 @@ static void test_004(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == (insert_ret and contains_ret));
+  assert(t.check() == (insert_ret and contains_ret));
 }
 
 //   contains(x) : contains_ret    insert(x) : insert_ret
@@ -3129,9 +3217,7 @@ static void test_005(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == (insert_ret and not contains_ret));
+  assert(t.check() == (insert_ret and not contains_ret));
 }
 
 //   insert(x) : insert_ret_0
@@ -3163,9 +3249,7 @@ static void test_006(bool insert_ret_0, bool insert_ret_1)
   assert(insert_ret_1_entry_ptr->entry_id() == insert_1_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == (not (insert_ret_0 == insert_ret_1)));
+  assert(t.check() == (not (insert_ret_0 == insert_ret_1)));
 }
 
 //   insert(x) : insert_ret_0     insert(x) : insert_ret_1
@@ -3194,9 +3278,7 @@ static void test_007(bool insert_ret_0, bool insert_ret_1)
   assert(insert_ret_1_entry_ptr->entry_id() == insert_1_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(t.check(result) == (insert_ret_0 and not insert_ret_1));
+  assert(t.check() == (insert_ret_0 and not insert_ret_1));
 }
 
 //           insert(x) : insert_ret
@@ -3238,8 +3320,7 @@ static void test_008(bool insert_ret, bool contains_ret)
   assert(contains_ret_entry_ptr->entry_id() == contains_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3287,9 +3368,7 @@ static void test_009()
   assert(insert_x_ret_entry_ptr->entry_id() == insert_x_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3337,8 +3416,7 @@ static void test_010()
   assert(contains_y_ret_entry_ptr->entry_id() == contains_y_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  Result<state::Set> result;
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Linearizable:
@@ -3386,7 +3464,7 @@ static void test_011()
   assert(contains_x_ret_entry_ptr->entry_id() == contains_x_entry_id);
 
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(t.is_linearizable());
+  assert(t.check());
 }
 
 // Linearizable:
@@ -3426,7 +3504,7 @@ static void test_012()
   contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(true));
 
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(t.is_linearizable());
+  assert(t.check());
 }
 
 // entry id: X0, call: contains(x)
@@ -3468,7 +3546,7 @@ static void test_013()
   ret_x5_entry_ptr = log.add_ret(call_x5_entry_ptr, state::Set::make_ret(true));
 
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(t.is_linearizable());
+  assert(t.check());
 }
 
 // Let x and y be distinct.
@@ -3522,9 +3600,8 @@ static void test_014()
 
   assert(call_y0_entry_ptr->entry_id() == not_linearizable_entry_id);
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3567,9 +3644,8 @@ static void test_015()
   assert(contains_y_call_entry_ptr->entry_id() == contains_y_entry_id);
   assert(contains_y_ret_entry_ptr->entry_id() == contains_y_entry_id);
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3606,9 +3682,8 @@ static void test_016()
 
   assert(call_y0_entry_ptr->entry_id() == not_linearizable_entry_id);
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3645,9 +3720,8 @@ static void test_017()
 
   assert(call_y0_entry_ptr->entry_id() == not_linearizable_entry_id);
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Not linearizable:
@@ -3681,9 +3755,8 @@ static void test_018()
 
   assert(call_y0_entry_ptr->entry_id() == not_linearizable_entry_id);
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // Linearizable:
@@ -3713,9 +3786,8 @@ static void test_019(bool insert_ret, bool contains_ret, bool empty_ret)
   ret_empty_entry_ptr = log.add_ret(call_empty_entry_ptr, state::Set::make_ret(empty_ret));
   ret_contains_entry_ptr = log.add_ret(call_contains_entry_ptr, state::Set::make_ret(contains_ret));
 
-  Result<state::Set> result;
   LinearizabilityTester<state::Set> t{log.info()};
-  assert(t.check(result) == insert_ret);
+  assert(t.check() == insert_ret);
 }
 
 // Linearizable:
@@ -3786,8 +3858,7 @@ static void test_stack_conflict_analyzer_000()
   assert(conflict_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
-  Result<state::Stack<N>> result;
-  assert(t.check(result));
+  assert(t.check());
 }
 
 // push(x):true; push(y):true; pop():x
@@ -3825,8 +3896,7 @@ static void test_stack_conflict_analyzer_001()
   assert(conflict_entry_ptr == try_push_y_call_entry_ptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
-  Result<state::Stack<N>> result;
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 // entry id: 0, thread id: 0x2, call: try_push(x)
@@ -3877,8 +3947,7 @@ static void test_stack_conflict_analyzer_002()
   assert(conflict_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
-  Result<state::Stack<N>> result;
-  assert(t.check(result));
+  assert(t.check());
 }
 
 // Linearizable:
@@ -3920,8 +3989,7 @@ static void test_stack_conflict_analyzer_003()
   try_pop_z_ret_entry_ptr = log.add_ret(try_pop_z_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, z));
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
-  Result<state::Stack<N>> result;
-  assert(t.check(result));
+  assert(t.check());
 }
 
 
@@ -3968,10 +4036,10 @@ static void test_slice_000()
   assert(slicer.sublog_info(y).number_of_entries() == 4U);
 
   LinearizabilityTester<state::Set> tester_0{slicer.sublog_info(x)};
-  assert(tester_0.is_linearizable());
+  assert(tester_0.check());
 
   LinearizabilityTester<state::Set> tester_1{slicer.sublog_info(y)};
-  assert(tester_1.is_linearizable());
+  assert(tester_1.check());
 }
 
 // Let x = '\0' and y = '\1'.
@@ -4011,10 +4079,10 @@ static void test_slice_001()
   assert(slicer.sublog_info(y).number_of_entries() == 2U);
 
   LinearizabilityTester<state::Set> tester_0{slicer.sublog_info(x)};
-  assert(not tester_0.is_linearizable());
+  assert(not tester_0.check());
 
   LinearizabilityTester<state::Set> tester_1{slicer.sublog_info(y)};
-  assert(tester_1.is_linearizable());
+  assert(tester_1.check());
 }
 
 // Since every sub-history is linearizable, the entire history is linearizable:
@@ -4055,9 +4123,8 @@ static void parallel_linearizability_tester_000()
   insert_x_ret_entry_ptr = log.add_ret(insert_x_call_entry_ptr, state::Set::make_ret(true));
   contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(true));
 
-  Result<state::Set> result;
   ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(t.check(result));
+  assert(t.check());
 }
 
 // Since every sub-history is linearizable, the entire history is linearizable:
@@ -4093,9 +4160,8 @@ static void parallel_linearizability_tester_001()
   contains_y_ret_entry_ptr = log.add_ret(contains_y_call_entry_ptr, state::Set::make_ret(false));
   contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(false));
 
-  Result<state::Set> result;
   ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(t.check(result));
+  assert(t.check());
 }
 
 // Since the sub-history of x is not linearizable, the entire history is not linearizable:
@@ -4131,10 +4197,8 @@ static void parallel_linearizability_tester_002()
   contains_y_ret_entry_ptr = log.add_ret(contains_y_call_entry_ptr, state::Set::make_ret(false));
   insert_x_ret_entry_ptr = log.add_ret(insert_x_call_entry_ptr, state::Set::make_ret(false));
 
-  Result<state::Set> result;
   ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(not t.check(result));
-  assert(not result.is_linearizable());
+  assert(not t.check());
 }
 
 #ifdef _CLT_DEBUG_
@@ -4158,7 +4222,8 @@ static void debug()
   LinearizabilityTester<state::Set> t{log.info()};
   Result<state::Set> result;
 
-  assert(not t.check(result));
+  t.check(result);
+  assert(not result.is_linearizable());
 
   std::stringstream os;
   result.debug(os);
@@ -4211,9 +4276,8 @@ static void concurrent_log()
   assert(entry_ptr->next == nullptr);
   assert(entry_ptr->match() == insert_x_call_entry_ptr);
 
-  Result<state::Set> result;
   ParallelLinearizabilityTester<state::Set> t{log.info(), 1U};
-  assert(not t.check(result));
+  assert(not t.check());
 }
 
 struct WorkerConfiguration
@@ -4275,8 +4339,7 @@ static void fuzzy_functional_test()
   const unsigned number_of_partitions{worker_configuration.max_value + 1U};
   ParallelLinearizabilityTester<state::Set> tester{concurrent_log.info(), number_of_partitions};
 
-  Result<state::Set> result;
-  assert(not tester.check(result));
+  assert(not tester.check());
 }
 
 #ifdef _ENABLE_EMBB_
@@ -4320,13 +4383,15 @@ static void embb_worker(
 
 static void embb_experiment(bool is_linearizable)
 {
+  constexpr std::chrono::hours max_duration{1};
   constexpr std::size_t N = 3000000U;
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 20000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "embb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
 
+  Result<stat::Stack<N>> result;
   ConcurrentLog<state::Stack<N>> concurrent_log{2U * log_size};
   embb::containers::LockFreeStack<char> concurrent_stack(N);
 
@@ -4340,6 +4405,7 @@ static void embb_experiment(bool is_linearizable)
   start_threads(number_of_threads, embb_worker<N>, std::cref(worker_configuration),
     std::ref(concurrent_log), std::ref(concurrent_stack));
 
+  Result<state::Set> result;
   const LogInfo<state::Stack<N>> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4350,8 +4416,9 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Stack<N>, false, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4360,8 +4427,9 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Stack<N>, false, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4370,8 +4438,9 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Stack<N>, true, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4380,8 +4449,9 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Stack<N>, true, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4476,6 +4546,7 @@ static void tbb_functional_test(bool use_parallel, bool is_linearizable)
   constexpr WorkerConfiguration worker_configuration = {'\27', 1000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
+  Result<state::Set> result;
   ConcurrentLog<state::Set> concurrent_log{2U * log_size};
   tbb::concurrent_unordered_set<char> concurrent_set;
 
@@ -4493,7 +4564,8 @@ static void tbb_functional_test(bool use_parallel, bool is_linearizable)
 
     constexpr unsigned number_of_partitions{worker_configuration.max_value + 1U};
     ParallelLinearizabilityTester<state::Set> tester{concurrent_log.info(), number_of_partitions};
-    assert(tester.is_linearizable() == is_linearizable);
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   else
   {
@@ -4502,14 +4574,16 @@ static void tbb_functional_test(bool use_parallel, bool is_linearizable)
       std::ref(concurrent_log), std::ref(concurrent_set));
 
     LinearizabilityTester<state::Set> tester{concurrent_log.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
 }
 
 static void tbb_experiment(bool is_linearizable)
 {
+  constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 10000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4527,6 +4601,7 @@ static void tbb_experiment(bool is_linearizable)
   start_threads(number_of_threads, tbb_worker, std::cref(worker_configuration),
     std::ref(concurrent_log), std::ref(concurrent_set));
 
+  Result<state::Set> result;
   const LogInfo<state::Set> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4537,8 +4612,9 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, false, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4547,8 +4623,9 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, false, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4557,8 +4634,9 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, true, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4567,8 +4645,9 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, true, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4578,12 +4657,14 @@ static void tbb_experiment(bool is_linearizable)
 /// Run as many different kinds of linearizability testers as possible
 static void tbb_comprehensive_experiment(bool is_linearizable)
 {
+  constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 10000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_comprehensive_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
 
+  Result<state::Set> result;
   ConcurrentLog<state::Set> concurrent_log{2U * log_size};
   tbb::concurrent_unordered_set<char> concurrent_set;
 
@@ -4607,8 +4688,9 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, false, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4617,8 +4699,9 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, false, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4627,8 +4710,9 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, true> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, true, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4637,8 +4721,9 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, false> tester{log_copy.info()};
-    assert(tester.is_linearizable() == is_linearizable);
+    LinearizabilityTester<state::Set, true, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4653,8 +4738,8 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
     bool r{true};
     for (unsigned partition = 0; partition < slicer.number_of_partitions; ++partition)
     {
-      LinearizabilityTester<state::Set> tester{slicer.sublog_info(partition)};
-      if (not tester.is_linearizable())
+      LinearizabilityTester<state::Set> tester{slicer.sublog_info(partition), max_duration};
+      if (not tester.check())
       {
         r = false;
         break;
@@ -4670,7 +4755,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   {
     Log<state::Set> log_copy{log_info};
     ParallelLinearizabilityTester<state::Set> parallel_tester{log_copy.info(), number_of_partitions, number_of_threads};
-    assert(parallel_tester.is_linearizable() == is_linearizable);
+    assert(parallel_tester.check() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
