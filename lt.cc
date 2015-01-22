@@ -261,6 +261,7 @@ private:
   }
 
   Blocks m_blocks;
+  std::size_t m_hash;
   unsigned m_number_of_set_bits;
 
   Block& find_block(Pos pos)
@@ -270,9 +271,18 @@ private:
     return m_blocks[i];
   }
 
+  void update_hash(Block old_block, Block new_block)
+  {
+    // we exploit the fact that XOR forms an abelian group:
+    // first, clear hash of old block; then, hash new block.
+    m_hash ^= old_block;
+    m_hash ^= new_block;
+  }
+
 public:
   Bitset(Pos max_pos)
   : m_blocks(blocks_size(max_pos)),
+    m_hash{0U},
     m_number_of_set_bits{0U} {}
 
   bool is_empty() const noexcept
@@ -285,6 +295,8 @@ public:
     Block& block = find_block(pos);
     const Block copy_block{block};
     block |= bit_mask(pos);
+
+    update_hash(copy_block, block);
 
     bool ok{block != copy_block};
     m_number_of_set_bits += ok;
@@ -313,6 +325,8 @@ public:
     const Block copy_block{block};
     block &= ~bit_mask(pos);
 
+    update_hash(copy_block, block);
+
     bool ok{block != copy_block};
     m_number_of_set_bits -= ok;
     return ok;
@@ -340,12 +354,7 @@ public:
 
   std::size_t hash_code() const noexcept
   {
-    std::size_t h{0};
-
-    for (Block block : m_blocks)
-      h ^= block;
-
-    return h;
+    return m_hash;
   }
 };
 
