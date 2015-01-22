@@ -41,6 +41,7 @@
 #endif
 
 #ifdef _ENABLE_EMBB_
+#include <embb/base/thread.h>
 #include <embb/containers/lock_free_stack.h>
 #endif
 
@@ -4750,7 +4751,10 @@ int main()
   fuzzy_functional_test();
 
 #ifdef _ENABLE_EMBB_
+  embb::base::Thread::SetThreadsMaxCount(255);
+
   embb_experiment(true);
+  embb_experiment(false);
 #endif
 
 #ifdef _ENABLE_TBB_
