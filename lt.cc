@@ -4386,12 +4386,12 @@ static void embb_experiment(bool is_linearizable)
   constexpr std::chrono::hours max_duration{1};
   constexpr std::size_t N = 3000000U;
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "embb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
 
-  Result<stat::Stack<N>> result;
+  Result<state::Stack<N>> result;
   ConcurrentLog<state::Stack<N>> concurrent_log{2U * log_size};
   embb::containers::LockFreeStack<char> concurrent_stack(N);
 
@@ -4405,7 +4405,6 @@ static void embb_experiment(bool is_linearizable)
   start_threads(number_of_threads, embb_worker<N>, std::cref(worker_configuration),
     std::ref(concurrent_log), std::ref(concurrent_stack));
 
-  Result<state::Set> result;
   const LogInfo<state::Stack<N>> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4583,7 +4582,7 @@ static void tbb_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4659,7 +4658,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 100000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_comprehensive_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
