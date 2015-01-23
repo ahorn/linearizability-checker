@@ -911,6 +911,19 @@ private:
   double m_virtual_memory_usage;
   double m_resident_set_size;
 
+  void reset()
+  {
+    m_is_linearizable = true;
+#ifdef _CLT_DEBUG_
+    m_cutoff_entry_id = 0U;
+    m_log_head_ptr = nullptr;
+#endif
+    m_is_timeout = false;
+    m_is_interrupted = false;
+    m_virtual_memory_usage = 0.0;
+    m_resident_set_size = 0.0;
+  }
+
 public:
   /// Initially linearizable
   Result()
@@ -1293,6 +1306,8 @@ private:
 
   void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
   {
+    result.reset();
+
     S s, new_s;
     StateCache state_cache;
     bool is_entry_linearizable;
