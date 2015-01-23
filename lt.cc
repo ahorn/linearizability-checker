@@ -38,6 +38,7 @@
 #include <string>
 #include <ostream>
 #include <sstream>
+#include <string>
 #include <algorithm>
 #endif
 
@@ -50,6 +51,20 @@
 #ifdef _ENABLE_TBB_
 #define _CLT_TIMEOUT_
 #include "tbb/concurrent_unordered_set.h"
+#endif
+
+#ifdef __linux__
+#define _CLT_MEM_USAGE_
+#endif
+
+#ifdef _CLT_MEM_USAGE_
+#include <unistd.h>
+#include <ios>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
 #endif
 
 #if __cplusplus <= 201103L
@@ -893,6 +908,9 @@ private:
   bool m_is_timeout;
   bool m_is_interrupted;
 
+  double m_virtual_memory_usage;
+  double m_resident_set_size;
+
 public:
   /// Initially linearizable
   Result()
@@ -902,8 +920,9 @@ public:
     m_log_head_ptr{nullptr},
 #endif
     m_is_timeout{false},
-    m_is_interrupted{false}
-  {}
+    m_is_interrupted{false},
+    m_virtual_memory_usage{0.0},
+    m_resident_set_size{0.0} {}
 
   /// \pre: not is_aborted()
   bool is_linearizable() const noexcept
@@ -926,6 +945,18 @@ public:
   bool is_aborted() const noexcept
   {
     return m_is_timeout or m_is_interrupted;
+  }
+
+  /// Zero if unknown, unit: MiB
+  double virtual_memory_usage() const noexcept
+  {
+    return m_virtual_memory_usage;
+  }
+
+  /// Zero if unknown, unit: MiB
+  double resident_set_size() const noexcept
+  {
+    return m_resident_set_size;
   }
 
 #ifdef _CLT_DEBUG_
@@ -1166,6 +1197,44 @@ private:
   // An approximation of the workload
   unsigned long m_number_of_iterations;
 
+  // see http://stackoverflow.com/questions/669438/how-to-get-memory-usage-at-run-time-in-c
+  //
+  // process_mem_usage(double &, double &) - takes two doubles by reference,
+  // attempts to read the system-dependent data for a process' virtual memory
+  // size and resident set size, and return the results in MiB.
+  //
+  // On failure, returns 0.0, 0.0
+  static void process_mem_usage(double& vm_usage, double& resident_set)
+  {
+    vm_usage = resident_set = 0.0;
+
+#ifdef _CLT_MEM_USAGE_
+    // 'file' stat seems to give the most reliable results
+    std::ifstream stat_stream("/proc/self/stat", std::ios_base::in);
+
+    // dummy vars for leading entries in stat that we don't care about
+    std::string pid, comm, state, ppid, pgrp, session, tty_nr;
+    std::string tpgid, flags, minflt, cminflt, majflt, cmajflt;
+    std::string utime, stime, cutime, cstime, priority, nice;
+    std::string O, itrealvalue, starttime;
+
+    // the two fields we want
+    unsigned long vsize;
+    long rss;
+
+    stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
+                >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
+                >> utime >> stime >> cutime >> cstime >> priority >> nice
+                >> O >> itrealvalue >> starttime >> vsize >> rss; // don't care about the rest
+
+    stat_stream.close();
+
+    long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024; // in case x86-64 is configured to use 2MB pages
+    vm_usage = vsize / (1024.0 * 1024.0);
+    resident_set = (rss * page_size_kb) / 1024.0;
+#endif
+  }
+
   // Temporarily remove call_entry_ptr from the log
 
   // \pre: call_entry_ptr->is_call()
@@ -1230,12 +1299,19 @@ private:
     unsigned linearized_counter{0};
     EntryPtr<S> entry_ptr = m_log_head.next;
 
+    double virtual_memory_usage;
+    double resident_set_size;
+
     // fixing the size is not merely an optimization but
     // necessary for checking the equality of bitsets
     Bitset linearized_entries(m_log_size);
 
     while (m_log_head.next != nullptr)
     {
+      process_mem_usage(virtual_memory_usage, resident_set_size);
+      result.m_virtual_memory_usage = std::max(result.m_virtual_memory_usage, virtual_memory_usage);
+      result.m_resident_set_size = std::max(result.m_resident_set_size, resident_set_size);
+
 #ifdef _CLT_TIMEOUT_
       if (m_timeout.is_expired())
       {
@@ -4342,6 +4418,25 @@ static void fuzzy_functional_test()
   assert(not tester.check());
 }
 
+template<class S>
+std::string mem_usage(const Result<S>& result)
+{
+#ifdef _CLT_MEM_USAGE_
+  static std::string s_vm = "[Virtual memory: ";
+  static std::string s_rss = " MiB; Resident set size: ";
+  static std::string s_end = " MiB]";
+
+  std::stringstream buff;
+  buff << s_vm << result.virtual_memory_usage()
+       << s_rss << result.resident_set_size() << s_end;
+
+  return buff.str();
+#else
+  static std::string s_empty = "";
+  return s_empty;
+#endif
+}
+
 #ifdef _ENABLE_EMBB_
 template<std::size_t N>
 static void embb_worker(
@@ -4386,7 +4481,7 @@ static void embb_experiment(bool is_linearizable)
   constexpr std::chrono::hours max_duration{1};
   constexpr std::size_t N = 3000000U;
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "embb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4421,7 +4516,7 @@ static void embb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4432,7 +4527,7 @@ static void embb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4443,7 +4538,7 @@ static void embb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4454,7 +4549,7 @@ static void embb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 #endif
 
@@ -4582,7 +4677,7 @@ static void tbb_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4617,7 +4712,7 @@ static void tbb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4628,7 +4723,7 @@ static void tbb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4639,7 +4734,7 @@ static void tbb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4650,7 +4745,7 @@ static void tbb_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 
 /// Run as many different kinds of linearizability testers as possible
@@ -4658,7 +4753,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 50000U};
+  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_comprehensive_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4693,7 +4788,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4704,7 +4799,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4715,7 +4810,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4726,7 +4821,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s" << std::endl;
+  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   const unsigned number_of_partitions{worker_configuration.max_value + 1U};
 
@@ -4748,7 +4843,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Compositional: " << seconds.count() << " s" << std::endl;
+  std::cout << "Compositional: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
@@ -4758,7 +4853,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Parallel: " << seconds.count() << " s" << std::endl;
+  std::cout << "Parallel: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 #endif
 
