@@ -2062,6 +2062,7 @@ namespace state
     static constexpr char s_insert_op_name[] = "insert";
     static constexpr char s_erase_op_name[] = "erase";
 
+  public:
     struct RetOp : public internal::RetOp<Set, Ret>
     {
       RetOp(Ret r) : Base(r) {}
@@ -2273,22 +2274,60 @@ namespace state
   private:
     PartitionConflictAnalyzer<Set> m_analyzer;
 
+    static bool is_insert(EntryPtr<Set> entry_ptr)
+    {
+      typedef const Set::InsertCallOp* const InsertCallOpPtr;
+
+      assert(entry_ptr->is_call());
+      InsertCallOpPtr insert_call_op_ptr = dynamic_cast<InsertCallOpPtr>(entry_ptr->op_ptr());
+      return insert_call_op_ptr != nullptr;
+    }
+
+    static bool is_empty(EntryPtr<Set> entry_ptr)
+    {
+      typedef const Set::EmptyCallOp* const EmptyCallOpPtr;
+
+      assert(entry_ptr->is_call());
+      EmptyCallOpPtr empty_call_op_ptr = dynamic_cast<EmptyCallOpPtr>(entry_ptr->op_ptr());
+      return empty_call_op_ptr != nullptr;
+    }
+
+    std::vector<EntryPtr<Set>> m_inserts;
+
   public:
-    ConflictAnalyzer<Set>() : m_analyzer{} {}
+    ConflictAnalyzer<Set>()
+    : m_analyzer{},
+      m_inserts{} {}
 
     void linearize(EntryPtr<Set> entry_ptr)
     {
       m_analyzer.linearize(entry_ptr);
+
+      if (is_insert(entry_ptr))
+        m_inserts.push_back(entry_ptr);
     }
 
     void undo_linearize(EntryPtr<Set> entry_ptr)
     {
       m_analyzer.undo_linearize(entry_ptr);
+
+      if (is_insert(entry_ptr))
+      {
+        assert(entry_ptr == m_inserts.back());
+        m_inserts.pop_back();
+      }
     }
 
     EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr, bool happens_concurrently) const
     {
-      return m_analyzer.analyze(entry_ptr, happens_concurrently);
+      EntryPtr<Set> backtrack_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
+
+      // there is no erase operation in the log so we
+      // don't have to check happens_concurrently
+      if (backtrack_entry_ptr == nullptr and is_empty(entry_ptr->match()))
+        return m_inserts.back();
+
+      return backtrack_entry_ptr;
     }
   };
 
