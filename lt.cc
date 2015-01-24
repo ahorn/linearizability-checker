@@ -1312,7 +1312,8 @@ private:
     StateCache state_cache;
     bool is_entry_linearizable;
     unsigned linearized_counter{0};
-    EntryPtr<S> entry_ptr = m_log_head.next;
+    EntryPtr<S> entry_ptr{m_log_head.next};
+    EntryPtr<S> backtrack_entry_ptr, conflict_entry_ptr;
 
     double virtual_memory_usage;
     double resident_set_size;
@@ -1355,6 +1356,9 @@ private:
 
         if (is_entry_linearizable and cache_state(new_s, entry_ptr, state_cache, linearized_entries))
         {
+          if (conflict_entry_ptr == entry_ptr)
+            conflict_entry_ptr = nullptr;
+
           ++linearized_counter;
           assert(linearized_counter <= m_log_size);
 
@@ -1392,7 +1396,9 @@ private:
       {
         if (linearized_counter and linearized_entries.is_set(entry_ptr->entry_id()))
         {
-          --linearized_counter;
+          if (--linearized_counter == 0)
+            conflict_entry_ptr = nullptr;
+
           lift_ret_entry(entry_ptr);
 
           // skip over lifted call entries
@@ -1407,9 +1413,13 @@ private:
           if (m_calls.is_empty())
             break;
 
-          EntryPtr<S> conflict_entry_ptr{nullptr};
-          if (entry_ptr->is_partitionable())
-            conflict_entry_ptr = m_conflict_analyzer.analyze(entry_ptr, 0 < linearized_counter);
+          backtrack_entry_ptr = nullptr;
+          if (conflict_entry_ptr == nullptr)
+          {
+            conflict_entry_ptr = entry_ptr;
+            if (entry_ptr->is_partitionable())
+              backtrack_entry_ptr = m_conflict_analyzer.analyze(entry_ptr, 0 < linearized_counter);
+          }
 
           EntryPtr<S> pop_entry_ptr;
           do
@@ -1429,7 +1439,7 @@ private:
             // undo the provisional linearization
             unlift(pop_entry_ptr);
           }
-          while (conflict_entry_ptr != nullptr and pop_entry_ptr != conflict_entry_ptr);
+          while (backtrack_entry_ptr != nullptr and pop_entry_ptr != backtrack_entry_ptr);
 
           // continue after the entry to which we have just backtracked
           entry_ptr = pop_entry_ptr->next;
@@ -2671,11 +2681,11 @@ namespace state
       if (happens_concurrently or not is_successful_try_pop_ret(entry_ptr))
         return nullptr;
 
-      EntryPtr<Stack<N>> conflict_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
-      if (conflict_entry_ptr == nullptr)
+      EntryPtr<Stack<N>> backtrack_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
+      if (backtrack_entry_ptr == nullptr)
         return nullptr;
 
-      return conflict_entry_ptr->linearized_next();
+      return backtrack_entry_ptr->linearized_next();
     }
   };
 }
@@ -3957,6 +3967,75 @@ static void test_019(bool insert_ret, bool contains_ret, bool empty_ret)
   assert(t.check() == insert_ret);
 }
 
+//                                                          insert(x) : insert_ret
+//                                                        |------------------------|
+//
+//   contains(x) :  contains_ret    contains(x) : contains_ret
+// |----------------------------| |----------------------------|
+//
+//                                                     empty() : empty_ret
+//                                                   |----------------------|
+static void test_020(bool insert_ret, bool contains_ret, bool empty_ret)
+{
+  constexpr char x = '\1';
+
+  Log<state::Set> log{8U};
+
+  EntryPtr<state::Set> call_contains_0_entry_ptr, ret_contains_0_entry_ptr;
+  EntryPtr<state::Set> call_contains_1_entry_ptr, ret_contains_1_entry_ptr;
+  EntryPtr<state::Set> call_insert_entry_ptr, ret_insert_entry_ptr;
+  EntryPtr<state::Set> call_empty_entry_ptr, ret_empty_entry_ptr;
+
+  call_contains_0_entry_ptr = log.add_call(state::Set::make_contains_call(x));
+  ret_contains_0_entry_ptr = log.add_ret(call_contains_0_entry_ptr, state::Set::make_ret(contains_ret));
+  call_contains_1_entry_ptr = log.add_call(state::Set::make_contains_call(x));
+  call_empty_entry_ptr = log.add_call(state::Set::make_empty_call());
+  call_insert_entry_ptr = log.add_call(state::Set::make_insert_call(x));
+  ret_contains_1_entry_ptr = log.add_ret(call_contains_1_entry_ptr, state::Set::make_ret(contains_ret));
+  ret_empty_entry_ptr = log.add_ret(call_empty_entry_ptr, state::Set::make_ret(empty_ret));
+  ret_insert_entry_ptr = log.add_ret(call_insert_entry_ptr, state::Set::make_ret(insert_ret));
+
+  LinearizabilityTester<state::Set> t{log.info()};
+  assert(t.check() == (insert_ret and not contains_ret));
+}
+
+// Linearizable:
+//
+// Let x and y be distinct values.
+//
+//   contains(x) : false
+// |---------------------|
+//
+//              insert(y) : true
+//           |-----------------------------------------------------------|
+//
+//                            contains(x) : false      empty() : true
+//                          |---------------------|  |----------------|
+static void test_021()
+{
+  constexpr char x = '\1';
+  constexpr char y = '\2';
+
+  Log<state::Set> log{8U};
+
+  EntryPtr<state::Set> call_contains_0_entry_ptr, ret_contains_0_entry_ptr;
+  EntryPtr<state::Set> call_contains_1_entry_ptr, ret_contains_1_entry_ptr;
+  EntryPtr<state::Set> call_insert_entry_ptr, ret_insert_entry_ptr;
+  EntryPtr<state::Set> call_empty_entry_ptr, ret_empty_entry_ptr;
+
+  call_contains_0_entry_ptr = log.add_call(state::Set::make_contains_call(x));
+  call_insert_entry_ptr = log.add_call(state::Set::make_insert_call(y));
+  ret_contains_0_entry_ptr = log.add_ret(call_contains_0_entry_ptr, state::Set::make_ret(false));
+  call_contains_1_entry_ptr = log.add_call(state::Set::make_contains_call(x));
+  ret_contains_1_entry_ptr = log.add_ret(call_contains_1_entry_ptr, state::Set::make_ret(false));
+  call_empty_entry_ptr = log.add_call(state::Set::make_empty_call());
+  ret_empty_entry_ptr = log.add_ret(call_empty_entry_ptr, state::Set::make_ret(true));
+  ret_insert_entry_ptr = log.add_ret(call_insert_entry_ptr, state::Set::make_ret(1));
+
+  LinearizabilityTester<state::Set> t{log.info()};
+  assert(t.check());
+}
+
 // Linearizable:
 //
 //        push(x) : true
@@ -3997,32 +4076,32 @@ static void test_stack_conflict_analyzer_000()
   assert(try_push_y_ret_entry_ptr->is_partitionable());
   assert(try_pop_x_ret_entry_ptr->is_partitionable());
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr;
+  EntryPtr<state::Stack<N>> backtrack_entry_ptr;
   state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
 
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(conflict_entry_ptr == nullptr);
+  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(backtrack_entry_ptr == nullptr);
 
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(conflict_entry_ptr == nullptr);
+  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(backtrack_entry_ptr == nullptr);
   stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
   stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
 
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(conflict_entry_ptr == nullptr);
+  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(backtrack_entry_ptr == nullptr);
 
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(conflict_entry_ptr == nullptr);
+  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(backtrack_entry_ptr == nullptr);
   stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
 
   stack_conflict_analyzer.linearize(try_pop_x_call_entry_ptr);
-  conflict_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(conflict_entry_ptr == nullptr);
+  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
+  assert(backtrack_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
@@ -4059,8 +4138,8 @@ static void test_stack_conflict_analyzer_001()
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, false)};
-  assert(conflict_entry_ptr == try_push_y_call_entry_ptr);
+  EntryPtr<state::Stack<N>> backtrack_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, false)};
+  assert(backtrack_entry_ptr == try_push_y_call_entry_ptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(not t.check());
@@ -4110,8 +4189,8 @@ static void test_stack_conflict_analyzer_002()
   stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
   stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
 
-  EntryPtr<state::Stack<N>> conflict_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true)};
-  assert(conflict_entry_ptr == nullptr);
+  EntryPtr<state::Stack<N>> backtrack_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true)};
+  assert(backtrack_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
@@ -4999,7 +5078,10 @@ int main()
       for (bool c : {true, false})
       {
         test_019(a, b, c);
+        test_020(a, b, c);
       }
+
+  test_021();
 
   test_stack_conflict_analyzer_000();
   test_stack_conflict_analyzer_001();
