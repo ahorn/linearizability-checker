@@ -2363,38 +2363,61 @@ namespace state
     typedef std::unique_ptr<Op<Stack<N>>> StackOpPtr;
 
     class Node;
-    typedef std::shared_ptr<Node> NodePtr;
+    typedef Node* NodePtr;
 
     /// Version tree of stacks
     class Node
     {
     private:
+      friend class Stack<N>;
+
       // if m_prev is null, then m_size is zero
       const std::size_t m_size;
 
       // top of stack is defined if m_prev != nullptr
       const Value m_top;
       const NodePtr m_prev;
+      unsigned m_ref_counter;
 
       std::vector<NodePtr> m_vector;
 
     public:
+      ~Node()
+      {
+        if (m_prev == nullptr)
+          return;
+
+        m_prev->m_vector[m_top] = nullptr;
+        if (--m_prev->m_ref_counter == 0)
+          delete m_prev;
+      }
+
+      Node(const Node&) = delete;
+      Node& operator=(const Node&) = delete;
+
       Node()
       : m_size{0},
         m_top{},
         m_prev{nullptr},
+        m_ref_counter{0U},
         m_vector{} {}
 
+      /// \pre: prev != nullptr
       Node(std::size_t size, Value value, const NodePtr& prev)
       : m_size{size},
         m_top{value},
         m_prev{prev},
-        m_vector{} {}
+        m_ref_counter{0U},
+        m_vector{}
+      {
+        assert(prev != nullptr);
+        ++prev->m_ref_counter;
+      }
 
       /// Returns non-null pointer
 
       /// \pre: prev != nullptr
-      const NodePtr& get_or_update_next(Value value, const NodePtr& prev)
+      NodePtr get_or_update_next(Value value, NodePtr& prev)
       {
         assert(prev != nullptr);
 
@@ -2405,7 +2428,7 @@ namespace state
 
         NodePtr& node_ptr = m_vector[value];
         if (node_ptr == nullptr)
-          node_ptr = std::make_shared<Node>(prev->size() + 1U, value, prev);
+          node_ptr = new Node(prev->size() + 1U, value, prev);
 
         assert(node_ptr != nullptr);
         assert(node_ptr->m_top == value);
@@ -2454,14 +2477,67 @@ namespace state
 
    private:
     // never null, m_curr->size() <= N
-    NodePtr m_curr;
+    mutable NodePtr m_curr;
 
-    Stack(const NodePtr& curr)
-    : m_curr{curr} {}
+    void inc_ref_counter() const noexcept
+    {
+      if (m_curr != nullptr)
+        ++m_curr->m_ref_counter;
+    }
+
+    void dec_ref_counter() const
+    {
+      assert(m_curr == nullptr or 0 < m_curr->m_ref_counter);
+
+      if (m_curr != nullptr and --m_curr->m_ref_counter == 0)
+        delete m_curr;
+    }
+
+    Stack(NodePtr curr)
+    : m_curr{curr}
+    {
+      inc_ref_counter();
+    }
 
    public:
+    ~Stack()
+    {
+      dec_ref_counter();
+    }
+
+    Stack(const Stack& other)
+    : m_curr{other.m_curr}
+    {
+      inc_ref_counter();
+    }
+
+    Stack(Stack&& other)
+    : m_curr{other.m_curr}
+    {
+      other.m_curr = nullptr;
+    }
+
+    Stack& operator=(const Stack& other)
+    {
+      dec_ref_counter();
+      m_curr = other.m_curr;
+      inc_ref_counter();
+      return *this;
+    }
+
+    Stack& operator=(Stack&& other)
+    {
+      dec_ref_counter();
+      m_curr = other.m_curr;
+      other.m_curr = nullptr;
+      return *this;
+    }
+
     Stack()
-    : m_curr{std::make_shared<Node>()} {}
+    : m_curr{new Node()}
+    {
+      inc_ref_counter();
+    }
 
     bool is_empty() const
     {
@@ -2508,7 +2584,7 @@ namespace state
       // std::size_t is synonymous with std::uintptr_t.
       //
       // \see_also http://en.cppreference.com/w/cpp/types/size_t
-      return reinterpret_cast<uintptr_t>(m_curr.get());
+      return reinterpret_cast<uintptr_t>(m_curr);
     }
   };
 
