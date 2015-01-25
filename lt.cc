@@ -167,7 +167,7 @@ template<class S> class Entry;
 template<class S> class Log;
 template<class S> class ConcurrentLog;
 template<class S> class Slicer;
-template<class S, bool, bool> class LinearizabilityTester;
+template<class S, bool, unsigned state_cache_switch, class Hasher> class LinearizabilityTester;
 template<class S> class ParallelLinearizabilityTester;
 
 /// A kind of "functor" in C++ terminology
@@ -243,6 +243,54 @@ public:
 #endif
 };
 
+/// Constant-time hash function
+
+/// We exploit the fact that XOR forms an abelian group:
+/// first, clear hash of old block; then, hash new block.
+class O1BitsetHasher
+{
+private:
+  std::size_t m_hash;
+
+public:
+  O1BitsetHasher() : m_hash{0U} {}
+
+  template<class Block>
+  void update_hash(Block old_block, Block new_block)
+  {
+    m_hash ^= old_block;
+    m_hash ^= new_block;
+  }
+
+  template<class Block>
+  std::size_t hash_code(const std::vector<Block>& blocks) const noexcept
+  {
+    return m_hash;
+  }
+};
+
+/// Linear-time hash function
+class ONBitsetHasher
+{
+public:
+  template<class Block>
+  void update_hash(Block old_block, Block new_block)
+  {
+  }
+
+  template<class Block>
+  std::size_t hash_code(const std::vector<Block>& blocks) const noexcept
+  {
+    std::size_t h{0};
+
+    for (Block block : blocks)
+      h ^= block;
+
+    return h;
+  }
+};
+
+template<class Hash = O1BitsetHasher>
 class Bitset
 {
 public:
@@ -282,7 +330,7 @@ private:
   }
 
   Blocks m_blocks;
-  std::size_t m_hash;
+  Hash m_hash;
   unsigned m_number_of_set_bits;
 
   Block& find_block(Pos pos)
@@ -292,18 +340,10 @@ private:
     return m_blocks[i];
   }
 
-  void update_hash(Block old_block, Block new_block)
-  {
-    // we exploit the fact that XOR forms an abelian group:
-    // first, clear hash of old block; then, hash new block.
-    m_hash ^= old_block;
-    m_hash ^= new_block;
-  }
-
 public:
   Bitset(Pos max_pos)
   : m_blocks(blocks_size(max_pos)),
-    m_hash{0U},
+    m_hash{},
     m_number_of_set_bits{0U} {}
 
   bool is_empty() const noexcept
@@ -317,7 +357,7 @@ public:
     const Block copy_block{block};
     block |= bit_mask(pos);
 
-    update_hash(copy_block, block);
+    m_hash.update_hash(copy_block, block);
 
     bool ok{block != copy_block};
     m_number_of_set_bits += ok;
@@ -346,7 +386,7 @@ public:
     const Block copy_block{block};
     block &= ~bit_mask(pos);
 
-    update_hash(copy_block, block);
+    m_hash.update_hash(copy_block, block);
 
     bool ok{block != copy_block};
     m_number_of_set_bits -= ok;
@@ -375,13 +415,14 @@ public:
 
   std::size_t hash_code() const noexcept
   {
-    return m_hash;
+    return m_hash.hash_code(m_blocks);
   }
 };
 
 struct BitsetHash
 {
-  std::size_t operator()(const Bitset& bitset) const noexcept
+  template<class Hash>
+  std::size_t operator()(const Bitset<Hash>& bitset) const noexcept
   {
     return bitset.hash_code();
   }
@@ -409,10 +450,8 @@ class Entry
 private:
   friend class Log<S>;
   friend class Slicer<S>;
-  friend class LinearizabilityTester<S, true, true>;
-  friend class LinearizabilityTester<S, true, false>;
-  friend class LinearizabilityTester<S, false, true>;
-  friend class LinearizabilityTester<S, false, false>;
+  template<class T, bool enable_conflict_analyzer, unsigned state_cache_switch, class Hasher>
+  friend class LinearizabilityTester;
   friend class ParallelLinearizabilityTester<S>;
 
   // Ref counted pointer because we need to copy logs so that we
@@ -894,10 +933,8 @@ template<class S>
 class Result
 {
 private:
-  friend class LinearizabilityTester<S, true, true>;
-  friend class LinearizabilityTester<S, true, false>;
-  friend class LinearizabilityTester<S, false, true>;
-  friend class LinearizabilityTester<S, false, false>;
+  template<class T, bool enable_conflict_analyzer, unsigned state_cache_switch, class Hasher>
+  friend class LinearizabilityTester;
   friend class ParallelLinearizabilityTester<S>;
 
   bool m_is_linearizable;
@@ -1179,12 +1216,13 @@ public:
 };
 
 /// S - sequential data type
-template<class S, bool enable_conflict_analyzer = true, bool enable_state_cache = true>
+template<class S, bool enable_conflict_analyzer = true,
+  unsigned state_cache_switch = 2U, class BitsetHasher = O1BitsetHasher>
 class LinearizabilityTester
 {
 private:
   // regardless of caching, we need to keep track of the current state of type S
-  typedef std::pair<Bitset, S> State;
+  typedef std::pair<Bitset<BitsetHasher>, S> State;
 
   // if caching is enabled, we use these hash functions
   class StateHash
@@ -1214,17 +1252,18 @@ private:
     }
   };
 
-  // Statically enable/disable state caching
-  typedef LruCache<State, StateHash> EnabledStateCache;
-  typedef std::nullptr_t DisabledStateCache;
+  typedef typename std::conditional<
+    /* if */ state_cache_switch == 1U,
+    /* then */ std::unordered_set<State, StateHash>,
+    /* else */ LruCache<State, StateHash>>::type EnabledStateCache;
 
   // Optionally memoize states
 
   // \remark for this, a good hash function is required
   typedef typename std::conditional<
-    /* if */ enable_state_cache,
-    /* then */ EnabledStateCache,
-    /* else */ DisabledStateCache>::type StateCache;
+    /* if */ state_cache_switch == 0U,
+    /* then */ std::nullptr_t,
+    /* else */ EnabledStateCache>::type StateCache;
 
   // Statically enable/disable conflict analyzer
   typedef typename std::conditional<
@@ -1339,18 +1378,22 @@ private:
     call.next->prev = call_entry_ptr;
   }
 
-  // enable_state_cache is false
   static constexpr bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    DisabledStateCache state_cache, Bitset& bitset)
+    std::nullptr_t state_cache, Bitset<BitsetHasher>& bitset)
   {
     return true;
   }
 
-  // enable_state_cache is true
   static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    EnabledStateCache& state_cache, Bitset& bitset)
+    LruCache<State, StateHash>& state_cache, Bitset<BitsetHasher>& bitset)
   {
     return state_cache.insert(std::make_pair(bitset.immutable_set(entry_ptr->entry_id()), new_s));
+  }
+
+  static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
+    std::unordered_set<State, StateHash>& state_cache, Bitset<BitsetHasher>& bitset)
+  {
+    return std::get<1>(state_cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), new_s));
   }
 
   void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
@@ -1369,7 +1412,7 @@ private:
 
     // fixing the size is not merely an optimization but
     // necessary for checking the equality of bitsets
-    Bitset linearized_entries(m_log_size);
+    Bitset<BitsetHasher> linearized_entries(m_log_size);
 
     while (m_log_head.next != nullptr)
     {
@@ -1980,18 +2023,19 @@ void start_threads(unsigned number_of_threads, F&& f, Args&&... args)
 class FlexibleBitset
 {
 public:
-  typedef Bitset::Pos Pos;
+  typedef O1BitsetHasher BitsetHasher;
+  typedef Bitset<BitsetHasher>::Pos Pos;
 
 private:
-  Bitset m_bitset;
+  Bitset<BitsetHasher> m_bitset;
 
   void allocate_blocks_if_neccessary(Pos pos) noexcept
   {
-    if (pos < Bitset::s_bits_per_block)
+    if (pos < Bitset<BitsetHasher>::s_bits_per_block)
       return;
 
     assert(0U < pos);
-    Bitset::BlockIndex new_size{Bitset::blocks_size(pos)};
+    Bitset<BitsetHasher>::BlockIndex new_size{Bitset<BitsetHasher>::blocks_size(pos)};
     if (m_bitset.m_blocks.size() < new_size)
       m_bitset.m_blocks.resize(new_size);
   }
@@ -4782,18 +4826,51 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, false, 2U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, false, 1U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    LinearizabilityTester<state::Stack<N>, false, 0U> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
@@ -4804,18 +4881,18 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, true, 2U> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, true, 0U> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
@@ -4978,40 +5055,84 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 0U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, disabled state cache, O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 2U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, false, 1U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, false, 0U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, disabled state cache, O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, true, 2U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, true, 0U> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
@@ -5054,40 +5175,84 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 0U, ONBitsetHasher> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "Baseline, disabled state cache, O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false, 2U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, false, 1U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, false, 0U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Baseline, disabled state cache, O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, true, 2U> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Set> log_copy{log_info};
+    LinearizabilityTester<state::Set, true, 0U> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
   }
