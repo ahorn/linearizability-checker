@@ -21,6 +21,8 @@
 #include <cassert>
 #include <type_traits>
 #include <unordered_set>
+#include <unordered_map>
+#include <list>
 
 #ifdef _CLT_TIMEOUT_
 #include <chrono>
@@ -1129,6 +1131,53 @@ struct Timeout
 };
 #endif
 
+template<class Key, class Hash = std::hash<Key>>
+class LruCache
+{
+private:
+  typedef std::list<Key> List;
+  typedef typename List::iterator ListIterator;
+  typedef std::unordered_map<Key, ListIterator, Hash> UnorderedMap;
+  typedef typename UnorderedMap::size_type Capacity;
+
+  const Capacity m_capacity;
+
+  UnorderedMap m_unordered_map;
+  List m_list;
+
+public:
+  typedef typename UnorderedMap::iterator Iterator;
+
+  LruCache()
+  : m_capacity{4096},
+    m_unordered_map{m_capacity} {}
+
+  LruCache(Capacity capacity)
+  : m_capacity{capacity},
+    m_unordered_map{m_capacity} {}
+
+  bool insert(Key&& key)
+  {
+    std::pair<Iterator, bool> pair{m_unordered_map.insert(
+      std::make_pair(std::move(key), m_list.end()))};
+
+    if (pair.second)
+      pair.first->second = m_list.insert(m_list.cend(), pair.first->first);
+    else
+      m_list.splice(m_list.end(), m_list, pair.first->second);
+
+    if (m_unordered_map.size() == m_capacity)
+    {
+      auto iter = m_unordered_map.find(m_list.front());
+      assert(iter != m_unordered_map.cend());
+      m_unordered_map.erase(iter);
+      m_list.pop_front();
+    }
+
+    return pair.second;
+  }
+};
+
 /// S - sequential data type
 template<class S, bool enable_conflict_analyzer = true, bool enable_state_cache = true>
 class LinearizabilityTester
@@ -1166,7 +1215,7 @@ private:
   };
 
   // Statically enable/disable state caching
-  typedef std::unordered_set<State, StateHash> EnabledStateCache;
+  typedef LruCache<State, StateHash> EnabledStateCache;
   typedef std::nullptr_t DisabledStateCache;
 
   // Optionally memoize states
@@ -1301,7 +1350,7 @@ private:
   static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
     EnabledStateCache& state_cache, Bitset& bitset)
   {
-    return std::get<1>(state_cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), new_s));
+    return state_cache.insert(std::make_pair(bitset.immutable_set(entry_ptr->entry_id()), new_s));
   }
 
   void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
@@ -2732,6 +2781,20 @@ namespace state
 }
 
 using namespace lt;
+
+static void test_lru_cache()
+{
+  LruCache<char> lru_cache{3};
+  assert(lru_cache.insert('\1'));
+  assert(not lru_cache.insert('\1'));
+
+  assert(lru_cache.insert('\2'));
+  assert(lru_cache.insert('\3'));
+  assert(lru_cache.insert('\1'));
+  assert(not lru_cache.insert('\3'));
+  assert(lru_cache.insert('\4'));
+  assert(lru_cache.insert('\1'));
+}
 
 /// a few sanity checks
 static void test_stack()
@@ -5068,6 +5131,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 
 int main()
 {
+  test_lru_cache();
   test_stack();
   test_state_set();
   test_bitset();
