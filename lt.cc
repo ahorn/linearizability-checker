@@ -2134,6 +2134,9 @@ namespace state
       ArgOp(Value v)
       : Op<S>(v), value{v} {}
 
+      ArgOp(bool is_partitionable, Value v)
+      : Op<S>(is_partitionable, v), value{v} {}
+
 #ifdef _CLT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
@@ -2142,6 +2145,250 @@ namespace state
 #endif
     };
   }
+
+  /// Byte read-write register with CAS
+  class Atomic
+  {
+  public:
+    typedef char Value;
+
+  private:
+    static constexpr char s_read_op_name[] = "read";
+    static constexpr char s_write_op_name[] = "write";
+
+    struct ReadRetOp : public Op<Atomic>
+    {
+    private:
+      const bool m_is_aborted;
+      const Value m_value;
+
+    public:
+      ReadRetOp(bool is_aborted, Value value)
+      : Op<Atomic>(),
+        m_is_aborted(is_aborted),
+        m_value{value} {}
+
+      bool is_aborted() const noexcept
+      {
+        return m_is_aborted;
+      }
+
+      /// \pre: not is_aborted()
+      Value value() const
+      {
+        assert(not m_is_aborted);
+        return m_value;
+      }
+
+#ifdef _CLT_DEBUG_
+      std::ostream& print(std::ostream& os) const override
+      {
+        if (m_is_aborted)
+          return os << "read() : aborted";
+
+        return os << "read() : " << std::to_string(m_value);
+      }
+#endif
+    };
+
+    struct ReadCallOp : public internal::ZeroArgOp<Atomic, s_read_op_name>
+    {
+      ReadCallOp() : Base() {}
+
+      std::pair<bool, Atomic> internal_apply(const Atomic& atomic, const Op<Atomic>& op) override
+      {
+        const ReadRetOp& read_ret = dynamic_cast<const ReadRetOp&>(op);
+
+        if (read_ret.is_aborted())
+          return {true, atomic};
+
+        return {atomic.get() == read_ret.value(), atomic};
+      }
+    };
+
+    struct CASRetOp : public Op<Atomic>
+    {
+    private:
+      // 0: aborted, 1: failed, 2: ok
+      const unsigned m_status;
+
+    public:
+      CASRetOp(unsigned status)
+      : Op<Atomic>(),
+        m_status(status) {}
+
+      bool is_aborted() const noexcept
+      {
+        return m_status == 0U;
+      }
+
+      /// \pre: not is_aborted()
+      bool is_ok() const
+      {
+        assert(0U < m_status);
+        return m_status == 2U;
+      }
+
+#ifdef _CLT_DEBUG_
+      std::ostream& print(std::ostream& os) const override
+      {
+        os << "cas() : ";
+
+        if (is_aborted())
+          return os << "aborted";
+
+        if (is_ok())
+          return os << "succeeded";
+
+        return os << "failed";
+      }
+#endif
+    };
+
+    struct CASCallOp : public Op<Atomic>
+    {
+      const Value current_value, new_value;
+
+      CASCallOp(Value current_v, Value new_v)
+      : Op<Atomic>(),
+        current_value{current_v},
+        new_value{new_v} {}
+
+#ifdef _CLT_DEBUG_
+      std::ostream& print(std::ostream& os) const override
+      {
+        return os << "cas(" << std::to_string(current_value) << ", " << std::to_string(new_value) << ")";
+      }
+#endif
+
+      std::pair<bool, Atomic> internal_apply(const Atomic& atomic, const Op<Atomic>& op) override
+      {
+        const CASRetOp& cas_ret = dynamic_cast<const CASRetOp&>(op);
+
+        if (cas_ret.is_aborted())
+          return {true, atomic};
+
+        if (atomic.get() == current_value)
+          return {cas_ret.is_ok(), atomic.set(new_value)};
+
+        return {not cas_ret.is_ok(), atomic};
+      }
+    };
+
+    struct WriteRetOp : public Op<Atomic>
+    {
+      const bool is_aborted;
+
+      WriteRetOp(bool aborted)
+      : Op<Atomic>(),
+        is_aborted(aborted) {}
+
+#ifdef _CLT_DEBUG_
+      std::ostream& print(std::ostream& os) const override
+      {
+        if (is_aborted)
+          return os << "write() : aborted";
+
+        return os << "write() : succeeded";
+      }
+#endif
+    };
+
+    struct WriteCallOp : public internal::ArgOp<Atomic, Value, s_write_op_name>
+    {
+      typedef internal::ArgOp<Atomic, Value, s_write_op_name> Base;
+
+      WriteCallOp(Value new_value)
+      : Base(false, new_value) {}
+
+      std::pair<bool, Atomic> internal_apply(const Atomic& atomic, const Op<Atomic>& op) override
+      {
+        const WriteRetOp& write_ret = dynamic_cast<const WriteRetOp&>(op);
+
+        if (write_ret.is_aborted)
+          return {true, atomic};
+
+        return {true, atomic.set(Base::value)};
+      }
+    };
+
+    Value m_value;
+
+    Atomic(Value value) : m_value{value} {}
+
+  public:
+    typedef std::unique_ptr<Op<Atomic>> AtomicOpPtr;
+
+    static AtomicOpPtr make_read_call()
+    {
+      return make_unique<ReadCallOp>();
+    }
+
+    static AtomicOpPtr make_read_ret(Value v)
+    {
+      return make_unique<ReadRetOp>(false, v);
+    }
+
+    static AtomicOpPtr make_read_aborted()
+    {
+      return make_unique<ReadRetOp>(true, '\0');
+    }
+
+    static AtomicOpPtr make_write_call(Value v)
+    {
+      return make_unique<WriteCallOp>(v);
+    }
+
+    static AtomicOpPtr make_write_ret()
+    {
+      return make_unique<WriteRetOp>(false);
+    }
+
+    static AtomicOpPtr make_write_aborted()
+    {
+      return make_unique<WriteRetOp>(true);
+    }
+
+    static AtomicOpPtr make_cas_call(Value curr_value, Value new_value)
+    {
+      return make_unique<CASCallOp>(curr_value, new_value);
+    }
+
+    static AtomicOpPtr make_cas_ret(bool ok)
+    {
+      return make_unique<CASRetOp>(1U + ok);
+    }
+
+    static AtomicOpPtr make_cas_aborted()
+    {
+      return make_unique<CASRetOp>(0U);
+    }
+
+    Atomic() : m_value{0} {}
+
+    Value get() const noexcept
+    {
+      return m_value;
+    }
+
+    Atomic set(Value v) const noexcept
+    {
+      return {v};
+    }
+
+    bool operator==(const Atomic& atomic) const
+    {
+      return m_value == atomic.m_value;
+    }
+
+    bool operator!=(const Atomic& atomic) const
+    {
+      return m_value != atomic.m_value;
+    }
+  };
+
+  constexpr char Atomic::s_read_op_name[];
+  constexpr char Atomic::s_write_op_name[];
 
   class Set
   {
@@ -2838,6 +3085,130 @@ static void test_lru_cache()
   assert(not lru_cache.insert('\3'));
   assert(lru_cache.insert('\4'));
   assert(lru_cache.insert('\1'));
+}
+
+static void test_atomic_op()
+{
+  bool ok;
+  state::Atomic atomic, new_atomic;
+
+  OpPtr<state::Atomic> read_call_op_ptr;
+
+  OpPtr<state::Atomic> read_0_ret_op_ptr, read_0_aborted_op_ptr;
+  OpPtr<state::Atomic> read_1_ret_op_ptr;
+  OpPtr<state::Atomic> read_2_ret_op_ptr;
+
+  OpPtr<state::Atomic> write_1_call_op_ptr, write_1_ret_op_ptr, write_1_aborted_op_ptr;
+  OpPtr<state::Atomic> cas_2_succeeded_call_op_ptr, cas_2_succeeded_ret_op_ptr, cas_2_aborted_op_ptr;
+  OpPtr<state::Atomic> cas_2_failed_call_op_ptr, cas_2_failed_ret_op_ptr;
+
+  read_call_op_ptr = state::Atomic::make_read_call();
+
+  read_0_ret_op_ptr = state::Atomic::make_read_ret('\0');
+  read_0_aborted_op_ptr = state::Atomic::make_read_aborted();
+  read_1_ret_op_ptr = state::Atomic::make_read_ret('\1');
+  read_2_ret_op_ptr = state::Atomic::make_read_ret('\2');
+
+  write_1_call_op_ptr = state::Atomic::make_write_call('\1');
+  write_1_ret_op_ptr = state::Atomic::make_write_ret();
+  write_1_aborted_op_ptr = state::Atomic::make_write_aborted();
+
+  cas_2_succeeded_call_op_ptr = state::Atomic::make_cas_call('\1', '\2');
+  cas_2_succeeded_ret_op_ptr = state::Atomic::make_cas_ret(true);
+  cas_2_aborted_op_ptr = state::Atomic::make_cas_aborted();
+
+  cas_2_failed_call_op_ptr = state::Atomic::make_cas_call('\2', '\1');
+  cas_2_failed_ret_op_ptr = state::Atomic::make_cas_ret(false);
+
+  Op<state::Atomic>& read_call_op = *read_call_op_ptr;
+
+  Op<state::Atomic>& read_0_ret_op = *read_0_ret_op_ptr;
+  Op<state::Atomic>& read_0_aborted_op = *read_0_aborted_op_ptr;
+  Op<state::Atomic>& read_1_ret_op = *read_1_ret_op_ptr;
+  Op<state::Atomic>& read_2_ret_op = *read_2_ret_op_ptr;
+
+  Op<state::Atomic>& write_1_call_op = *write_1_call_op_ptr;
+  Op<state::Atomic>& write_1_ret_op = *write_1_ret_op_ptr;
+  Op<state::Atomic>& write_1_aborted_op = *write_1_aborted_op_ptr;
+
+  Op<state::Atomic>& cas_2_succeeded_call_op = *cas_2_succeeded_call_op_ptr;
+  Op<state::Atomic>& cas_2_succeeded_ret_op = *cas_2_succeeded_ret_op_ptr;
+  Op<state::Atomic>& cas_2_aborted_op = *cas_2_aborted_op_ptr;
+
+  Op<state::Atomic>& cas_2_failed_call_op = *cas_2_failed_call_op_ptr;
+  Op<state::Atomic>& cas_2_failed_ret_op = *cas_2_failed_ret_op_ptr;
+
+  assert(not read_call_op.is_partitionable());
+  assert(not read_0_ret_op.is_partitionable());
+  assert(not read_0_aborted_op.is_partitionable());
+  assert(not read_1_ret_op.is_partitionable());
+  assert(not read_2_ret_op.is_partitionable());
+
+  assert(not write_1_call_op.is_partitionable());
+  assert(not write_1_ret_op.is_partitionable());
+  assert(not write_1_aborted_op.is_partitionable());
+
+  assert(not cas_2_succeeded_call_op.is_partitionable());
+  assert(not cas_2_succeeded_ret_op.is_partitionable());
+  assert(not cas_2_aborted_op.is_partitionable());
+  assert(not cas_2_failed_call_op.is_partitionable());
+  assert(not cas_2_failed_ret_op.is_partitionable());
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_0_ret_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_1_ret_op);
+  assert(atomic == new_atomic);
+  assert(not ok);
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_0_aborted_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_1_ret_op);
+  assert(atomic == new_atomic);
+  assert(not ok);
+
+  std::tie(ok, new_atomic) = write_1_call_op.apply(atomic, write_1_aborted_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = write_1_call_op.apply(atomic, write_1_ret_op);
+  assert(atomic != new_atomic);
+  assert(ok);
+
+  atomic = new_atomic;
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_1_ret_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_2_ret_op);
+  assert(atomic == new_atomic);
+  assert(not ok);
+
+  std::tie(ok, new_atomic) = cas_2_failed_call_op.apply(atomic, cas_2_failed_ret_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = cas_2_failed_call_op.apply(atomic, cas_2_succeeded_ret_op);
+  assert(atomic == new_atomic);
+  assert(not ok);
+
+  std::tie(ok, new_atomic) = cas_2_succeeded_call_op.apply(atomic, cas_2_aborted_op);
+  assert(atomic == new_atomic);
+  assert(ok);
+
+  std::tie(ok, new_atomic) = cas_2_succeeded_call_op.apply(atomic, cas_2_succeeded_ret_op);
+  assert(atomic != new_atomic);
+  assert(ok);
+
+  atomic = new_atomic;
+
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_2_ret_op);
+  assert(atomic == new_atomic);
+  assert(ok);
 }
 
 /// a few sanity checks
@@ -5297,6 +5668,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 int main()
 {
   test_lru_cache();
+  test_atomic_op();
   test_stack();
   test_state_set();
   test_bitset();
