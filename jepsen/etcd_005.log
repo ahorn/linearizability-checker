@@ -1,0 +1,231 @@
+
+lein test jepsen.system.etcd-test
+INFO  jepsen.os.debian - :n4 setting up debian
+INFO  jepsen.os.debian - :n2 setting up debian
+INFO  jepsen.os.debian - :n5 setting up debian
+INFO  jepsen.os.debian - :n3 setting up debian
+INFO  jepsen.os.debian - :n1 setting up debian
+INFO  jepsen.os.debian - :n1 debian set up
+INFO  jepsen.os.debian - :n3 debian set up
+INFO  jepsen.os.debian - :n5 debian set up
+INFO  jepsen.os.debian - :n4 debian set up
+INFO  jepsen.os.debian - :n2 debian set up
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - Running nodes: {:n1 false, :n2 false, :n3 false, :n4 false, :n5 false}
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n1 starting etcd
+INFO  jepsen.system.etcd - :n5 starting etcd
+INFO  jepsen.system.etcd - :n3 starting etcd
+INFO  jepsen.system.etcd - :n2 starting etcd
+INFO  jepsen.system.etcd - :n4 starting etcd
+INFO  jepsen.system.etcd - Running nodes: {:n1 true, :n2 true, :n3 true, :n4 true, :n5 true}
+INFO  jepsen.system.etcd - :n1 etcd ready
+INFO  jepsen.system.etcd - :n5 etcd ready
+INFO  jepsen.system.etcd - :n2 etcd ready
+INFO  jepsen.system.etcd - :n3 etcd ready
+INFO  jepsen.system.etcd - :n4 etcd ready
+INFO  jepsen.core - Worker 4 starting
+INFO  jepsen.core - Worker 3 starting
+INFO  jepsen.core - Worker 1 starting
+INFO  jepsen.core - Worker 2 starting
+INFO  jepsen.core - Worker 0 starting
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	nil
+INFO  jepsen.util - 2	:invoke	:cas	[1 4]
+INFO  jepsen.util - 4	:invoke	:write	2
+INFO  jepsen.util - 1	:invoke	:cas	[0 1]
+INFO  jepsen.util - 0	:invoke	:cas	[4 1]
+INFO  jepsen.util - 4	:ok	:write	2
+INFO  jepsen.util - 1	:fail	:cas	[0 1]
+INFO  jepsen.util - 0	:fail	:cas	[4 1]
+INFO  jepsen.util - 2	:fail	:cas	[1 4]
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	2
+INFO  jepsen.util - 4	:invoke	:cas	[1 1]
+INFO  jepsen.util - 4	:fail	:cas	[1 1]
+INFO  jepsen.util - 1	:invoke	:write	4
+INFO  jepsen.util - 0	:invoke	:write	4
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 0	:ok	:write	4
+INFO  jepsen.util - 2	:ok	:write	2
+INFO  jepsen.util - 1	:ok	:write	4
+INFO  jepsen.util - 3	:invoke	:write	1
+INFO  jepsen.util - 4	:invoke	:cas	[4 3]
+INFO  jepsen.util - 3	:ok	:write	1
+INFO  jepsen.util - 4	:fail	:cas	[4 3]
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 2	:invoke	:write	1
+INFO  jepsen.util - 1	:invoke	:read	nil
+INFO  jepsen.util - 1	:ok	:read	1
+INFO  jepsen.util - 2	:ok	:write	1
+INFO  jepsen.util - 3	:invoke	:cas	[4 1]
+INFO  jepsen.util - 3	:fail	:cas	[4 1]
+INFO  jepsen.util - 4	:invoke	:write	2
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 4	:ok	:write	2
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 1	:invoke	:cas	[1 3]
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	2
+INFO  jepsen.util - 1	:fail	:cas	[1 3]
+INFO  jepsen.util - 3	:invoke	:write	4
+INFO  jepsen.util - 3	:ok	:write	4
+INFO  jepsen.util - 0	:invoke	:write	4
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n2 :n5}, :n4 #{:n2 :n5}, :n3 #{:n2 :n5}, :n5 #{:n3 :n4 :n1}, :n2 #{:n3 :n4 :n1}}"
+INFO  jepsen.util - 4	:invoke	:cas	[2 1]
+INFO  jepsen.util - 2	:invoke	:cas	[3 3]
+INFO  jepsen.util - 1	:invoke	:cas	[2 0]
+INFO  jepsen.util - 3	:invoke	:write	4
+INFO  jepsen.util - 0	:info	:write	:timed-out
+INFO  jepsen.util - 4	:info	:cas	:timed-out
+INFO  jepsen.util - 2	:info	:cas	:timed-out
+INFO  jepsen.util - 1	:info	:cas	:timed-out
+INFO  jepsen.util - 3	:info	:write	:timed-out
+INFO  jepsen.util - 5	:invoke	:write	4
+INFO  jepsen.util - 9	:invoke	:read	nil
+INFO  jepsen.util - 9	:ok	:read	4
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	4
+INFO  jepsen.util - 6	:invoke	:write	0
+INFO  jepsen.util - 5	:ok	:write	4
+INFO  jepsen.util - 8	:invoke	:cas	[2 0]
+INFO  jepsen.util - 8	:fail	:cas	[2 0]
+INFO  jepsen.util - 9	:invoke	:write	0
+INFO  jepsen.util - 7	:invoke	:write	1
+INFO  jepsen.util - 6	:info	:write	:timed-out
+INFO  jepsen.util - 5	:invoke	:cas	[3 0]
+INFO  jepsen.util - 7	:ok	:write	1
+INFO  jepsen.util - 5	:fail	:cas	[3 0]
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	1
+INFO  jepsen.util - 9	:info	:write	:timed-out
+INFO  jepsen.util - 11	:invoke	:write	2
+INFO  jepsen.util - 7	:invoke	:write	0
+INFO  jepsen.util - 5	:invoke	:cas	[4 1]
+INFO  jepsen.util - 7	:ok	:write	0
+INFO  jepsen.util - 8	:invoke	:cas	[1 4]
+INFO  jepsen.util - 8	:fail	:cas	[1 4]
+INFO  jepsen.util - 5	:fail	:cas	[4 1]
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - 14	:invoke	:write	3
+INFO  jepsen.util - 11	:info	:write	:timed-out
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	0
+INFO  jepsen.util - 8	:invoke	:write	3
+INFO  jepsen.util - 8	:ok	:write	3
+INFO  jepsen.util - 5	:invoke	:cas	[1 3]
+INFO  jepsen.util - 5	:fail	:cas	[1 3]
+INFO  jepsen.util - 14	:info	:write	:timed-out
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	4
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	3
+INFO  jepsen.util - 8	:invoke	:cas	[2 1]
+INFO  jepsen.util - 8	:fail	:cas	[2 1]
+INFO  jepsen.util - 5	:invoke	:cas	[0 3]
+INFO  jepsen.util - 19	:invoke	:cas	[4 3]
+INFO  jepsen.util - 5	:fail	:cas	[0 3]
+INFO  jepsen.util - 19	:fail	:cas	[4 3]
+INFO  jepsen.util - 16	:invoke	:write	2
+INFO  jepsen.util - 7	:invoke	:write	3
+INFO  jepsen.util - 8	:invoke	:cas	[2 2]
+INFO  jepsen.util - 7	:ok	:write	3
+INFO  jepsen.util - 16	:ok	:write	2
+INFO  jepsen.util - 8	:fail	:cas	[2 2]
+INFO  jepsen.util - 5	:invoke	:write	0
+INFO  jepsen.util - 19	:invoke	:write	2
+INFO  jepsen.util - 5	:ok	:write	0
+INFO  jepsen.util - 19	:ok	:write	2
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	2
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	2
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 5	:invoke	:write	4
+INFO  jepsen.util - 19	:invoke	:read	nil
+INFO  jepsen.util - 19	:ok	:read	2
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	2
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	2
+INFO  jepsen.util - 8	:invoke	:cas	[1 1]
+INFO  jepsen.util - 5	:ok	:write	4
+INFO  jepsen.util - 8	:fail	:cas	[1 1]
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 19	:invoke	:cas	[1 2]
+INFO  jepsen.util - 19	:fail	:cas	[1 2]
+INFO  jepsen.util - 7	:invoke	:write	3
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	4
+INFO  jepsen.util - 5	:invoke	:cas	[1 4]
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n4 :n5}, :n2 #{:n4 :n5}, :n3 #{:n4 :n5}, :n5 #{:n3 :n2 :n1}, :n4 #{:n3 :n2 :n1}}"
+INFO  jepsen.util - 8	:invoke	:cas	[4 1]
+INFO  jepsen.util - 19	:invoke	:read	nil
+INFO  jepsen.util - 19	:ok	:read	4
+INFO  jepsen.util - 7	:info	:write	:timed-out
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	4
+INFO  jepsen.util - 5	:info	:cas	:timed-out
+INFO  jepsen.util - 8	:info	:cas	:timed-out
+INFO  jepsen.util - 19	:invoke	:read	nil
+INFO  jepsen.util - 19	:ok	:read	4
+INFO  jepsen.util - 12	:invoke	:cas	[0 0]
+INFO  jepsen.util - 16	:invoke	:write	2
+INFO  jepsen.util - 12	:fail	:cas	[0 0]
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	4
+INFO  jepsen.util - 16	:ok	:write	2
+INFO  jepsen.util - 13	:invoke	:write	2
+INFO  jepsen.util - 19	:invoke	:cas	[1 4]
+INFO  jepsen.util - 12	:invoke	:write	1
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	2
+INFO  jepsen.util - 16	:invoke	:write	0
+INFO  jepsen.util - 13	:info	:write	:timed-out
+INFO  jepsen.util - 12	:ok	:write	1
+INFO  jepsen.util - 19	:info	:cas	:timed-out
+INFO  jepsen.util - 16	:ok	:write	0
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	0
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.core - nemesis done
+INFO  jepsen.util - 18	:invoke	:read	nil
+INFO  jepsen.core - Worker 4 done
+INFO  jepsen.core - Worker 1 done
+INFO  jepsen.core - Worker 2 done
+INFO  jepsen.core - Worker 0 done
+INFO  jepsen.util - 18	:ok	:read	0
+INFO  jepsen.core - Worker 3 done
+INFO  jepsen.core - Run complete, writing
+INFO  jepsen.core - Analyzing
+INFO  knossos.core - [90 / 168] 1469 extant worlds, 3769 visited/s, 479 skipped/s, hitrate 0.113 cache size 4551
+INFO  knossos.core - [90 / 168] 3236 extant worlds, 8256 visited/s, 1229 skipped/s, hitrate 0.130 cache size 12624
+INFO  knossos.core - [90 / 168] 5102 extant worlds, 10228 visited/s, 1470 skipped/s, hitrate 0.126 cache size 22324
+INFO  knossos.core - [90 / 168] 6871 extant worlds, 10999 visited/s, 1690 skipped/s, hitrate 0.133 cache size 32032
+INFO  knossos.core - [90 / 168] 7241 extant worlds, 11826 visited/s, 2004 skipped/s, hitrate 0.145 cache size 40395
+INFO  knossos.core - [90 / 168] 7977 extant worlds, 10861 visited/s, 1708 skipped/s, hitrate 0.136 cache size 49373
+INFO  jepsen.core - Analysis complete
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+168 element history linearizable. :D
+
+Ran 1 tests containing 1 assertions.
+0 failures, 0 errors.
