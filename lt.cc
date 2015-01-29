@@ -7,7 +7,12 @@
 //  http://www.cs.ox.ac.uk/people/gavin.lowe/LinearizabiltyTesting
 //
 // To build our source code, a C++11-compliant compiler is required.
-// Our experiments use Intel's Threading Building Blocks (TBB) library.
+//
+// For experiments, we analyze histories collected from the following:
+//
+//   * Intel's Threading Building Blocks (TBB) library,
+//   * Siemens's (Embedded Multicore Building Blocks) EMBB library,
+//   * etcd histories collected with Jepsen.
 #include <thread>
 #include <mutex>
 #include <atomic>
@@ -22,6 +27,10 @@
 #include <type_traits>
 #include <unordered_set>
 #include <unordered_map>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <stdexcept>
 #include <list>
 
 #ifdef _CLT_TIMEOUT_
@@ -63,10 +72,7 @@
 #include <unistd.h>
 #include <ios>
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <algorithm>
-#include <string>
 #endif
 
 #if __cplusplus <= 201103L
@@ -2159,32 +2165,32 @@ namespace state
     struct ReadRetOp : public Op<Atomic>
     {
     private:
-      const bool m_is_aborted;
+      const bool m_is_pending;
       const Value m_value;
 
     public:
-      ReadRetOp(bool is_aborted, Value value)
+      ReadRetOp(bool is_pending, Value value)
       : Op<Atomic>(),
-        m_is_aborted(is_aborted),
+        m_is_pending(is_pending),
         m_value{value} {}
 
-      bool is_aborted() const noexcept
+      bool is_pending() const noexcept
       {
-        return m_is_aborted;
+        return m_is_pending;
       }
 
-      /// \pre: not is_aborted()
+      /// \pre: not is_pending()
       Value value() const
       {
-        assert(not m_is_aborted);
+        assert(not m_is_pending);
         return m_value;
       }
 
 #ifdef _CLT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
-        if (m_is_aborted)
-          return os << "read() : aborted";
+        if (m_is_pending)
+          return os << "read() : pending";
 
         return os << "read() : " << std::to_string(m_value);
       }
@@ -2199,7 +2205,7 @@ namespace state
       {
         const ReadRetOp& read_ret = dynamic_cast<const ReadRetOp&>(op);
 
-        if (read_ret.is_aborted())
+        if (read_ret.is_pending())
           return {true, atomic};
 
         return {atomic.get() == read_ret.value(), atomic};
@@ -2209,7 +2215,7 @@ namespace state
     struct CASRetOp : public Op<Atomic>
     {
     private:
-      // 0: aborted, 1: failed, 2: ok
+      // 0: pending, 1: failed, 2: ok
       const unsigned m_status;
 
     public:
@@ -2217,12 +2223,12 @@ namespace state
       : Op<Atomic>(),
         m_status(status) {}
 
-      bool is_aborted() const noexcept
+      bool is_pending() const noexcept
       {
         return m_status == 0U;
       }
 
-      /// \pre: not is_aborted()
+      /// \pre: not is_pending()
       bool is_ok() const
       {
         assert(0U < m_status);
@@ -2234,8 +2240,8 @@ namespace state
       {
         os << "cas() : ";
 
-        if (is_aborted())
-          return os << "aborted";
+        if (is_pending())
+          return os << "pending";
 
         if (is_ok())
           return os << "succeeded";
@@ -2265,8 +2271,13 @@ namespace state
       {
         const CASRetOp& cas_ret = dynamic_cast<const CASRetOp&>(op);
 
-        if (cas_ret.is_aborted())
+        if (cas_ret.is_pending())
+        {
+          if (atomic.get() == current_value)
+            return {true, atomic.set(new_value)};
+
           return {true, atomic};
+        }
 
         if (atomic.get() == current_value)
           return {cas_ret.is_ok(), atomic.set(new_value)};
@@ -2277,17 +2288,17 @@ namespace state
 
     struct WriteRetOp : public Op<Atomic>
     {
-      const bool is_aborted;
+      const bool is_pending;
 
-      WriteRetOp(bool aborted)
+      WriteRetOp(bool pending)
       : Op<Atomic>(),
-        is_aborted(aborted) {}
+        is_pending(pending) {}
 
 #ifdef _CLT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
-        if (is_aborted)
-          return os << "write() : aborted";
+        if (is_pending)
+          return os << "write() : pending";
 
         return os << "write() : succeeded";
       }
@@ -2305,9 +2316,8 @@ namespace state
       {
         const WriteRetOp& write_ret = dynamic_cast<const WriteRetOp&>(op);
 
-        if (write_ret.is_aborted)
-          return {true, atomic};
-
+        // we don't need to check write_ret.is_pending because if the
+        // write is pending then it could be still linearized last
         return {true, atomic.set(Base::value)};
       }
     };
@@ -2329,7 +2339,7 @@ namespace state
       return make_unique<ReadRetOp>(false, v);
     }
 
-    static AtomicOpPtr make_read_aborted()
+    static AtomicOpPtr make_read_pending()
     {
       return make_unique<ReadRetOp>(true, '\0');
     }
@@ -2344,7 +2354,7 @@ namespace state
       return make_unique<WriteRetOp>(false);
     }
 
-    static AtomicOpPtr make_write_aborted()
+    static AtomicOpPtr make_write_pending()
     {
       return make_unique<WriteRetOp>(true);
     }
@@ -2359,7 +2369,7 @@ namespace state
       return make_unique<CASRetOp>(1U + ok);
     }
 
-    static AtomicOpPtr make_cas_aborted()
+    static AtomicOpPtr make_cas_pending()
     {
       return make_unique<CASRetOp>(0U);
     }
@@ -2389,6 +2399,15 @@ namespace state
 
   constexpr char Atomic::s_read_op_name[];
   constexpr char Atomic::s_write_op_name[];
+
+  template<>
+  struct Hash<Atomic>
+  {
+    std::size_t operator()(const Atomic& atomic) const noexcept
+    {
+      return atomic.get() * 193U;
+    }
+  };
 
   class Set
   {
@@ -3069,6 +3088,217 @@ namespace state
   };
 }
 
+class JepsenEtcdParser
+{
+private:
+  enum class EntryKind
+  {
+    INFO,
+    INVOKE,
+    OK,
+    FAIL,
+  };
+
+  enum class Opname
+  {
+    READ,
+    WRITE,
+    CAS,
+  };
+
+  std::unordered_map<unsigned, EntryPtr<state::Atomic>> map;
+
+  std::list<EntryPtr<state::Atomic>> timeout_read_calls;
+  std::list<EntryPtr<state::Atomic>> timeout_write_calls;
+  std::list<EntryPtr<state::Atomic>> timeout_cas_calls;
+
+  std::string ignore;
+  std::string process_string;
+  unsigned process;
+  std::string entry_kind_string;
+  EntryKind entry_kind;
+  std::string opname_string;
+  Opname opname;
+  std::string args;
+  unsigned x, y;
+
+public:
+  Log<state::Atomic> log;
+
+  JepsenEtcdParser() :
+  map{},
+  timeout_read_calls{},
+  timeout_write_calls{},
+  timeout_cas_calls{},
+  log{1024} {}
+
+  /// We want to extract lines of the following format:
+  ///
+  ///   INFO  jepsen.util - <process> \t <entry-kind> <op-name> <args>
+  ///
+  /// Example: INFO  jepsen.util - 3	:invoke	:read	nil\n
+  void parse_line(std::string& line)
+  {
+    static std::string s_log_level = "INFO";
+    static std::string s_jepsen_util = "jepsen.util";
+    static std::string s_hyphen = "-";
+    static std::string s_nil = "nil";
+    static std::string s_info = ":info";
+    static std::string s_invoke = ":invoke";
+    static std::string s_ok = ":ok";
+    static std::string s_read = ":read";
+    static std::string s_write = ":write";
+    static std::string s_cas = ":cas";
+    static std::string s_timeout = ":timed-out";
+    static std::string s_nemesis = ":nemesis";
+    static std::string s_fail = ":fail";
+
+    std::stringstream line_stream{line};
+
+    line_stream >> ignore;
+    if (ignore != s_log_level)
+      return;
+
+    line_stream >> ignore;
+    if (ignore != s_jepsen_util)
+      return;
+
+    line_stream >> ignore;
+    if (ignore != s_hyphen)
+      return;
+
+    line_stream >> process_string;
+    if (process_string == s_nemesis)
+      return;
+
+    process = std::stoul(process_string);
+    line_stream >> entry_kind_string;
+    line_stream >> opname_string;
+    line_stream >> args;
+
+    if (entry_kind_string == s_info)
+      entry_kind = EntryKind::INFO;
+    else if (entry_kind_string == s_invoke)
+      entry_kind = EntryKind::INVOKE;
+    else if (entry_kind_string == s_ok)
+      entry_kind = EntryKind::OK;
+    else if (entry_kind_string == s_fail)
+      entry_kind = EntryKind::FAIL;
+    else
+      throw std::runtime_error("Unexpected entry kind: " + entry_kind_string);
+
+    if (opname_string == s_read)
+      opname = Opname::READ;
+    else if (opname_string == s_write)
+      opname = Opname::WRITE;
+    else if (opname_string == s_cas)
+      opname = Opname::CAS;
+    else
+      throw std::runtime_error("Unexpected operator name: " + opname_string);
+
+    if (args != s_timeout)
+    {
+      if (opname == Opname::CAS)
+      {
+        assert(args.front() == '[');
+        assert(args.size() == 2);
+        x = std::stoul(args.substr(1, args.size()));
+        line_stream >> y;
+      }
+      else
+      {
+        if (args == s_nil)
+          x = 0;
+        else
+          x = std::stoul(args);
+      }
+    }
+
+    EntryPtr<state::Atomic> entry_ptr{nullptr};
+    auto iter = map.find(process);
+    if (iter == map.cend())
+    {
+      assert(entry_kind == EntryKind::INVOKE);
+      switch (opname)
+      {
+      case Opname::READ:
+        entry_ptr = log.add_call(state::Atomic::make_read_call());
+        break;
+      case Opname::WRITE:
+        entry_ptr = log.add_call(state::Atomic::make_write_call(x));
+        break;
+      case Opname::CAS:
+        entry_ptr = log.add_call(state::Atomic::make_cas_call(x, y));
+        break;
+      }
+
+      map.emplace(process, entry_ptr);
+    }
+    else
+    {
+      assert(entry_kind == EntryKind::INFO or
+             entry_kind == EntryKind::OK or
+             entry_kind == EntryKind::FAIL);
+
+      entry_ptr = iter->second;
+      map.erase(iter);
+
+      if (args == s_timeout)
+      {
+        assert(entry_kind == EntryKind::INFO);
+
+        switch (opname)
+        {
+        case Opname::READ:
+          timeout_read_calls.push_back(entry_ptr);
+          break;
+        case Opname::WRITE:
+          timeout_write_calls.push_back(entry_ptr);
+          break;
+        case Opname::CAS:
+          timeout_cas_calls.push_back(entry_ptr);
+          break;
+        }
+      }
+      else
+      {
+        assert(entry_kind == EntryKind::OK or entry_kind == EntryKind::FAIL);
+
+        switch (opname)
+        {
+        case Opname::READ:
+          log.add_ret(entry_ptr, state::Atomic::make_read_ret(x));
+          break;
+        case Opname::WRITE:
+          log.add_ret(entry_ptr, state::Atomic::make_write_ret());
+          break;
+        case Opname::CAS:
+          log.add_ret(entry_ptr, state::Atomic::make_cas_ret(entry_kind != EntryKind::FAIL));
+          break;
+        }
+      }
+    }
+  }
+
+  void parse(std::istream& istream)
+  {
+    std::string line;
+
+    while (std::getline(istream, line))
+      parse_line(line);
+
+    for (EntryPtr<state::Atomic> entry_ptr : timeout_read_calls)
+      log.add_ret(entry_ptr, state::Atomic::make_read_pending());
+
+    for (EntryPtr<state::Atomic> entry_ptr : timeout_write_calls)
+      log.add_ret(entry_ptr, state::Atomic::make_write_pending());
+
+    for (EntryPtr<state::Atomic> entry_ptr : timeout_cas_calls)
+      log.add_ret(entry_ptr, state::Atomic::make_cas_pending());
+  }
+};
+
+
 }
 
 using namespace lt;
@@ -3094,28 +3324,28 @@ static void test_atomic_op()
 
   OpPtr<state::Atomic> read_call_op_ptr;
 
-  OpPtr<state::Atomic> read_0_ret_op_ptr, read_0_aborted_op_ptr;
+  OpPtr<state::Atomic> read_0_ret_op_ptr, read_0_pending_op_ptr;
   OpPtr<state::Atomic> read_1_ret_op_ptr;
   OpPtr<state::Atomic> read_2_ret_op_ptr;
 
-  OpPtr<state::Atomic> write_1_call_op_ptr, write_1_ret_op_ptr, write_1_aborted_op_ptr;
-  OpPtr<state::Atomic> cas_2_succeeded_call_op_ptr, cas_2_succeeded_ret_op_ptr, cas_2_aborted_op_ptr;
+  OpPtr<state::Atomic> write_1_call_op_ptr, write_1_ret_op_ptr, write_1_pending_op_ptr;
+  OpPtr<state::Atomic> cas_2_succeeded_call_op_ptr, cas_2_succeeded_ret_op_ptr, cas_2_pending_op_ptr;
   OpPtr<state::Atomic> cas_2_failed_call_op_ptr, cas_2_failed_ret_op_ptr;
 
   read_call_op_ptr = state::Atomic::make_read_call();
 
   read_0_ret_op_ptr = state::Atomic::make_read_ret('\0');
-  read_0_aborted_op_ptr = state::Atomic::make_read_aborted();
+  read_0_pending_op_ptr = state::Atomic::make_read_pending();
   read_1_ret_op_ptr = state::Atomic::make_read_ret('\1');
   read_2_ret_op_ptr = state::Atomic::make_read_ret('\2');
 
   write_1_call_op_ptr = state::Atomic::make_write_call('\1');
   write_1_ret_op_ptr = state::Atomic::make_write_ret();
-  write_1_aborted_op_ptr = state::Atomic::make_write_aborted();
+  write_1_pending_op_ptr = state::Atomic::make_write_pending();
 
   cas_2_succeeded_call_op_ptr = state::Atomic::make_cas_call('\1', '\2');
   cas_2_succeeded_ret_op_ptr = state::Atomic::make_cas_ret(true);
-  cas_2_aborted_op_ptr = state::Atomic::make_cas_aborted();
+  cas_2_pending_op_ptr = state::Atomic::make_cas_pending();
 
   cas_2_failed_call_op_ptr = state::Atomic::make_cas_call('\2', '\1');
   cas_2_failed_ret_op_ptr = state::Atomic::make_cas_ret(false);
@@ -3123,34 +3353,34 @@ static void test_atomic_op()
   Op<state::Atomic>& read_call_op = *read_call_op_ptr;
 
   Op<state::Atomic>& read_0_ret_op = *read_0_ret_op_ptr;
-  Op<state::Atomic>& read_0_aborted_op = *read_0_aborted_op_ptr;
+  Op<state::Atomic>& read_0_pending_op = *read_0_pending_op_ptr;
   Op<state::Atomic>& read_1_ret_op = *read_1_ret_op_ptr;
   Op<state::Atomic>& read_2_ret_op = *read_2_ret_op_ptr;
 
   Op<state::Atomic>& write_1_call_op = *write_1_call_op_ptr;
   Op<state::Atomic>& write_1_ret_op = *write_1_ret_op_ptr;
-  Op<state::Atomic>& write_1_aborted_op = *write_1_aborted_op_ptr;
+  Op<state::Atomic>& write_1_pending_op = *write_1_pending_op_ptr;
 
   Op<state::Atomic>& cas_2_succeeded_call_op = *cas_2_succeeded_call_op_ptr;
   Op<state::Atomic>& cas_2_succeeded_ret_op = *cas_2_succeeded_ret_op_ptr;
-  Op<state::Atomic>& cas_2_aborted_op = *cas_2_aborted_op_ptr;
+  Op<state::Atomic>& cas_2_pending_op = *cas_2_pending_op_ptr;
 
   Op<state::Atomic>& cas_2_failed_call_op = *cas_2_failed_call_op_ptr;
   Op<state::Atomic>& cas_2_failed_ret_op = *cas_2_failed_ret_op_ptr;
 
   assert(not read_call_op.is_partitionable());
   assert(not read_0_ret_op.is_partitionable());
-  assert(not read_0_aborted_op.is_partitionable());
+  assert(not read_0_pending_op.is_partitionable());
   assert(not read_1_ret_op.is_partitionable());
   assert(not read_2_ret_op.is_partitionable());
 
   assert(not write_1_call_op.is_partitionable());
   assert(not write_1_ret_op.is_partitionable());
-  assert(not write_1_aborted_op.is_partitionable());
+  assert(not write_1_pending_op.is_partitionable());
 
   assert(not cas_2_succeeded_call_op.is_partitionable());
   assert(not cas_2_succeeded_ret_op.is_partitionable());
-  assert(not cas_2_aborted_op.is_partitionable());
+  assert(not cas_2_pending_op.is_partitionable());
   assert(not cas_2_failed_call_op.is_partitionable());
   assert(not cas_2_failed_ret_op.is_partitionable());
 
@@ -3162,7 +3392,7 @@ static void test_atomic_op()
   assert(atomic == new_atomic);
   assert(not ok);
 
-  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_0_aborted_op);
+  std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_0_pending_op);
   assert(atomic == new_atomic);
   assert(ok);
 
@@ -3170,8 +3400,8 @@ static void test_atomic_op()
   assert(atomic == new_atomic);
   assert(not ok);
 
-  std::tie(ok, new_atomic) = write_1_call_op.apply(atomic, write_1_aborted_op);
-  assert(atomic == new_atomic);
+  std::tie(ok, new_atomic) = write_1_call_op.apply(atomic, write_1_pending_op);
+  assert(atomic != new_atomic);
   assert(ok);
 
   std::tie(ok, new_atomic) = write_1_call_op.apply(atomic, write_1_ret_op);
@@ -3196,8 +3426,8 @@ static void test_atomic_op()
   assert(atomic == new_atomic);
   assert(not ok);
 
-  std::tie(ok, new_atomic) = cas_2_succeeded_call_op.apply(atomic, cas_2_aborted_op);
-  assert(atomic == new_atomic);
+  std::tie(ok, new_atomic) = cas_2_succeeded_call_op.apply(atomic, cas_2_pending_op);
+  assert(atomic != new_atomic);
   assert(ok);
 
   std::tie(ok, new_atomic) = cas_2_succeeded_call_op.apply(atomic, cas_2_succeeded_ret_op);
@@ -5665,6 +5895,113 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 }
 #endif
 
+static void test_parse_jepsen_etcd()
+{
+  static constexpr char s_snippet[] = ""
+    "INFO  jepsen.util - 3	:invoke	:read	nil\n"
+    "INFO  jepsen.util - 2	:invoke	:write	4\n"
+    "INFO  jepsen.util - 3	:ok	:read	nil\n"
+    "INFO  jepsen.util - 2	:ok	:write	4\n"
+    "INFO  jepsen.util - 3	:invoke	:write	3\n"
+    "INFO  jepsen.util - 0	:invoke	:read	nil\n"
+    "INFO  jepsen.util - 0	:ok	:read	3\n"
+    "INFO  jepsen.util - 3	:ok	:write	3\n"
+    "INFO  jepsen.util - 2	:invoke	:cas	[3 0]\n"
+    "INFO  jepsen.util - 2	:ok	:cas	[3 0]\n"
+    "INFO  jepsen.util - 1	:invoke	:cas	[0 3]\n"
+    "INFO  jepsen.util - 1	:fail	:cas	[0 3]\n"
+    "INFO  jepsen.util - :nemesis	:info	:start	nil\n"
+    "INFO  jepsen.util - 4	:invoke	:write	2\n"
+    "INFO  jepsen.util - 4	:ok	:write	2\n"
+    "INFO  jepsen.util - :nemesis	:info	:start	\"Cut off {:n1 #{:n2 :n5}, :n4 #{:n2 :n5}, :n3 #{:n2 :n5}, :n5 #{:n3 :n4 :n1}, :n2 #{:n3 :n4 :n1}}\"\n"
+    "INFO  jepsen.util - 4	:invoke	:write	1\n"
+    "INFO  jepsen.util - 1	:invoke	:cas	[2 1]\n"
+    "INFO  jepsen.util - 4	:info	:write	:timed-out\n"
+    "INFO  jepsen.util - 1	:info	:cas	:timed-out\n"
+    "INFO  jepsen.util - :nemesis	:info	:stop	nil\n"
+    "INFO  jepsen.util - :nemesis	:info	:stop	\"fully connected\"\n"
+    "INFO  jepsen.util - 0	:invoke	:read	nil\n"
+    "INFO  jepsen.util - 0	:ok	:read	3\n";
+
+  std::stringstream istream, ostream;
+  JepsenEtcdParser jepsen_etcd_parser;
+  istream << s_snippet;
+  jepsen_etcd_parser.parse(istream);
+
+  ostream << jepsen_etcd_parser.log.info();
+
+  // for now, we ignore thread ids
+  assert(ostream.str() == "log info, number of entries: 20\n"
+    "entry id: 0, thread id: 0x0, call: read()\n"
+    "entry id: 1, thread id: 0x0, call: write(4)\n"
+    "entry id: 0, thread id: 0x0, return: read() : 0\n"
+    "entry id: 1, thread id: 0x0, return: write() : succeeded\n"
+    "entry id: 2, thread id: 0x0, call: write(3)\n"
+    "entry id: 3, thread id: 0x0, call: read()\n"
+    "entry id: 3, thread id: 0x0, return: read() : 3\n"
+    "entry id: 2, thread id: 0x0, return: write() : succeeded\n"
+    "entry id: 4, thread id: 0x0, call: cas(3, 0)\n"
+    "entry id: 4, thread id: 0x0, return: cas() : succeeded\n"
+    "entry id: 5, thread id: 0x0, call: cas(0, 3)\n"
+    "entry id: 5, thread id: 0x0, return: cas() : failed\n"
+    "entry id: 6, thread id: 0x0, call: write(2)\n"
+    "entry id: 6, thread id: 0x0, return: write() : succeeded\n"
+    "entry id: 7, thread id: 0x0, call: write(1)\n"
+    "entry id: 8, thread id: 0x0, call: cas(2, 1)\n"
+    "entry id: 9, thread id: 0x0, call: read()\n"
+    "entry id: 9, thread id: 0x0, return: read() : 3\n"
+    "entry id: 7, thread id: 0x0, return: write() : pending\n"
+    "entry id: 8, thread id: 0x0, return: cas() : pending\n");
+
+  LinearizabilityTester<state::Atomic, false> t{jepsen_etcd_parser.log.info()};
+
+  // failed CAS cannot be linearized
+  assert(not t.check());
+}
+
+static void test_jepsen_etcd()
+{
+  static constexpr char s_etcd_prefix[] = "jepsen/etcd_";
+  static constexpr char s_etcd_postfix[] = ".log";
+
+  unsigned i{0};
+  std::string zeros, filename;
+  Result<state::Atomic> result;
+
+  bool expected[] = { false, // 000
+                      false, // 001
+                      true,  // 002
+                      false, // 003
+                      false, // 004
+                      true,  // 005
+                      false, // 006
+                    };
+
+  for (bool expect : expected)
+  {
+    zeros = "";
+    if (i < 10U)
+      zeros = std::string(2, '0');
+    else if (i < 100U)
+      zeros = std::string(1, '0');
+
+    std::ifstream file;
+    filename = s_etcd_prefix + zeros + std::to_string(i) + s_etcd_postfix;
+    file.open(filename);
+    assert(file.is_open());
+
+    std::cout << filename << std::endl;
+    JepsenEtcdParser jepsen_etcd_parser;
+    jepsen_etcd_parser.parse(file);
+
+    LinearizabilityTester<state::Atomic, false> t{jepsen_etcd_parser.log.info()};
+    t.check(result);
+    assert(result.is_linearizable() == expect);
+
+    ++i;
+  }
+}
+
 int main()
 {
   test_lru_cache();
@@ -5741,6 +6078,9 @@ int main()
 
   concurrent_log();
   fuzzy_functional_test();
+
+  test_parse_jepsen_etcd();
+  test_jepsen_etcd();
 
 #ifdef _ENABLE_EMBB_
   embb::base::Thread::SetThreadsMaxCount(255);
