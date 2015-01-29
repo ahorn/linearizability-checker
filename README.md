@@ -10,11 +10,10 @@ a <em>linearizability tester</em> checks whether there exists such a reordering.
 
 In general, checking linearizability is [NP-complete][NP-complete]. Given the high
 computational complexity of this problem, writing an efficient linearizability tester
-is a difficult task. This is motivation to experimentally compare various techniques,
-and find a combination of techniques that works well in practice. This source code
-repository shows the humble beginnings of such an endeavour, and we welcome people
-to join the discussion and bounce off ideas. It's a hard problem , and therefore
-should be fun to work on!
+is therefore difficult. This is motivation to experimentally compare various techniques
+to find out what works well in practice. This source code repository shows the humble
+beginnings of such an endeavour, and we welcome people to join the discussion and
+bounce off ideas. It's a hard problem, and therefore should be fun to work on!
 
 ## Example
 
