@@ -1,22 +1,15 @@
 // Alex Horn, University of Oxford
 //
-// This source code gives an algorithm that uses ideas from SAT solvers
-// to improve the state-of-the-art linearizability tester by Wing & Gong,
-// including later extensions by Lowe:
+// The source code is structured into three main parts:
 //
-//  http://www.cs.ox.ac.uk/people/gavin.lowe/LinearizabiltyTesting
+// 1) Data structures and algorithm of the linearizability tester,
+//    including a new optional partitioning algorithm;
 //
-// To build our source code, a C++11-compliant compiler is required.
+// 2) Immutable data types for sets, registers and stacks with
+//    efficient equality checks;
 //
-// For experiments, we analyze histories collected from the following:
-//
-//   * Intel's Threading Building Blocks (TBB) library,
-//   * Siemens's (Embedded Multicore Building Blocks) EMBB library,
-//   * etcd histories collected with Jepsen.
+// 3) Unit tests and experiments with TBB, EMBB, and etcd.
 #include <thread>
-#include <mutex>
-#include <atomic>
-#include <condition_variable>
 #include <tuple>
 #include <memory>
 #include <vector>
@@ -33,19 +26,15 @@
 #include <stdexcept>
 #include <list>
 
-#ifdef _CLT_TIMEOUT_
-#include <chrono>
-#endif
-
 // functional testing and experiments
 #include <random>
 #include <functional>
 #include <iostream>
 
 /// Allow users to print out counterexamples
-#define _CLT_DEBUG_
+#define _LT_DEBUG_
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
 #include <string>
 #include <ostream>
 #include <sstream>
@@ -54,21 +43,25 @@
 #endif
 
 #ifdef _ENABLE_EMBB_
-#define _CLT_TIMEOUT_
+#define _LT_TIMEOUT_
 #include <embb/base/thread.h>
 #include <embb/containers/lock_free_stack.h>
 #endif
 
 #ifdef _ENABLE_TBB_
-#define _CLT_TIMEOUT_
+#define _LT_TIMEOUT_
 #include "tbb/concurrent_unordered_set.h"
 #endif
 
 #ifdef __linux__
-#define _CLT_MEM_USAGE_
+#define _LT_MEM_USAGE_
 #endif
 
-#ifdef _CLT_MEM_USAGE_
+#ifdef _LT_TIMEOUT_
+#include <chrono>
+#endif
+
+#ifdef _LT_MEM_USAGE_
 #include <unistd.h>
 #include <ios>
 #include <iostream>
@@ -86,9 +79,11 @@ std::unique_ptr<T> make_unique(Args&& ...args)
   using std::make_unique;
 #endif
 
-/// Compositional and conflict-driven linearizability tester
+/// Linearizability tester
 namespace lt
 {
+
+/************* Core data structures and algorithms *************/
 
 template<class S>
 class Entry;
@@ -96,8 +91,6 @@ class Entry;
 /// Doubly-linked list of log entries
 
 /// S - sequential data type
-///
-/// \remark not thread-safe
 template<class S>
 using EntryPtr = Entry<S>*;
 
@@ -173,8 +166,7 @@ template<class S> class Entry;
 template<class S> class Log;
 template<class S> class ConcurrentLog;
 template<class S> class Slicer;
-template<class S, bool, unsigned state_cache_switch, class Hasher> class LinearizabilityTester;
-template<class S> class ParallelLinearizabilityTester;
+template<class S, bool> class LinearizabilityTester;
 
 /// A kind of "functor" in C++ terminology
 
@@ -192,7 +184,7 @@ private:
   // modified by Entry
   unsigned ref_counter;
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
   virtual std::ostream& print(std::ostream&) const = 0;
 #endif
 
@@ -241,7 +233,7 @@ public:
     return internal_apply(s, op);
   }
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
   friend std::ostream& operator<<(std::ostream& os, const Op& op)
   {
     return op.print(os);
@@ -249,60 +241,14 @@ public:
 #endif
 };
 
-/// Constant-time hash function
-
-/// We exploit the fact that XOR forms an abelian group:
-/// first, clear hash of old block; then, hash new block.
-class O1BitsetHasher
-{
-private:
-  std::size_t m_hash;
-
-public:
-  O1BitsetHasher() : m_hash{0U} {}
-
-  template<class Block>
-  void update_hash(Block old_block, Block new_block)
-  {
-    m_hash ^= old_block;
-    m_hash ^= new_block;
-  }
-
-  template<class Block>
-  std::size_t hash_code(const std::vector<Block>& blocks) const noexcept
-  {
-    return m_hash;
-  }
-};
-
-/// Linear-time hash function
-class ONBitsetHasher
-{
-public:
-  template<class Block>
-  void update_hash(Block old_block, Block new_block)
-  {
-  }
-
-  template<class Block>
-  std::size_t hash_code(const std::vector<Block>& blocks) const noexcept
-  {
-    std::size_t h{0};
-
-    for (Block block : blocks)
-      h ^= block;
-
-    return h;
-  }
-};
-
-template<class Hash = O1BitsetHasher>
+/// Fixed-size set of bits with persistence features
 class Bitset
 {
 public:
   typedef std::size_t Pos;
 
 private:
+  friend struct BitsetHash;
   friend class FlexibleBitset;
 
   typedef unsigned long Block;
@@ -335,8 +281,10 @@ private:
     return Block(1U) << bit_index(pos);
   }
 
+  /// only resized by FlexibleBitset
   Blocks m_blocks;
-  Hash m_hash;
+
+  std::size_t m_hash;
   unsigned m_number_of_set_bits;
 
   Block& find_block(Pos pos)
@@ -346,10 +294,18 @@ private:
     return m_blocks[i];
   }
 
+  // We exploit the fact that XOR forms an abelian group:
+  // first, clear hash of old block; then, hash new block.
+  void update_hash(Block old_block, Block new_block)
+  {
+    m_hash ^= old_block;
+    m_hash ^= new_block;
+  }
+
 public:
   Bitset(Pos max_pos)
   : m_blocks(blocks_size(max_pos)),
-    m_hash{},
+    m_hash{0U},
     m_number_of_set_bits{0U} {}
 
   bool is_empty() const noexcept
@@ -363,7 +319,7 @@ public:
     const Block copy_block{block};
     block |= bit_mask(pos);
 
-    m_hash.update_hash(copy_block, block);
+    update_hash(copy_block, block);
 
     bool ok{block != copy_block};
     m_number_of_set_bits += ok;
@@ -392,7 +348,7 @@ public:
     const Block copy_block{block};
     block &= ~bit_mask(pos);
 
-    m_hash.update_hash(copy_block, block);
+    update_hash(copy_block, block);
 
     bool ok{block != copy_block};
     m_number_of_set_bits -= ok;
@@ -418,19 +374,14 @@ public:
     return m_number_of_set_bits != other.m_number_of_set_bits or
       m_blocks != other.m_blocks;
   }
-
-  std::size_t hash_code() const noexcept
-  {
-    return m_hash.hash_code(m_blocks);
-  }
 };
 
+/// Constant-time, O(1), hash function
 struct BitsetHash
 {
-  template<class Hash>
-  std::size_t operator()(const Bitset<Hash>& bitset) const noexcept
+  std::size_t operator()(const Bitset& bitset) const noexcept
   {
-    return bitset.hash_code();
+    return bitset.m_hash;
   }
 };
 
@@ -456,9 +407,8 @@ class Entry
 private:
   friend class Log<S>;
   friend class Slicer<S>;
-  template<class T, bool enable_conflict_analyzer, unsigned state_cache_switch, class Hasher>
-  friend class LinearizabilityTester;
-  friend class ParallelLinearizabilityTester<S>;
+  friend class LinearizabilityTester<S, true>;
+  friend class LinearizabilityTester<S, false>;
 
   // Ref counted pointer because we need to copy logs so that we
   // can experimentally compare different linearizability testers
@@ -469,9 +419,6 @@ private:
   Op<S>* m_op_ptr;
   unsigned m_entry_id;
   std::thread::id m_thread_id;
-  EntryPtr<S> m_linearized_prev;
-  EntryPtr<S> m_linearized_next;
-  EntryPtr<S> m_dependency;
   EntryPtr<S> m_match;
   bool m_is_call;
 
@@ -496,9 +443,6 @@ private:
   : m_op_ptr{nullptr},
     m_entry_id{},
     m_thread_id{},
-    m_linearized_prev{nullptr},
-    m_linearized_next{nullptr},
-    m_dependency{nullptr},
     m_match{nullptr},
     m_is_call{false},
     prev{nullptr},
@@ -521,9 +465,6 @@ public:
   : m_op_ptr{nullptr},
     m_entry_id{},
     m_thread_id{},
-    m_linearized_prev{nullptr},
-    m_linearized_next{nullptr},
-    m_dependency{nullptr},
     m_match{nullptr},
     m_is_call{false},
     prev{nullptr},
@@ -533,9 +474,6 @@ public:
   : m_op_ptr{entry.m_op_ptr},
     m_entry_id{entry.m_entry_id},
     m_thread_id{entry.m_thread_id},
-    m_linearized_prev{entry.m_linearized_prev},
-    m_linearized_next{entry.m_linearized_next},
-    m_dependency{entry.m_dependency},
     m_match{entry.m_match},
     m_is_call{entry.m_is_call},
     prev{entry.prev},
@@ -552,9 +490,6 @@ public:
     m_op_ptr = entry.m_op_ptr;
     m_entry_id = entry.m_entry_id;
     m_thread_id = entry.m_thread_id;
-    m_linearized_prev = entry.m_linearized_prev;
-    m_linearized_next = entry.m_linearized_next;
-    m_dependency = entry.m_dependency;
     m_match = entry.m_match;
     m_is_call = entry.m_is_call;
     prev = entry.prev;
@@ -571,9 +506,6 @@ public:
     m_op_ptr = entry.m_op_ptr;
     m_entry_id = entry.m_entry_id;
     m_thread_id = entry.m_thread_id;
-    m_linearized_prev = entry.m_linearized_prev;
-    m_linearized_next = entry.m_linearized_next;
-    m_dependency = entry.m_dependency;
     m_match = entry.m_match;
     m_is_call = entry.m_is_call;
     prev = entry.prev;
@@ -582,9 +514,6 @@ public:
     entry.m_op_ptr = nullptr;
     entry.m_entry_id = 0;
     entry.m_thread_id = 0;
-    entry.m_linearized_prev = nullptr;
-    entry.m_linearized_next = nullptr;
-    entry.m_dependency = nullptr;
     entry.m_match = nullptr;
     entry.m_is_call = false;
     entry.prev = nullptr;
@@ -641,36 +570,6 @@ public:
     return m_thread_id;
   }
 
-  EntryPtr<S> linearized_prev() const noexcept
-  {
-    return m_linearized_prev;
-  }
-
-  void set_linearized_prev(EntryPtr<S> entry_ptr) noexcept
-  {
-    m_linearized_prev = entry_ptr;
-  }
-
-  EntryPtr<S> linearized_next() const noexcept
-  {
-    return m_linearized_next;
-  }
-
-  void set_linearized_next(EntryPtr<S> entry_ptr) noexcept
-  {
-    m_linearized_next = entry_ptr;
-  }
-
-  EntryPtr<S> dependency() const noexcept
-  {
-    return m_dependency;
-  }
-
-  void set_dependency(EntryPtr<S> entry_ptr) noexcept
-  {
-    m_dependency = entry_ptr;
-  }
-
   /// \pre: ret_entry_ptr->match() == nullptr
   /// \pre: not ret_entry_ptr->is_call()
   ///
@@ -721,7 +620,7 @@ public:
   }
 };
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
 /// S - sequential data type
 template<class S>
 std::ostream& operator<<(std::ostream& os, EntryPtr<S> entry_ptr)
@@ -795,7 +694,7 @@ public:
   }
 };
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
 /// S - sequential data type
 template<class S>
 std::ostream& operator<<(std::ostream& os, const LogInfo<S>& log_info)
@@ -939,19 +838,17 @@ template<class S>
 class Result
 {
 private:
-  template<class T, bool enable_conflict_analyzer, unsigned state_cache_switch, class Hasher>
-  friend class LinearizabilityTester;
-  friend class ParallelLinearizabilityTester<S>;
+  friend class LinearizabilityTester<S, true>;
+  friend class LinearizabilityTester<S, false>;
 
   bool m_is_linearizable;
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
   unsigned m_cutoff_entry_id;
   EntryPtr<S> m_log_head_ptr;
 #endif
 
   bool m_is_timeout;
-  bool m_is_interrupted;
 
   double m_virtual_memory_usage;
   double m_resident_set_size;
@@ -959,12 +856,11 @@ private:
   void reset()
   {
     m_is_linearizable = true;
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
     m_cutoff_entry_id = 0U;
     m_log_head_ptr = nullptr;
 #endif
     m_is_timeout = false;
-    m_is_interrupted = false;
     m_virtual_memory_usage = 0.0;
     m_resident_set_size = 0.0;
   }
@@ -973,36 +869,24 @@ public:
   /// Initially linearizable
   Result()
   : m_is_linearizable{true},
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
     m_cutoff_entry_id{0U},
     m_log_head_ptr{nullptr},
 #endif
     m_is_timeout{false},
-    m_is_interrupted{false},
     m_virtual_memory_usage{0.0},
     m_resident_set_size{0.0} {}
 
-  /// \pre: not is_aborted()
+  /// \pre: not is_timeout()
   bool is_linearizable() const noexcept
   {
-    assert(not is_aborted());
+    assert(not is_timeout());
     return m_is_linearizable;
   }
 
   bool is_timeout() const noexcept
   {
     return m_is_timeout;
-  }
-
-  bool is_interrupted() const noexcept
-  {
-    return m_is_interrupted;
-  }
-
-  /// is_timeout() or is_interrupted()?
-  bool is_aborted() const noexcept
-  {
-    return m_is_timeout or m_is_interrupted;
   }
 
   /// Zero if unknown, unit: MiB
@@ -1017,7 +901,7 @@ public:
     return m_resident_set_size;
   }
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
   /// \pre: not is_linearizable()
   void debug(std::ostream& os, bool verbose = false)
   {
@@ -1039,120 +923,7 @@ public:
 #endif
 };
 
-/// Asynchronous read-many/write-once Boolean flag
-class InterruptFlag
-{
-private:
-  static std::atomic<bool> s_flag;
-  std::atomic<bool>* const m_flag_ptr;
-
-public:
-  InterruptFlag()
-  : m_flag_ptr(&s_flag) {}
-
-  /// Shared Boolean flag to signal threads to terminate
-  InterruptFlag(std::atomic<bool>& atomic_flag)
-  : m_flag_ptr(&atomic_flag) {}
-
-  InterruptFlag(InterruptFlag& other)
-  : m_flag_ptr(other.m_flag_ptr) {}
-
-  /// Should be only set once by the main thread
-  void set() noexcept
-  {
-    m_flag_ptr->store(true, std::memory_order_relaxed);
-  }
-
-  bool is_set() const noexcept
-  {
-    return m_flag_ptr->load(std::memory_order_relaxed);
-  }
-};
-
-std::atomic<bool> InterruptFlag::s_flag(false);
-
-namespace state
-{
-  /// Conflict analyzer for non-chronological backtracking
-
-  /// A good conflict analyzer allows the LinearizabilityTester to
-  /// perform non-chronological backtracking similar as in SAT solvers.
-  /// In a nutshell, the idea behind non-chronological backtracking in
-  /// the context of linearizability testing is as follows:
-  ///
-  /// Suppose we have an implementation of the concurrent "set" abstract
-  /// data type (ADT) with the usual "remove" and "contains" operations.
-  /// Let L be the following provisional linearization of some history:
-  ///
-  ///       remove(x) : success        contains(x) : found
-  ///     |---------------------| L' |---------------------|
-  ///
-  /// where "x" is an item to be removed from the set and L' is some sub-
-  /// linearization such that no operation in L' accesses item "x". Since
-  /// the "remove(x)" operation succeeds but the subsequent "contains(x)"
-  /// call supposedly finds "x", this linearization is invalid (it does
-  /// not satisfy the specification of the set ADT). At this point,
-  /// assuming there are no other entries that come next in the history
-  /// after "contains(x)", the state-of-the-art WGL linearizability tester
-  /// would now backtrack to the next possible entry in L' (if any). By
-  /// assumption, however, there is no entry in L' which would make it
-  /// possible for "contains(x)" to be linearized because "remove(x)"
-  /// still precedes "contains(x)" in the stack of linearized entries.
-  /// Our algorithm in LinearizabilityTester can recognize this with a
-  /// suitable ConflictAnalyzer for the set ADT, thereby allowing it to
-  /// directly backtracks to "remove(x)" instead.
-  ///
-  /// S - sequential data type
-  template<class S>
-  struct ConflictAnalyzer
-  {
-    /// Record the fact that entry_ptr has been linearized
-
-    /// \pre: LinearizabilityTester::lift(entry_ptr) has not been called yet
-    /// \pre: entry_ptr->is_call()
-    /// \pre: entry_ptr->is_partitionable()
-    void linearize(EntryPtr<S> entry_ptr);
-
-    /// Undo previous linearize(entry_ptr)
-
-    /// \pre: entry_ptr->is_call()
-    /// \pre: entry_ptr->is_partitionable()
-    void undo_linearize(EntryPtr<S> entry_ptr);
-
-    /// Return entry pointer that conflicts with entry_ptr, or nullptr if none
-
-    /// \pre: not entry_ptr->is_call()
-    /// \pre: entry_ptr->is_partitionable()
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const;
-  };
-
-  /// S - sequential data type
-  template<class S>
-  struct QuiescentConflictAnalyzer
-  {
-    void linearize(EntryPtr<S> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-    }
-
-    void undo_linearize(EntryPtr<S> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-    }
-
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const
-    {
-      assert(not entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      return nullptr;
-    }
-  };
-}
-
-#ifdef _CLT_TIMEOUT_
+#ifdef _LT_TIMEOUT_
 template <typename Clock = std::chrono::steady_clock>
 struct Timeout
 {
@@ -1174,6 +945,7 @@ struct Timeout
 };
 #endif
 
+/// Least-recently used cache eviction
 template<class Key, class Hash = std::hash<Key>>
 class LruCache
 {
@@ -1222,13 +994,12 @@ public:
 };
 
 /// S - sequential data type
-template<class S, bool enable_conflict_analyzer = true,
-  unsigned state_cache_switch = 2U, class BitsetHasher = O1BitsetHasher>
+template<class S, bool enable_cache_eviction = false>
 class LinearizabilityTester
 {
 private:
   // regardless of caching, we need to keep track of the current state of type S
-  typedef std::pair<Bitset<BitsetHasher>, S> State;
+  typedef std::pair<Bitset, S> State;
 
   // if caching is enabled, we use these hash functions
   class StateHash
@@ -1259,23 +1030,9 @@ private:
   };
 
   typedef typename std::conditional<
-    /* if */ state_cache_switch == 1U,
-    /* then */ std::unordered_set<State, StateHash>,
-    /* else */ LruCache<State, StateHash>>::type EnabledStateCache;
-
-  // Optionally memoize states
-
-  // \remark for this, a good hash function is required
-  typedef typename std::conditional<
-    /* if */ state_cache_switch == 0U,
-    /* then */ std::nullptr_t,
-    /* else */ EnabledStateCache>::type StateCache;
-
-  // Statically enable/disable conflict analyzer
-  typedef typename std::conditional<
-    /* if */ enable_conflict_analyzer,
-    /* then */ state::ConflictAnalyzer<S>,
-    /* else */ state::QuiescentConflictAnalyzer<S>>::type ConflictAnalyzer;
+    /* if */ enable_cache_eviction,
+    /* then */ LruCache<State, StateHash>,
+    /* else */ std::unordered_set<State, StateHash>>::type StateCache;
 
   // Maximum number of call/ret entries, i.e. half of the
   // total number of entry pointers reachable in m_log_head
@@ -1284,9 +1041,6 @@ private:
   // History to linearize, every call is matched by a return
   const Entry<S> m_log_head;
 
-  // Inter-thread termination signal
-  InterruptFlag m_interrupt_flag;
-
   // Invariants:
   //
   // * for every EntryPtr<S> `e` in `m_calls`, `e->is_call()` holds
@@ -1294,12 +1048,9 @@ private:
   //   from `m_log_head` by following the next pointers.
   Stack<S> m_calls;
 
-#ifdef _CLT_TIMEOUT_
+#ifdef _LT_TIMEOUT_
   Timeout<std::chrono::steady_clock> m_timeout;
 #endif
-
-  // Non-chronological backtracking information
-  ConflictAnalyzer m_conflict_analyzer;
 
   // An approximation of the workload
   unsigned long m_number_of_iterations;
@@ -1315,7 +1066,7 @@ private:
   {
     vm_usage = resident_set = 0.0;
 
-#ifdef _CLT_MEM_USAGE_
+#ifdef _LT_MEM_USAGE_
     // 'file' stat seems to give the most reliable results
     std::ifstream stat_stream("/proc/self/stat", std::ios_base::in);
 
@@ -1342,29 +1093,21 @@ private:
 #endif
   }
 
-  // Temporarily remove call_entry_ptr from the log
+  // Temporarily remove call_entry_ptr and call_entry_ptr->match() from the log
 
   // \pre: call_entry_ptr->is_call()
-  static void lift_call_entry(const EntryPtr<S> call_entry_ptr)
+  static void lift(const EntryPtr<S> call_entry_ptr)
   {
     const Entry<S>& call = *call_entry_ptr;
     assert(call.is_call());
 
+    Entry<S>& match = *call.match();
     call.prev->next = call.next;
     call.next->prev = call.prev;
-  }
+    match.prev->next = match.next;
 
-  // Temporarily remove ret_entry_ptr from the log
-
-  // \pre: not ret_entry_ptr->is_call()
-  static void lift_ret_entry(const EntryPtr<S> ret_entry_ptr)
-  {
-    const Entry<S>& ret = *ret_entry_ptr;
-    assert(not ret.is_call());
-
-    ret.prev->next = ret.next;
-    if (ret.next != nullptr)
-      ret.next->prev = ret.prev;
+    if (match.next != nullptr)
+      match.next->prev = match.prev;
   }
 
   // Reinsert call_entry_ptr and call_entry_ptr->match() into the log
@@ -1376,49 +1119,44 @@ private:
     assert(call.is_call());
 
     Entry<S>& match = *call.match();
+    assert(match.prev->next == match.next);
     match.prev->next = &match;
+
     if (match.next != nullptr)
       match.next->prev = &match;
 
+    assert(call.prev->next == call.next);
     call.prev->next = call_entry_ptr;
     call.next->prev = call_entry_ptr;
   }
 
-  static constexpr bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    std::nullptr_t state_cache, Bitset<BitsetHasher>& bitset)
-  {
-    return true;
-  }
-
+  // TODO: Consider pending operations
   static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    LruCache<State, StateHash>& state_cache, Bitset<BitsetHasher>& bitset)
+    LruCache<State, StateHash>& state_cache, Bitset& bitset)
   {
     return state_cache.insert(std::make_pair(bitset.immutable_set(entry_ptr->entry_id()), new_s));
   }
 
+  // TODO: Consider pending operations
   static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    std::unordered_set<State, StateHash>& state_cache, Bitset<BitsetHasher>& bitset)
+    std::unordered_set<State, StateHash>& state_cache, Bitset& bitset)
   {
     return std::get<1>(state_cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), new_s));
   }
 
   void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
   {
-    result.reset();
-
     S s, new_s;
     StateCache state_cache;
     bool is_entry_linearizable;
-    unsigned linearized_counter{0};
-    EntryPtr<S> entry_ptr{m_log_head.next};
-    EntryPtr<S> backtrack_entry_ptr, conflict_entry_ptr;
+    EntryPtr<S> pop_entry_ptr, entry_ptr{m_log_head.next};
 
     double virtual_memory_usage;
     double resident_set_size;
 
     // fixing the size is not merely an optimization but
     // necessary for checking the equality of bitsets
-    Bitset<BitsetHasher> linearized_entries(m_log_size);
+    Bitset linearized_entries(m_log_size);
 
     while (m_log_head.next != nullptr)
     {
@@ -1426,19 +1164,13 @@ private:
       result.m_virtual_memory_usage = std::max(result.m_virtual_memory_usage, virtual_memory_usage);
       result.m_resident_set_size = std::max(result.m_resident_set_size, resident_set_size);
 
-#ifdef _CLT_TIMEOUT_
+#ifdef _LT_TIMEOUT_
       if (m_timeout.is_expired())
       {
         result.m_is_timeout = true;
         break;
       }
 #endif
-
-      if (m_interrupt_flag.is_set())
-      {
-        result.m_is_interrupted = true;
-        break;
-      }
 
       ++m_number_of_iterations;
 
@@ -1454,12 +1186,6 @@ private:
 
         if (is_entry_linearizable and cache_state(new_s, entry_ptr, state_cache, linearized_entries))
         {
-          if (conflict_entry_ptr == entry_ptr)
-            conflict_entry_ptr = nullptr;
-
-          ++linearized_counter;
-          assert(linearized_counter <= m_log_size);
-
           // call entry is always matched up with a return entry
           assert(entry_ptr->next != nullptr);
 
@@ -1469,13 +1195,8 @@ private:
           s = std::move(new_s);
           linearized_entries.set(entry_ptr->entry_id());
 
-          // if possible, keep track of linearized entries
-          // in order to perform non-chronological backtracking
-          if (entry_ptr->is_partitionable())
-            m_conflict_analyzer.linearize(entry_ptr);
-
-          // provisionally remove the call entry from the history
-          lift_call_entry(entry_ptr);
+          // provisionally remove the call and return entry from the history
+          lift(entry_ptr);
 
           // restart from the beginning of the shortened history
           entry_ptr = m_log_head.next;
@@ -1485,103 +1206,54 @@ private:
           // get the next entry in the unmodified history
           entry_ptr = entry_ptr->next;
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
           global_linearized_entry_id = std::max(global_linearized_entry_id, entry_ptr->entry_id());
 #endif
         }
       }
       else // handle "return" entry
       {
-        if (linearized_counter and linearized_entries.is_set(entry_ptr->entry_id()))
-        {
-          if (--linearized_counter == 0)
-            conflict_entry_ptr = nullptr;
+        if (m_calls.is_empty())
+          break;
 
-          lift_ret_entry(entry_ptr);
+        assert(not m_calls.is_empty());
 
-          // skip over lifted call entries
-          do
-          {
-            entry_ptr = entry_ptr->next;
-          }
-          while (entry_ptr != nullptr and entry_ptr->is_call() and linearized_entries.is_set(entry_ptr->entry_id()));
-        }
-        else
-        {
-          if (m_calls.is_empty())
-            break;
+        // revert state change
+        std::tie(pop_entry_ptr, s) = m_calls.top();
+        assert(pop_entry_ptr != nullptr);
+        linearized_entries.reset(pop_entry_ptr->entry_id());
 
-          backtrack_entry_ptr = nullptr;
-          if (conflict_entry_ptr == nullptr)
-          {
-            conflict_entry_ptr = entry_ptr;
-            if (entry_ptr->is_partitionable())
-              backtrack_entry_ptr = m_conflict_analyzer.analyze(entry_ptr, 0 < linearized_counter);
-          }
+        m_calls.pop();
 
-          EntryPtr<S> pop_entry_ptr;
-          do
-          {
-            assert(not m_calls.is_empty());
+        // undo the provisional linearization
+        unlift(pop_entry_ptr);
 
-            // revert state change
-            std::tie(pop_entry_ptr, s) = m_calls.top();
-            assert(pop_entry_ptr != nullptr);
-            linearized_entries.reset(pop_entry_ptr->entry_id());
-
-            if (pop_entry_ptr->is_partitionable())
-              m_conflict_analyzer.undo_linearize(pop_entry_ptr);
-
-            m_calls.pop();
-
-            // undo the provisional linearization
-            unlift(pop_entry_ptr);
-          }
-          while (backtrack_entry_ptr != nullptr and pop_entry_ptr != backtrack_entry_ptr);
-
-          // continue after the entry to which we have just backtracked
-          entry_ptr = pop_entry_ptr->next;
-          linearized_counter = m_calls.size();
-        }
+        // continue after the entry to which we have just backtracked
+        entry_ptr = pop_entry_ptr->next;
       }
     }
 
     // all call entries linearized?
     result.m_is_linearizable = m_calls.is_full();
+    assert(result.m_is_linearizable == (m_log_head.next == nullptr));
   }
 
 public:
   LinearizabilityTester(LogInfo<S> log_info)
   : m_log_size{log_info.number_of_entries() >> 1},
     m_log_head{log_info.log_head_ptr()},
-    m_interrupt_flag{},
     m_calls{m_log_size},
-    m_conflict_analyzer{},
-#ifdef _CLT_TIMEOUT_
+#ifdef _LT_TIMEOUT_
     m_timeout{},
 #endif
     m_number_of_iterations{} {}
 
-  LinearizabilityTester(LogInfo<S> log_info,
-    InterruptFlag& interrupt_flag)
-  : m_log_size{log_info.number_of_entries() >> 1},
-    m_log_head{log_info.log_head_ptr()},
-    m_interrupt_flag{interrupt_flag},
-    m_calls{m_log_size},
-    m_conflict_analyzer{},
-#ifdef _CLT_TIMEOUT_
-    m_timeout{},
-#endif
-    m_number_of_iterations{} {}
-
-#ifdef _CLT_TIMEOUT_
+#ifdef _LT_TIMEOUT_
   LinearizabilityTester(LogInfo<S> log_info,
     std::chrono::steady_clock::duration max_duration)
   : m_log_size{log_info.number_of_entries() >> 1},
     m_log_head{log_info.log_head_ptr()},
-    m_interrupt_flag{},
     m_calls{m_log_size},
-    m_conflict_analyzer{},
     m_timeout{max_duration},
     m_number_of_iterations{} {}
 #endif
@@ -1594,7 +1266,7 @@ public:
 
   /// Is history linearizable?
 
-  /// Throws an exception on timeout or interrupt
+  /// Throws an exception on timeout
   bool check()
   {
     Result<S> result;
@@ -1602,86 +1274,22 @@ public:
     internal_check(result, disregard_cutoff_entry_id);
 
     if (result.is_timeout())
-      throw "Timeout!";
-
-    if (result.is_interrupted())
-      throw "Interrupted!";
+      throw std::runtime_error("Timeout!");
 
     return result.is_linearizable();
   }
 
   void check(Result<S>& result)
   {
-#ifdef _CLT_DEBUG_
+    result.reset();
+
+#ifdef _LT_DEBUG_
     internal_check(result, result.m_cutoff_entry_id);
     result.m_log_head_ptr = m_log_head.next;
 #else
     unsigned disregard_cutoff_entry_id;
     internal_check(result, disregard_cutoff_entry_id);
 #endif
-  }
-};
-
-/// Coordinate the delivering of results and termination of threads
-
-/// S - sequential data type
-template<class S>
-class Coordinator
-{
-private:
-  unsigned m_number_of_threads;
-  bool m_is_set;
-
-  Result<S> m_result;
-  std::mutex m_mutex;
-  std::condition_variable m_cv;
-
-  bool is_done() const noexcept
-  {
-    return m_is_set or m_number_of_threads == 0U;
-  }
-
-public:
-  /// Coordinator expects `number_of_threads` to call goodbye()
-  Coordinator(unsigned number_of_threads)
-  : m_number_of_threads{number_of_threads},
-    m_is_set{false},
-    m_result{},
-    m_mutex{},
-    m_cv{} {}
-
-  /// Must be called by every thread started by the coordinator
-  void goodbye(const Result<S>& result)
-  {
-    bool is_set{false};
-    unsigned number_of_threads;
-
-    // unlock the mutex before notifying; otherwise, the
-    // notified thread would unnecessarily block again
-    {
-      std::unique_lock<std::mutex> lock(m_mutex);
-      assert(0U < m_number_of_threads);
-
-      if (not (m_is_set or result.is_linearizable()))
-      {
-        m_result = result;
-        m_is_set = is_set = true;
-      }
-
-      number_of_threads = --m_number_of_threads;
-    }
-
-    if (is_set or number_of_threads == 0U)
-      m_cv.notify_one();
-  }
-
-  Result<S>& wait_for_result()
-  {
-    std::unique_lock<std::mutex> lock(m_mutex);
-    m_cv.wait(lock, [this]{ return is_done(); });
-
-    assert(is_done());
-    return m_result;
   }
 };
 
@@ -1731,15 +1339,17 @@ public:
 
 /// Partition history into sub-histories
 
-/// A slicer partitions the history such that multiple threads can
-/// independently check whether certain sub-histories are linearizable.
-/// Our parallelization strategy hinges on Theorem 3.6.1 in "The Art of
+/// A slicer partitions the history into independent sub-histories.
+/// Our partitioning scheme hinges on Theorem 3.6.1 in "The Art of
 /// Multiprocessor Programming" (Revised Ed.) by Herlihy and Shavit.
-/// Our idea is also directly applicable to the known sequential
-/// algorithms.
 ///
-/// Typically only concurrent abstract data types such as sets and
-/// hash tables are suitable for such a partitioning scheme.
+/// Typically only associative concurrent abstract data types (ADTs)
+/// such as sets and hash tables are suitable for this partitioning
+/// scheme. And not all operations on such ADTs are always supported.
+/// For example, the partitioning scheme is incompatible with 0-arg
+/// operations such as "empty?" on sets. But it is very effective if
+/// we want to only check linearizability of say "insert", "remove"
+/// and "contains".
 ///
 /// S - sequential data type
 template<class S>
@@ -1826,87 +1436,6 @@ public:
       return m_sublogs[partition];
 
     return s_empty_log;
-  }
-};
-
-/// S - sequential data type
-template<class S>
-class ParallelLinearizabilityTester
-{
-private:
-  static void linearizability_tester(
-    Slicer<S>& slicer,
-    InterruptFlag& interrupt_flag,
-    Coordinator<S>& coordinator)
-  {
-    Result<S> result;
-    LogInfo<S> log_info{slicer.next_sublog_info()};
-    while (not log_info.is_empty())
-    {
-      LinearizabilityTester<S> tester{log_info, interrupt_flag};
-      tester.check(result);
-
-      if (interrupt_flag.is_set() or not result.is_linearizable())
-        break;
-
-      log_info = slicer.next_sublog_info();
-    }
-
-    coordinator.goodbye(result);
-  }
-
-  const unsigned m_number_of_threads;
-  Slicer<S> m_slicer;
-
-public:
-  /// Create as many threads as partitions
-  ParallelLinearizabilityTester(LogInfo<S> log_info,
-    unsigned number_of_partitions)
-  : m_number_of_threads{number_of_partitions},
-    m_slicer{log_info, number_of_partitions} {}
-
-  ParallelLinearizabilityTester(LogInfo<S> log_info,
-    unsigned number_of_partitions,
-    unsigned number_of_threads)
-  : m_number_of_threads{number_of_threads},
-    m_slicer{log_info, number_of_partitions} {}
-
-  /// Is history linearizable?
-
-  /// Throws an exception on timeout or interrupt
-  bool check()
-  {
-    Result<S> result;
-    check(result);
-
-    if (result.is_timeout())
-      throw "Timeout!";
-
-    if (result.is_interrupted())
-      throw "Interrupted!";
-
-    return result.is_linearizable();
-  }
-
-  void check(Result<S>& result)
-  {
-    std::atomic<bool> atomic_flag{false};
-    InterruptFlag interrupt_flag{atomic_flag};
-    Coordinator<S> coordinator{m_number_of_threads};
-    std::vector<Thread> threads(m_number_of_threads);
-
-    for (Thread& thread : threads)
-      thread = Thread(
-        linearizability_tester,
-        std::ref(m_slicer),
-        std::ref(interrupt_flag),
-        std::ref(coordinator));
-
-    result = coordinator.wait_for_result();
-    interrupt_flag.set();
-
-    for (Thread& thread : threads)
-      thread.join();
   }
 };
 
@@ -2014,34 +1543,23 @@ public:
   }
 };
 
-template<class F, class ...Args>
-void start_threads(unsigned number_of_threads, F&& f, Args&&... args)
-{
-  std::vector<Thread> threads(number_of_threads);
-
-  for (Thread& thread : threads)
-    thread = Thread(std::forward<F>(f), std::forward<Args>(args)...);
-
-  for (Thread& thread : threads)
-    thread.join();
-}
+/************* Models for sequential abstract data types *************/
 
 class FlexibleBitset
 {
 public:
-  typedef O1BitsetHasher BitsetHasher;
-  typedef Bitset<BitsetHasher>::Pos Pos;
+  typedef Bitset::Pos Pos;
 
 private:
-  Bitset<BitsetHasher> m_bitset;
+  Bitset m_bitset;
 
   void allocate_blocks_if_neccessary(Pos pos) noexcept
   {
-    if (pos < Bitset<BitsetHasher>::s_bits_per_block)
+    if (pos < Bitset::s_bits_per_block)
       return;
 
     assert(0U < pos);
-    Bitset<BitsetHasher>::BlockIndex new_size{Bitset<BitsetHasher>::blocks_size(pos)};
+    Bitset::BlockIndex new_size{Bitset::blocks_size(pos)};
     if (m_bitset.m_blocks.size() < new_size)
       m_bitset.m_blocks.resize(new_size);
   }
@@ -2088,7 +1606,7 @@ public:
 
   std::size_t hash_code() const noexcept
   {
-    return m_bitset.hash_code();
+    return m_bitset.m_hash;
   }
 };
 
@@ -2106,7 +1624,7 @@ namespace state
       RetOp(Ret r)
       : Op<S>(), ret{r} {}
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         return os << "ret: " << ret;
@@ -2122,7 +1640,7 @@ namespace state
       ZeroArgOp()
       : Op<S>() {}
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         return os << op_name << "()";
@@ -2143,7 +1661,7 @@ namespace state
       ArgOp(bool is_partitionable, Value v)
       : Op<S>(is_partitionable, v), value{v} {}
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         return os << op_name << "(" << std::to_string(value) << ")";
@@ -2186,7 +1704,7 @@ namespace state
         return m_value;
       }
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         if (m_is_pending)
@@ -2235,7 +1753,7 @@ namespace state
         return m_status == 2U;
       }
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         os << "cas() : ";
@@ -2260,7 +1778,7 @@ namespace state
         current_value{current_v},
         new_value{new_v} {}
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         return os << "cas(" << std::to_string(current_value) << ", " << std::to_string(new_value) << ")";
@@ -2294,7 +1812,7 @@ namespace state
       : Op<Atomic>(),
         is_pending(pending) {}
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         if (is_pending)
@@ -2568,128 +2086,6 @@ namespace state
     }
   };
 
-  template<class S>
-  class PartitionConflictAnalyzer
-  {
-  private:
-    std::vector<EntryPtr<S>> m_backtrack_info;
-
-    // post: partition < m_backtrack_info.size()
-    void resize_vector_if_neccessary(unsigned partition)
-    {
-      if (m_backtrack_info.size() <= partition)
-        m_backtrack_info.resize(partition + 1U);
-
-      assert(partition < m_backtrack_info.size());
-    }
-
-  public:
-    PartitionConflictAnalyzer<S>() : m_backtrack_info{} {}
-
-    void linearize(EntryPtr<S> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      const unsigned partition{entry_ptr->op().partition()};
-      resize_vector_if_neccessary(partition);
-
-      EntryPtr<S>& backtrack_entry_ptr = m_backtrack_info[partition];
-      entry_ptr->set_dependency(backtrack_entry_ptr);
-      backtrack_entry_ptr = entry_ptr;
-    }
-
-    void undo_linearize(EntryPtr<S> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      const unsigned partition{entry_ptr->op().partition()};
-      if (partition < m_backtrack_info.size())
-        m_backtrack_info[partition] = entry_ptr->dependency();
-
-      entry_ptr->set_dependency(nullptr);
-    }
-
-    /// Return entry pointer for the last operation on the same partition, or null.
-    EntryPtr<S> analyze(EntryPtr<S> entry_ptr, bool happens_concurrently) const
-    {
-      assert(not entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      const unsigned partition{entry_ptr->op().partition()};
-      assert(entry_ptr->op().partition() == entry_ptr->match()->op().partition());
-
-      if (partition < m_backtrack_info.size())
-        return m_backtrack_info[partition];
-
-      return nullptr;
-    }
-  };
-
-  template<>
-  class ConflictAnalyzer<Set>
-  {
-  private:
-    PartitionConflictAnalyzer<Set> m_analyzer;
-
-    static bool is_insert(EntryPtr<Set> entry_ptr)
-    {
-      typedef const Set::InsertCallOp* const InsertCallOpPtr;
-
-      assert(entry_ptr->is_call());
-      InsertCallOpPtr insert_call_op_ptr = dynamic_cast<InsertCallOpPtr>(entry_ptr->op_ptr());
-      return insert_call_op_ptr != nullptr;
-    }
-
-    static bool is_empty(EntryPtr<Set> entry_ptr)
-    {
-      typedef const Set::EmptyCallOp* const EmptyCallOpPtr;
-
-      assert(entry_ptr->is_call());
-      EmptyCallOpPtr empty_call_op_ptr = dynamic_cast<EmptyCallOpPtr>(entry_ptr->op_ptr());
-      return empty_call_op_ptr != nullptr;
-    }
-
-    std::vector<EntryPtr<Set>> m_inserts;
-
-  public:
-    ConflictAnalyzer<Set>()
-    : m_analyzer{},
-      m_inserts{} {}
-
-    void linearize(EntryPtr<Set> entry_ptr)
-    {
-      m_analyzer.linearize(entry_ptr);
-
-      if (is_insert(entry_ptr))
-        m_inserts.push_back(entry_ptr);
-    }
-
-    void undo_linearize(EntryPtr<Set> entry_ptr)
-    {
-      m_analyzer.undo_linearize(entry_ptr);
-
-      if (is_insert(entry_ptr))
-      {
-        assert(entry_ptr == m_inserts.back());
-        m_inserts.pop_back();
-      }
-    }
-
-    EntryPtr<Set> analyze(EntryPtr<Set> entry_ptr, bool happens_concurrently) const
-    {
-      EntryPtr<Set> backtrack_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
-
-      // there is no erase operation in the log so we
-      // don't have to check happens_concurrently
-      if (backtrack_entry_ptr == nullptr and is_empty(entry_ptr->match()))
-        return m_inserts.back();
-
-      return backtrack_entry_ptr;
-    }
-  };
-
   /// Bounded stack
 
   /// N - stack capacity
@@ -2743,7 +2139,7 @@ namespace state
         return m_value;
       }
 
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
         return os << "ret: [ok: " << ok() << ", value: " << (ok() ? std::to_string(value()) : "undefined") << "]";
@@ -3010,84 +2406,9 @@ namespace state
       return stack.hash_code();
     }
   };
-
-  template<std::size_t N>
-  class ConflictAnalyzer<Stack<N>>
-  {
-  private:
-    PartitionConflictAnalyzer<Stack<N>> m_analyzer;
-    EntryPtr<Stack<N>> m_last_linearized_entry_ptr;
-
-  public:
-    static bool is_successful_try_push(EntryPtr<Stack<N>> entry_ptr)
-    {
-      typedef const internal::RetOp<Stack<N>, bool>* const RetOpPtr;
-
-      assert(entry_ptr->is_call());
-      RetOpPtr try_push_ret_ptr = dynamic_cast<RetOpPtr>(entry_ptr->match()->op_ptr());
-      return try_push_ret_ptr != nullptr and try_push_ret_ptr->ret;
-    }
-
-    static bool is_successful_try_pop_ret(EntryPtr<Stack<N>> entry_ptr)
-    {
-      typedef const typename state::Stack<N>::TryPopRetOp* const TryPopRetOpPtr;
-
-      assert(not entry_ptr->is_call());
-      TryPopRetOpPtr try_pop_ret_ptr = dynamic_cast<TryPopRetOpPtr>(entry_ptr->op_ptr());
-      return try_pop_ret_ptr != nullptr and try_pop_ret_ptr->ok();
-    }
-
-    ConflictAnalyzer<Stack<N>>()
-    : m_analyzer{},
-      m_last_linearized_entry_ptr{nullptr} {}
-
-    void linearize(EntryPtr<Stack<N>> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      if (not is_successful_try_push(entry_ptr))
-        return;
-
-      if (m_last_linearized_entry_ptr != nullptr)
-        m_last_linearized_entry_ptr->set_linearized_next(entry_ptr);
-
-      entry_ptr->set_linearized_prev(m_last_linearized_entry_ptr);
-      m_last_linearized_entry_ptr = entry_ptr;
-
-      m_analyzer.linearize(entry_ptr);
-    }
-
-    void undo_linearize(EntryPtr<Stack<N>> entry_ptr)
-    {
-      assert(entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      entry_ptr->set_linearized_next(nullptr);
-      EntryPtr<Stack<N>> linearized_prev{entry_ptr->linearized_prev()};
-      if (linearized_prev != nullptr)
-        linearized_prev->set_linearized_next(nullptr);
-
-      m_analyzer.undo_linearize(entry_ptr);
-    }
-
-    EntryPtr<Stack<N>> analyze(EntryPtr<Stack<N>> entry_ptr, bool happens_concurrently) const
-    {
-      assert(not entry_ptr->is_call());
-      assert(entry_ptr->is_partitionable());
-
-      if (happens_concurrently or not is_successful_try_pop_ret(entry_ptr))
-        return nullptr;
-
-      EntryPtr<Stack<N>> backtrack_entry_ptr{m_analyzer.analyze(entry_ptr, happens_concurrently)};
-      if (backtrack_entry_ptr == nullptr)
-        return nullptr;
-
-      return backtrack_entry_ptr->linearized_next();
-    }
-  };
 }
 
+/// Reads an etcd history collected with Jepsen and converts it to a Log
 class JepsenEtcdParser
 {
 private:
@@ -3298,8 +2619,9 @@ public:
   }
 };
 
-
 }
+
+/************* Unit tests and experiments *************/
 
 using namespace lt;
 
@@ -4793,7 +4115,7 @@ static void test_021()
 //
 //      pop() : (true, x)
 //    |------------------|
-static void test_stack_conflict_analyzer_000()
+static void test_stack_history_000()
 {
   constexpr char x = '\1';
   constexpr char y = '\2';
@@ -4811,10 +4133,6 @@ static void test_stack_conflict_analyzer_000()
   try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
   try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
 
-  assert(state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_push_x_call_entry_ptr));
-  assert(state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_push_y_call_entry_ptr));
-  assert(not state::ConflictAnalyzer<state::Stack<N>>::is_successful_try_push(try_pop_x_call_entry_ptr));
-
   assert(try_push_x_call_entry_ptr->is_partitionable());
   assert(try_push_y_call_entry_ptr->is_partitionable());
   assert(try_pop_x_call_entry_ptr->is_partitionable());
@@ -4822,40 +4140,13 @@ static void test_stack_conflict_analyzer_000()
   assert(try_push_x_ret_entry_ptr->is_partitionable());
   assert(try_push_y_ret_entry_ptr->is_partitionable());
   assert(try_pop_x_ret_entry_ptr->is_partitionable());
-
-  EntryPtr<state::Stack<N>> backtrack_entry_ptr;
-  state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
-
-  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(backtrack_entry_ptr == nullptr);
-
-  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(backtrack_entry_ptr == nullptr);
-  stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
-  stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
-
-  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(backtrack_entry_ptr == nullptr);
-
-  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(backtrack_entry_ptr == nullptr);
-  stack_conflict_analyzer.undo_linearize(try_push_x_call_entry_ptr);
-  stack_conflict_analyzer.undo_linearize(try_push_y_call_entry_ptr);
-
-  stack_conflict_analyzer.linearize(try_pop_x_call_entry_ptr);
-  backtrack_entry_ptr = stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true);
-  assert(backtrack_entry_ptr == nullptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
 }
 
 // push(x):true; push(y):true; pop():x
-static void test_stack_conflict_analyzer_001()
+static void test_stack_history_001()
 {
   constexpr char x = '\1';
   constexpr char y = '\2';
@@ -4880,13 +4171,6 @@ static void test_stack_conflict_analyzer_001()
   assert(try_push_x_ret_entry_ptr->is_partitionable());
   assert(try_push_y_ret_entry_ptr->is_partitionable());
   assert(try_pop_x_ret_entry_ptr->is_partitionable());
-
-  state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
-  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-
-  EntryPtr<state::Stack<N>> backtrack_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, false)};
-  assert(backtrack_entry_ptr == try_push_y_call_entry_ptr);
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(not t.check());
@@ -4898,7 +4182,7 @@ static void test_stack_conflict_analyzer_001()
 // entry id: 2, thread id: 0x4, call: try_pop()
 // entry id: 2, thread id: 0x4, return: ret: [ok: 1, value: x]
 // entry id: 1, thread id: 0x3, return: ret: 1
-static void test_stack_conflict_analyzer_002()
+static void test_stack_history_002()
 {
   constexpr char x = '\1';
   constexpr char y = '\2';
@@ -4932,13 +4216,6 @@ static void test_stack_conflict_analyzer_002()
   assert(try_push_y_ret_entry_ptr->op().partition() == y);
   assert(try_pop_x_ret_entry_ptr->op().partition() == x);
 
-  state::ConflictAnalyzer<state::Stack<N>> stack_conflict_analyzer;
-  stack_conflict_analyzer.linearize(try_push_x_call_entry_ptr);
-  stack_conflict_analyzer.linearize(try_push_y_call_entry_ptr);
-
-  EntryPtr<state::Stack<N>> backtrack_entry_ptr{stack_conflict_analyzer.analyze(try_pop_x_ret_entry_ptr, true)};
-  assert(backtrack_entry_ptr == nullptr);
-
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
 }
@@ -4953,7 +4230,7 @@ static void test_stack_conflict_analyzer_002()
 //
 //                                                  pop() : (true, x)     pop() : (true, z)
 //                                               |-------------------| |-------------------|
-static void test_stack_conflict_analyzer_003()
+static void test_stack_history_003()
 {
   constexpr char x = '\1';
   constexpr char y = '\2';
@@ -5078,123 +4355,7 @@ static void test_slice_001()
   assert(tester_1.check());
 }
 
-// Since every sub-history is linearizable, the entire history is linearizable:
-
-// Let x = '\0' and y = '\1'.
-//
-//   erase(x) : false     insert(y) : true
-// |------------------| |------------------|
-//
-//                                               contains(x) : true
-//                                 |------------------------------------------------|
-//
-//                                      contains(y) : false     insert(x) : true
-//                                    |---------------------| |------------------|
-static void parallel_linearizability_tester_000()
-{
-  constexpr unsigned number_of_partitions = 2U;
-
-  constexpr char x = '\0';
-  constexpr char y = '\1';
-
-  Log<state::Set> log{10U};
-
-  EntryPtr<state::Set> erase_x_call_entry_ptr, erase_x_ret_entry_ptr;
-  EntryPtr<state::Set> insert_x_call_entry_ptr, insert_x_ret_entry_ptr;
-  EntryPtr<state::Set> contains_x_call_entry_ptr, contains_x_ret_entry_ptr;
-  EntryPtr<state::Set> insert_y_call_entry_ptr, insert_y_ret_entry_ptr;
-  EntryPtr<state::Set> contains_y_call_entry_ptr, contains_y_ret_entry_ptr;
-
-  erase_x_call_entry_ptr = log.add_call(state::Set::make_erase_call(x));
-  erase_x_ret_entry_ptr = log.add_ret(erase_x_call_entry_ptr, state::Set::make_ret(false));
-  insert_y_call_entry_ptr = log.add_call(state::Set::make_insert_call(y));
-  contains_x_call_entry_ptr = log.add_call(state::Set::make_contains_call(x));
-  contains_y_call_entry_ptr = log.add_call(state::Set::make_contains_call(y));
-  insert_y_ret_entry_ptr = log.add_ret(insert_y_call_entry_ptr, state::Set::make_ret(true));
-  contains_y_ret_entry_ptr = log.add_ret(contains_y_call_entry_ptr, state::Set::make_ret(false));
-  insert_x_call_entry_ptr = log.add_call(state::Set::make_insert_call(x));
-  insert_x_ret_entry_ptr = log.add_ret(insert_x_call_entry_ptr, state::Set::make_ret(true));
-  contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(true));
-
-  ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(t.check());
-}
-
-// Since every sub-history is linearizable, the entire history is linearizable:
-//
-// Let x = '\0' and y = '\1'.
-//
-//   insert(x) : true
-// |------------------|
-//
-//      contains(y) : false
-//    |---------------------|
-//
-//         contains(x) : false
-//       |---------------------|
-static void parallel_linearizability_tester_001()
-{
-  constexpr unsigned number_of_partitions = 2U;
-
-  constexpr char x = '\0';
-  constexpr char y = '\1';
-
-  Log<state::Set> log{6U};
-
-  EntryPtr<state::Set> insert_x_call_entry_ptr, insert_x_ret_entry_ptr;
-  EntryPtr<state::Set> contains_y_call_entry_ptr, contains_y_ret_entry_ptr;
-  EntryPtr<state::Set> contains_x_call_entry_ptr, contains_x_ret_entry_ptr;
-
-  insert_x_call_entry_ptr = log.add_call(state::Set::make_insert_call(x));
-  contains_y_call_entry_ptr = log.add_call(state::Set::make_contains_call(y));
-  contains_x_call_entry_ptr = log.add_call(state::Set::make_contains_call(x));
-
-  insert_x_ret_entry_ptr = log.add_ret(insert_x_call_entry_ptr, state::Set::make_ret(true));
-  contains_y_ret_entry_ptr = log.add_ret(contains_y_call_entry_ptr, state::Set::make_ret(false));
-  contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(false));
-
-  ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(t.check());
-}
-
-// Since the sub-history of x is not linearizable, the entire history is not linearizable:
-//
-// Let x = '\0' and y = '\1'.
-//
-//   contains(x) : false 
-// |---------------------|
-//
-//      contains(y) : false
-//    |---------------------|
-//
-//          insert(x) : false
-//        |---------------------|
-static void parallel_linearizability_tester_002()
-{
-  constexpr unsigned number_of_partitions = 2U;
-
-  constexpr char x = '\0';
-  constexpr char y = '\1';
-
-  Log<state::Set> log{6U};
-
-  EntryPtr<state::Set> contains_x_call_entry_ptr, contains_x_ret_entry_ptr;
-  EntryPtr<state::Set> contains_y_call_entry_ptr, contains_y_ret_entry_ptr;
-  EntryPtr<state::Set> insert_x_call_entry_ptr, insert_x_ret_entry_ptr;
-
-  contains_x_call_entry_ptr = log.add_call(state::Set::make_contains_call(x));
-  contains_y_call_entry_ptr = log.add_call(state::Set::make_contains_call(y));
-  insert_x_call_entry_ptr = log.add_call(state::Set::make_insert_call(x));
-
-  contains_x_ret_entry_ptr = log.add_ret(contains_x_call_entry_ptr, state::Set::make_ret(false));
-  contains_y_ret_entry_ptr = log.add_ret(contains_y_call_entry_ptr, state::Set::make_ret(false));
-  insert_x_ret_entry_ptr = log.add_ret(insert_x_call_entry_ptr, state::Set::make_ret(false));
-
-  ParallelLinearizabilityTester<state::Set> t{log.info(), number_of_partitions};
-  assert(not t.check());
-}
-
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
 
 #ifdef __clang__
 #define INIT_THREAD_ID "0x0"
@@ -5269,7 +4430,7 @@ static void concurrent_log()
   assert(entry_ptr->next == nullptr);
   assert(entry_ptr->match() == insert_x_call_entry_ptr);
 
-  ParallelLinearizabilityTester<state::Set> t{log.info(), 1U};
+  LinearizabilityTester<state::Set> t{log.info()};
   assert(not t.check());
 }
 
@@ -5316,6 +4477,18 @@ static void returns_always_false_worker(
   }
 }
 
+template<class F, class ...Args>
+void start_threads(unsigned number_of_threads, F&& f, Args&&... args)
+{
+  std::vector<Thread> threads(number_of_threads);
+
+  for (Thread& thread : threads)
+    thread = Thread(std::forward<F>(f), std::forward<Args>(args)...);
+
+  for (Thread& thread : threads)
+    thread.join();
+}
+
 /// The first "insert" operation should be always marked as non-linearizable.
 static void fuzzy_functional_test()
 {
@@ -5329,8 +4502,7 @@ static void fuzzy_functional_test()
   start_threads(number_of_threads, returns_always_false_worker,
     std::cref(worker_configuration), std::ref(concurrent_log));
 
-  const unsigned number_of_partitions{worker_configuration.max_value + 1U};
-  ParallelLinearizabilityTester<state::Set> tester{concurrent_log.info(), number_of_partitions};
+  LinearizabilityTester<state::Set> tester{concurrent_log.info()};
 
   assert(not tester.check());
 }
@@ -5338,7 +4510,7 @@ static void fuzzy_functional_test()
 template<class S>
 std::string mem_usage(const Result<S>& result)
 {
-#ifdef _CLT_MEM_USAGE_
+#ifdef _LT_MEM_USAGE_
   static std::string s_vm = "[Virtual memory: ";
   static std::string s_rss = " MiB; Resident set size: ";
   static std::string s_end = " MiB]";
@@ -5427,31 +4599,9 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, true> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -5460,46 +4610,13 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, 1U> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, false> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
   std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, false, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Stack<N>> log_copy{log_info};
-    LinearizabilityTester<state::Stack<N>, true, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 #endif
 
@@ -5584,7 +4701,7 @@ static void tbb_worker(
   }
 }
 
-static void tbb_functional_test(bool use_parallel, bool is_linearizable)
+static void tbb_functional_test(bool is_linearizable)
 {
   constexpr unsigned number_of_threads = 4U;
   constexpr WorkerConfiguration worker_configuration = {'\27', 1000U};
@@ -5600,27 +4717,13 @@ static void tbb_functional_test(bool use_parallel, bool is_linearizable)
     assert(pair.second);
   }
 
-  if (use_parallel)
-  {
-    // create history
-    start_threads(number_of_threads, tbb_comprehensive_worker, std::cref(worker_configuration),
-      std::ref(concurrent_log), std::ref(concurrent_set));
+  // create history
+  start_threads(number_of_threads, tbb_worker, std::cref(worker_configuration),
+    std::ref(concurrent_log), std::ref(concurrent_set));
 
-    constexpr unsigned number_of_partitions{worker_configuration.max_value + 1U};
-    ParallelLinearizabilityTester<state::Set> tester{concurrent_log.info(), number_of_partitions};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  else
-  {
-    // create history
-    start_threads(number_of_threads, tbb_worker, std::cref(worker_configuration),
-      std::ref(concurrent_log), std::ref(concurrent_set));
-
-    LinearizabilityTester<state::Set> tester{concurrent_log.info()};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
+  LinearizabilityTester<state::Set> tester{concurrent_log.info()};
+  tester.check(result);
+  assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
 }
 
 static void tbb_experiment(bool is_linearizable)
@@ -5656,42 +4759,9 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 0U, ONBitsetHasher> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache, O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -5700,46 +4770,13 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 1U> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
   std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache, O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 
 /// Run as many different kinds of linearizability testers as possible
@@ -5776,42 +4813,9 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 2U, ONBitsetHasher> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 1U, ONBitsetHasher> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 0U, ONBitsetHasher> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache, O(N) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -5820,46 +4824,13 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 1U> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
     tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
   std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, false, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, disabled state cache, O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, 2U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, enabled state cache (LRU=on): " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    LinearizabilityTester<state::Set, true, 0U> tester{log_copy.info(), max_duration};
-    tester.check(result);
-    assert(result.is_aborted() or result.is_linearizable() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Conflict-driven, disabled state cache: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 
   const unsigned number_of_partitions{worker_configuration.max_value + 1U};
 
@@ -5882,16 +4853,6 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
   std::cout << "Compositional: " << seconds.count() << " s " << mem_usage(result) << std::endl;
-
-  start = std::chrono::system_clock::now();
-  {
-    Log<state::Set> log_copy{log_info};
-    ParallelLinearizabilityTester<state::Set> parallel_tester{log_copy.info(), number_of_partitions, number_of_threads};
-    assert(parallel_tester.check() == is_linearizable);
-  }
-  end = std::chrono::system_clock::now();
-  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Parallel: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 #endif
 
@@ -5930,7 +4891,8 @@ static void test_parse_jepsen_etcd()
 
   ostream << jepsen_etcd_parser.log.info();
 
-  // for now, we ignore thread ids
+  // for now, we ignore thread ids because they are not
+  // essential for the linearizability algorithm
   assert(ostream.str() == "log info, number of entries: 20\n"
     "entry id: 0, thread id: 0x0, call: read()\n"
     "entry id: 1, thread id: 0x0, call: write(4)\n"
@@ -5953,12 +4915,14 @@ static void test_parse_jepsen_etcd()
     "entry id: 7, thread id: 0x0, return: write() : pending\n"
     "entry id: 8, thread id: 0x0, return: cas() : pending\n");
 
-  LinearizabilityTester<state::Atomic, false> t{jepsen_etcd_parser.log.info()};
+  LinearizabilityTester<state::Atomic> t{jepsen_etcd_parser.log.info()};
 
   // failed CAS cannot be linearized
   assert(not t.check());
 }
 
+// Cache eviction in the linearizability tester must be disabled for
+// this test to complete within a reasonable amount of time.
 static void test_jepsen_etcd()
 {
   static constexpr char s_etcd_prefix[] = "jepsen/etcd_";
@@ -5994,7 +4958,7 @@ static void test_jepsen_etcd()
     JepsenEtcdParser jepsen_etcd_parser;
     jepsen_etcd_parser.parse(file);
 
-    LinearizabilityTester<state::Atomic, false> t{jepsen_etcd_parser.log.info()};
+    LinearizabilityTester<state::Atomic> t{jepsen_etcd_parser.log.info()};
     t.check(result);
     assert(result.is_linearizable() == expect);
 
@@ -6060,19 +5024,15 @@ int main()
 
   test_021();
 
-  test_stack_conflict_analyzer_000();
-  test_stack_conflict_analyzer_001();
-  test_stack_conflict_analyzer_002();
-  test_stack_conflict_analyzer_003();
+  test_stack_history_000();
+  test_stack_history_001();
+  test_stack_history_002();
+  test_stack_history_003();
 
   test_slice_000();
   test_slice_001();
 
-  parallel_linearizability_tester_000();
-  parallel_linearizability_tester_001();
-  parallel_linearizability_tester_002();
-
-#ifdef _CLT_DEBUG_
+#ifdef _LT_DEBUG_
   debug();
 #endif
 
@@ -6091,8 +5051,7 @@ int main()
 
 #ifdef _ENABLE_TBB_
   for (bool a : {true, false})
-    for (bool b : {true, false})
-      tbb_functional_test(a, b);
+    tbb_functional_test(a);
 
   tbb_comprehensive_experiment(true);
   tbb_comprehensive_experiment(false);

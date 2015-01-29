@@ -10,6 +10,10 @@ TBB_LIB=/path/to/tbb/lib
 export DYLD_LIBRARY_PATH=${EMBB_LIB}:${TBB_LIB}
 export LD_LIBRARY_PATH=${EMBB_LIB}:${TBB_LIB}
 
+etcd-test:
+	${CC} ${CCFLAGS} -lpthread lt.cc -o lt-etcd-test
+	./lt-etcd-test
+
 tbb-test:
 	${CC} ${CCFLAGS} -D_ENABLE_TBB_ -L${TBB_LIB} -I${TBB_INCLUDE} -lpthread -ltbb lt.cc -o lt-tbb-test
 	./lt-tbb-test
