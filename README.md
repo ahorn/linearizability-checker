@@ -5,15 +5,19 @@ of the following desirable properties: consistency (C), availability (A) and par
 tolerance (P). Crucially, the "C" in "CAP" is identical to the well-known concept of
 [linearizability][linearizability]. The intuition behind linearizability is that all
 operations in a so-called <em>history</em> can be reordered along a timeline such that
-a given sequential specification holds. So given a history and sequential specification,
+a given sequential specification holds. Given a history and sequential specification,
 a <em>linearizability tester</em> checks whether there exists such a reordering.
 
-In general, checking linearizability is [NP-complete][NP-complete]. Given the high
-computational complexity of this problem, writing an efficient linearizability tester
-is therefore difficult. This is motivation to experimentally compare various techniques
-to find out what works well in practice. This source code repository shows the humble
-beginnings of such an endeavour, and we welcome people to join the discussion and
-bounce off ideas. It's a hard problem, and therefore should be fun to work on!
+In general, checking linearizability is [NP-complete][NP-complete] and so writing an
+efficient linearizability tester is inherently difficult. This is motivation to
+experimentally compare various techniques to find out what works well in practice -
+the thrust behind this source code repository.
+
+For our experiments, we collected histories from Intel's [Threading Building Blocks][TBB]
+(TBB) library, Siemens's [Embedded Multicore Building Blocks][EMBB] (EMBB) library, and
+the distributed key-value store [etcd][etcd] using [Jepsen][Jepsen]. The result of our
+work is a linearizability tester that can check CP distributed systems on which current
+implementations timeout or run out of memory.
 
 ## Example
 
@@ -57,25 +61,27 @@ To date, however, there has been surprisingly little work done in systematically
 evaluating and comparing possible linearizability algorithms, the various ways
 they can be implemented, or trying out ideas from the SAT solver community.
 
-## Experiments
+## Results
 
-We setup experiments in which we looked at things like hashing, non-chronological
-backtracking, partitioning schemes and parallelization. For our experiments, we
-collected histories from three sources: Intel's [Threading Building Blocks][TBB] (TBB)
-library, Siemens's [Embedded Multicore Building Blocks][EMBB] (EMBB) library, and the
-[etcd][etcd] distributed key-value store (collected via [Jepsen][Jepsen]).
-
-Based on these experiments, this repository gives the source code of a tool that
-combines the techniques we have found so far to be most effective. To compile
-our source code, a C++11-compliant compiler is required. For example,
+This repository gives the source code of a tool that combines techniques that we
+found to be most effective in checking linearizability. To compile our source code,
+a C++11-compliant compiler is required. Our experiments with [etcd][etcd] can be
+easily run on the command line:
 
     $ make etcd-test 
 
-compiles and then runs our tool against the collected etcd histories. This completes
-in a few seconds, whereas [Knossos][Knossos] would take a couple of hours.
+This runs our tool against 100 collected etcd histories, and completes in a few
+seconds. In contrast, [Knossos][Knossos] times out on benchmark `7` and `99`, and
+runs out of memory on benchmarks `40`, `57`, `85` and `97`.
 
-In summary, the results of our work look promising and we warmly invite any feedback
-or patches that can further advance the field.
+## Conclusion
+
+We have implemented a new linearizability tester that combines insights from the
+literature with quantitative data collected through extensive experiments on TBB,
+EMBB and etcd. Our linearizability tester can solve instances on which current
+implementations timeout or run out of memory. Of course, there are always things
+to improve, and we warmly invite any form of feedback, questions etc. We also
+welcome patches (including benchmarks) as Github pull requests.
 
 [CAP]: http://en.wikipedia.org/wiki/CAP_theorem
 [linearizability]: http://dl.acm.org/citation.cfm?id=78972
