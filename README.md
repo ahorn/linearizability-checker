@@ -72,7 +72,8 @@ easily run on the command line:
 
 This runs our tool against 100 collected etcd histories, and completes in a few
 seconds. In contrast, [Knossos][Knossos] times out on benchmark 7 and 99, and
-runs out of memory on 40, 57, 85 and 97.
+runs out of memory on 40, 57, 85 and 97 (all benchmarks can be found in the
+[jepsen directory][jepsen-benchmarks]).
 
 By downloading, compiling and configuring TBB and EMBB in the [Makefile][Makefile],
 you will also be able to run the other experiments.
@@ -100,3 +101,4 @@ We also welcome patches (including benchmarks) as Github pull requests.
 [Knossos]: https://github.com/aphyr/knossos
 [Jepsen]: https://github.com/aphyr/jepsen
 [Makefile]: https://github.com/ahorn/linearizability-tester/blob/master/Makefile
+[jepsen-benchmarks]: https://github.com/ahorn/linearizability-tester/tree/master/jepsen
