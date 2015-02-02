@@ -80,11 +80,11 @@ you will also be able to run the other experiments.
 ## Conclusion
 
 We have implemented a new linearizability tester that combines insights from the
-literature with quantitative data collected through extensive experiments on TBB,
-EMBB and etcd. Our linearizability tester can solve instances on which current
-implementations timeout or run out of memory. Of course, there are always things
-to improve, and we warmly invite any form of feedback, questions etc. We also
-welcome patches (including benchmarks) as Github pull requests.
+literature with quantitative data collected through extensive experiments on [TBB][TBB],
+[EMBB][EMBB] and [etcd][etcd]. Our linearizability tester can solve instances on
+which current implementations timeout or run out of memory. Of course, there are
+always things to improve, and we warmly invite any form of feedback, questions etc.
+We also welcome patches (including benchmarks) as Github pull requests.
 
 [CAP]: http://en.wikipedia.org/wiki/CAP_theorem
 [linearizability]: http://dl.acm.org/citation.cfm?id=78972
