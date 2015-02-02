@@ -1432,7 +1432,7 @@ private:
   }
 
   Sublogs m_sublogs;
-  std::atomic<unsigned> m_current_partition;
+  unsigned m_current_partition;
 
 public:
   const Entry<S> log_head;
@@ -1456,7 +1456,9 @@ public:
   {
     static LogInfo<S> s_empty_log;
 
-    unsigned partition = m_current_partition.fetch_add(1U, std::memory_order_relaxed);
+    unsigned partition = m_current_partition;
+    ++m_current_partition;
+
     if (partition < number_of_partitions)
       return m_sublogs[partition];
 
