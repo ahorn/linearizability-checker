@@ -1,0 +1,1398 @@
+
+lein test jepsen.system.etcd-test
+INFO  jepsen.os.debian - :n2 setting up debian
+INFO  jepsen.os.debian - :n3 setting up debian
+INFO  jepsen.os.debian - :n4 setting up debian
+INFO  jepsen.os.debian - :n5 setting up debian
+INFO  jepsen.os.debian - :n1 setting up debian
+INFO  jepsen.os.debian - :n2 debian set up
+INFO  jepsen.os.debian - :n5 debian set up
+INFO  jepsen.os.debian - :n3 debian set up
+INFO  jepsen.os.debian - :n1 debian set up
+INFO  jepsen.os.debian - :n4 debian set up
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - Running nodes: {:n1 false, :n2 false, :n3 false, :n4 false, :n5 false}
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n1 starting etcd
+INFO  jepsen.system.etcd - :n2 starting etcd
+INFO  jepsen.system.etcd - :n3 starting etcd
+INFO  jepsen.system.etcd - :n5 starting etcd
+INFO  jepsen.system.etcd - :n4 starting etcd
+INFO  jepsen.system.etcd - Running nodes: {:n1 true, :n2 true, :n3 true, :n4 true, :n5 true}
+INFO  jepsen.system.etcd - :n4 etcd ready
+INFO  jepsen.system.etcd - :n2 etcd ready
+INFO  jepsen.system.etcd - :n5 etcd ready
+INFO  jepsen.system.etcd - :n1 etcd ready
+INFO  jepsen.system.etcd - :n3 etcd ready
+INFO  jepsen.core - Worker 4 starting
+INFO  jepsen.core - Worker 3 starting
+INFO  jepsen.core - Worker 2 starting
+INFO  jepsen.core - Worker 1 starting
+INFO  jepsen.core - Worker 0 starting
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	nil
+INFO  jepsen.util - 2	:ok	:read	nil
+INFO  jepsen.util - 1	:invoke	:write	2
+INFO  jepsen.util - 4	:invoke	:write	1
+INFO  jepsen.util - 0	:invoke	:cas	[1 0]
+INFO  jepsen.util - 1	:ok	:write	2
+INFO  jepsen.util - 4	:ok	:write	1
+INFO  jepsen.util - 0	:fail	:cas	[1 0]
+INFO  jepsen.util - 3	:invoke	:write	1
+INFO  jepsen.util - 2	:invoke	:cas	[3 2]
+INFO  jepsen.util - 1	:invoke	:write	2
+INFO  jepsen.util - 2	:fail	:cas	[3 2]
+INFO  jepsen.util - 1	:ok	:write	2
+INFO  jepsen.util - 3	:ok	:write	1
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	2
+INFO  jepsen.util - 0	:ok	:read	2
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	2
+INFO  jepsen.util - 1	:invoke	:read	nil
+INFO  jepsen.util - 1	:ok	:read	2
+INFO  jepsen.util - 3	:invoke	:write	1
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 0	:invoke	:cas	[2 0]
+INFO  jepsen.util - 4	:ok	:read	2
+INFO  jepsen.util - 3	:ok	:write	1
+INFO  jepsen.util - 0	:fail	:cas	[2 0]
+INFO  jepsen.util - 2	:invoke	:write	0
+INFO  jepsen.util - 2	:ok	:write	0
+INFO  jepsen.util - 1	:invoke	:cas	[3 0]
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	0
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	0
+INFO  jepsen.util - 1	:fail	:cas	[3 0]
+INFO  jepsen.util - 0	:invoke	:write	2
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 0	:ok	:write	2
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 2	:ok	:write	2
+INFO  jepsen.util - 4	:invoke	:cas	[0 1]
+INFO  jepsen.util - 3	:invoke	:cas	[4 0]
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n2 :n5}, :n4 #{:n2 :n5}, :n3 #{:n2 :n5}, :n5 #{:n3 :n4 :n1}, :n2 #{:n3 :n4 :n1}}"
+INFO  jepsen.util - 1	:invoke	:read	nil
+INFO  jepsen.util - 1	:ok	:read	2
+INFO  jepsen.util - 0	:invoke	:write	4
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	2
+INFO  jepsen.util - 4	:info	:cas	:timed-out
+INFO  jepsen.util - 3	:info	:cas	:timed-out
+INFO  jepsen.util - 1	:invoke	:cas	[4 0]
+INFO  jepsen.util - 0	:info	:write	:timed-out
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	2
+INFO  jepsen.util - 9	:invoke	:write	4
+INFO  jepsen.util - 8	:invoke	:cas	[3 4]
+INFO  jepsen.util - 1	:info	:cas	:timed-out
+INFO  jepsen.util - 5	:invoke	:write	1
+INFO  jepsen.util - 8	:fail	:cas	[3 4]
+INFO  jepsen.util - 2	:invoke	:cas	[1 0]
+INFO  jepsen.util - 2	:ok	:cas	[1 0]
+INFO  jepsen.util - 5	:ok	:write	1
+INFO  jepsen.util - 9	:info	:write	:timed-out
+INFO  jepsen.util - 6	:invoke	:write	3
+INFO  jepsen.util - 8	:invoke	:write	4
+INFO  jepsen.util - 8	:ok	:write	4
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	4
+INFO  jepsen.util - 5	:invoke	:write	4
+INFO  jepsen.util - 5	:ok	:write	4
+INFO  jepsen.util - 14	:invoke	:write	1
+INFO  jepsen.util - 6	:info	:write	:timed-out
+INFO  jepsen.util - 8	:invoke	:write	0
+INFO  jepsen.util - 2	:invoke	:cas	[3 1]
+INFO  jepsen.util - 8	:ok	:write	0
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	0
+INFO  jepsen.util - 14	:info	:write	:timed-out
+INFO  jepsen.util - 2	:fail	:cas	[3 1]
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - 11	:invoke	:write	1
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - 8	:invoke	:cas	[2 3]
+INFO  jepsen.util - 8	:fail	:cas	[2 3]
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	0
+INFO  jepsen.util - 19	:invoke	:read	nil
+INFO  jepsen.util - 19	:ok	:read	2
+INFO  jepsen.util - 2	:invoke	:write	4
+INFO  jepsen.util - 11	:info	:write	:timed-out
+INFO  jepsen.util - 2	:ok	:write	4
+INFO  jepsen.util - 8	:invoke	:cas	[2 3]
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	4
+INFO  jepsen.util - 19	:invoke	:read	nil
+INFO  jepsen.util - 19	:ok	:read	2
+INFO  jepsen.util - 8	:fail	:cas	[2 3]
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	4
+INFO  jepsen.util - 2	:invoke	:write	1
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	4
+INFO  jepsen.util - 19	:invoke	:write	2
+INFO  jepsen.util - 8	:invoke	:write	2
+INFO  jepsen.util - 16	:invoke	:cas	[2 3]
+INFO  jepsen.util - 2	:info	:write	:timed-out
+INFO  jepsen.util - 5	:invoke	:cas	[2 1]
+INFO  jepsen.util - 19	:info	:write	:timed-out
+INFO  jepsen.util - 8	:info	:write	:timed-out
+INFO  jepsen.util - 16	:info	:cas	:timed-out
+INFO  jepsen.util - 7	:invoke	:write	0
+INFO  jepsen.util - 5	:info	:cas	:timed-out
+INFO  jepsen.util - 24	:invoke	:cas	[3 1]
+INFO  jepsen.util - 13	:invoke	:read	nil
+INFO  jepsen.util - 13	:ok	:read	4
+INFO  jepsen.util - 7	:ok	:write	0
+INFO  jepsen.util - 24	:ok	:cas	[3 1]
+INFO  jepsen.util - 21	:invoke	:cas	[3 1]
+INFO  jepsen.util - 21	:fail	:cas	[3 1]
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	1
+INFO  jepsen.util - 13	:invoke	:write	4
+INFO  jepsen.util - 7	:invoke	:write	3
+INFO  jepsen.util - 24	:invoke	:read	nil
+INFO  jepsen.util - 24	:ok	:read	1
+INFO  jepsen.util - 21	:invoke	:cas	[1 4]
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n5 #{:n3 :n1}, :n2 #{:n3 :n1}, :n4 #{:n3 :n1}, :n1 #{:n4 :n2 :n5}, :n3 #{:n4 :n2 :n5}}"
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	1
+INFO  jepsen.util - 13	:info	:write	:timed-out
+INFO  jepsen.util - 7	:info	:write	:timed-out
+INFO  jepsen.util - 24	:invoke	:read	nil
+INFO  jepsen.util - 24	:ok	:read	1
+INFO  jepsen.util - 21	:info	:cas	:timed-out
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	1
+INFO  jepsen.util - 18	:invoke	:read	nil
+INFO  jepsen.util - 18	:ok	:read	1
+INFO  jepsen.util - 12	:invoke	:cas	[0 2]
+INFO  jepsen.util - 24	:invoke	:cas	[4 1]
+INFO  jepsen.util - 26	:invoke	:write	3
+INFO  jepsen.util - 24	:fail	:cas	[4 1]
+INFO  jepsen.util - 26	:ok	:write	3
+INFO  jepsen.util - 10	:invoke	:cas	[1 3]
+INFO  jepsen.util - 18	:invoke	:read	nil
+INFO  jepsen.util - 18	:ok	:read	3
+INFO  jepsen.util - 12	:info	:cas	:timed-out
+INFO  jepsen.util - 24	:invoke	:write	3
+INFO  jepsen.util - 24	:ok	:write	3
+INFO  jepsen.util - 26	:invoke	:write	3
+INFO  jepsen.util - 26	:ok	:write	3
+INFO  jepsen.util - 10	:info	:cas	:timed-out
+INFO  jepsen.util - 18	:invoke	:read	nil
+INFO  jepsen.util - 18	:ok	:read	3
+INFO  jepsen.util - 17	:invoke	:write	1
+INFO  jepsen.util - 17	:info	:write	:timed-out
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.core - nemesis done
+INFO  jepsen.util - 24	:invoke	:read	nil
+INFO  jepsen.core - Worker 1 done
+INFO  jepsen.core - Worker 0 done
+INFO  jepsen.core - Worker 3 done
+INFO  jepsen.core - Worker 2 done
+INFO  jepsen.util - 24	:ok	:read	3
+INFO  jepsen.core - Worker 4 done
+INFO  jepsen.core - Run complete, writing
+INFO  jepsen.core - Analyzing
+INFO  knossos.core - [89 / 166] 878 extant worlds, 19000 visited/s, 1942 skipped/s, hitrate 0.093 cache size 11925
+INFO  knossos.core - [89 / 166] 993 extant worlds, 42385 visited/s, 5119 skipped/s, hitrate 0.108 cache size 36694
+INFO  knossos.core - [89 / 166] 1042 extant worlds, 31575 visited/s, 4145 skipped/s, hitrate 0.116 cache size 57621
+INFO  knossos.core - [89 / 166] 1529 extant worlds, 31025 visited/s, 3791 skipped/s, hitrate 0.109 cache size 75370
+INFO  knossos.core - [89 / 166] 2498 extant worlds, 32542 visited/s, 4274 skipped/s, hitrate 0.116 cache size 95281
+INFO  knossos.core - [89 / 166] 2872 extant worlds, 31450 visited/s, 4049 skipped/s, hitrate 0.114 cache size 113989
+INFO  knossos.core - [89 / 166] 3303 extant worlds, 44008 visited/s, 5074 skipped/s, hitrate 0.103 cache size 138697
+INFO  knossos.core - [89 / 166] 3415 extant worlds, 40986 visited/s, 5112 skipped/s, hitrate 0.111 cache size 160689
+INFO  knossos.core - [89 / 166] 3401 extant worlds, 45548 visited/s, 5429 skipped/s, hitrate 0.107 cache size 187033
+INFO  knossos.core - [89 / 166] 3632 extant worlds, 43073 visited/s, 5477 skipped/s, hitrate 0.113 cache size 210607
+INFO  knossos.core - [89 / 166] 3936 extant worlds, 34690 visited/s, 4704 skipped/s, hitrate 0.119 cache size 230041
+INFO  knossos.core - [89 / 166] 3764 extant worlds, 32551 visited/s, 4252 skipped/s, hitrate 0.116 cache size 249532
+INFO  knossos.core - [89 / 166] 3771 extant worlds, 35859 visited/s, 4642 skipped/s, hitrate 0.115 cache size 270323
+INFO  knossos.core - [89 / 166] 3971 extant worlds, 28672 visited/s, 3722 skipped/s, hitrate 0.115 cache size 287092
+INFO  knossos.core - [89 / 166] 4000 extant worlds, 25935 visited/s, 3652 skipped/s, hitrate 0.123 cache size 302448
+INFO  knossos.core - [89 / 166] 4126 extant worlds, 31995 visited/s, 4708 skipped/s, hitrate 0.128 cache size 319739
+INFO  knossos.core - [89 / 166] 4107 extant worlds, 34450 visited/s, 4766 skipped/s, hitrate 0.122 cache size 337152
+INFO  knossos.core - [89 / 166] 3996 extant worlds, 29327 visited/s, 4012 skipped/s, hitrate 0.120 cache size 353899
+INFO  knossos.core - [89 / 166] 4031 extant worlds, 41214 visited/s, 5230 skipped/s, hitrate 0.113 cache size 377216
+INFO  knossos.core - [89 / 166] 4025 extant worlds, 33295 visited/s, 4612 skipped/s, hitrate 0.122 cache size 395495
+INFO  knossos.core - [89 / 166] 3956 extant worlds, 30897 visited/s, 4403 skipped/s, hitrate 0.125 cache size 411216
+INFO  knossos.core - [89 / 166] 4053 extant worlds, 30488 visited/s, 4219 skipped/s, hitrate 0.122 cache size 427885
+INFO  knossos.core - [89 / 166] 4036 extant worlds, 38408 visited/s, 5120 skipped/s, hitrate 0.118 cache size 448532
+INFO  knossos.core - [89 / 166] 4364 extant worlds, 28528 visited/s, 4169 skipped/s, hitrate 0.128 cache size 465131
+INFO  knossos.core - [89 / 166] 4330 extant worlds, 26723 visited/s, 4159 skipped/s, hitrate 0.135 cache size 477856
+INFO  knossos.core - [89 / 166] 4415 extant worlds, 30094 visited/s, 4184 skipped/s, hitrate 0.122 cache size 493367
+INFO  knossos.core - [89 / 166] 4288 extant worlds, 35438 visited/s, 4964 skipped/s, hitrate 0.123 cache size 510242
+INFO  knossos.core - [89 / 166] 4455 extant worlds, 32172 visited/s, 4532 skipped/s, hitrate 0.123 cache size 528261
+INFO  knossos.core - [89 / 166] 4554 extant worlds, 27527 visited/s, 3930 skipped/s, hitrate 0.125 cache size 542702
+INFO  knossos.core - [89 / 166] 4613 extant worlds, 18005 visited/s, 2555 skipped/s, hitrate 0.124 cache size 552243
+INFO  knossos.core - [89 / 166] 4919 extant worlds, 24055 visited/s, 3764 skipped/s, hitrate 0.135 cache size 564161
+INFO  knossos.core - [89 / 166] 4495 extant worlds, 13504 visited/s, 2275 skipped/s, hitrate 0.144 cache size 570551
+INFO  knossos.core - [89 / 166] 4185 extant worlds, 25004 visited/s, 3449 skipped/s, hitrate 0.121 cache size 583007
+INFO  knossos.core - [89 / 166] 4377 extant worlds, 25185 visited/s, 3603 skipped/s, hitrate 0.125 cache size 598182
+INFO  knossos.core - [89 / 166] 4740 extant worlds, 26113 visited/s, 3672 skipped/s, hitrate 0.123 cache size 611962
+INFO  knossos.core - [89 / 166] 4742 extant worlds, 24189 visited/s, 3362 skipped/s, hitrate 0.122 cache size 626423
+INFO  knossos.core - [89 / 166] 5296 extant worlds, 28359 visited/s, 3930 skipped/s, hitrate 0.122 cache size 642708
+INFO  knossos.core - [89 / 166] 5660 extant worlds, 34325 visited/s, 4829 skipped/s, hitrate 0.123 cache size 660317
+INFO  knossos.core - [89 / 166] 5326 extant worlds, 35329 visited/s, 4723 skipped/s, hitrate 0.118 cache size 678694
+INFO  knossos.core - [89 / 166] 5281 extant worlds, 35899 visited/s, 4731 skipped/s, hitrate 0.116 cache size 698208
+INFO  knossos.core - [89 / 166] 5351 extant worlds, 32824 visited/s, 4198 skipped/s, hitrate 0.113 cache size 716321
+INFO  knossos.core - [89 / 166] 5327 extant worlds, 35740 visited/s, 4829 skipped/s, hitrate 0.119 cache size 735081
+INFO  knossos.core - [89 / 166] 5343 extant worlds, 32397 visited/s, 4244 skipped/s, hitrate 0.116 cache size 753977
+INFO  knossos.core - [89 / 166] 5465 extant worlds, 38337 visited/s, 5037 skipped/s, hitrate 0.116 cache size 774013
+INFO  knossos.core - [89 / 166] 5422 extant worlds, 30860 visited/s, 4301 skipped/s, hitrate 0.122 cache size 788663
+INFO  knossos.core - [89 / 166] 6142 extant worlds, 27513 visited/s, 4212 skipped/s, hitrate 0.133 cache size 801639
+INFO  knossos.core - [89 / 166] 6163 extant worlds, 24994 visited/s, 3455 skipped/s, hitrate 0.121 cache size 815356
+INFO  knossos.core - [89 / 166] 6736 extant worlds, 25293 visited/s, 3462 skipped/s, hitrate 0.120 cache size 830175
+INFO  knossos.core - [89 / 166] 6639 extant worlds, 34693 visited/s, 4604 skipped/s, hitrate 0.117 cache size 848790
+INFO  knossos.core - [89 / 166] 7064 extant worlds, 23873 visited/s, 3322 skipped/s, hitrate 0.122 cache size 863580
+INFO  knossos.core - [89 / 166] 6963 extant worlds, 26498 visited/s, 3718 skipped/s, hitrate 0.123 cache size 880110
+INFO  knossos.core - [89 / 166] 7027 extant worlds, 24971 visited/s, 3422 skipped/s, hitrate 0.121 cache size 895123
+INFO  knossos.core - [89 / 166] 6900 extant worlds, 38012 visited/s, 5027 skipped/s, hitrate 0.117 cache size 915751
+INFO  knossos.core - [89 / 166] 6838 extant worlds, 32995 visited/s, 4628 skipped/s, hitrate 0.123 cache size 931451
+INFO  knossos.core - [89 / 166] 6659 extant worlds, 30351 visited/s, 4309 skipped/s, hitrate 0.124 cache size 945158
+INFO  knossos.core - [89 / 166] 6614 extant worlds, 27060 visited/s, 3858 skipped/s, hitrate 0.125 cache size 960869
+INFO  knossos.core - [89 / 166] 6575 extant worlds, 26349 visited/s, 3691 skipped/s, hitrate 0.123 cache size 976370
+INFO  knossos.core - [89 / 166] 6616 extant worlds, 29785 visited/s, 4231 skipped/s, hitrate 0.124 cache size 991345
+INFO  knossos.core - [89 / 166] 6701 extant worlds, 31729 visited/s, 4794 skipped/s, hitrate 0.131 cache size 1006024
+INFO  knossos.core - [89 / 166] 6508 extant worlds, 31921 visited/s, 4265 skipped/s, hitrate 0.118 cache size 1022417
+INFO  knossos.core - [89 / 166] 6501 extant worlds, 30279 visited/s, 4309 skipped/s, hitrate 0.125 cache size 1038226
+INFO  knossos.core - [89 / 166] 6477 extant worlds, 29530 visited/s, 4229 skipped/s, hitrate 0.125 cache size 1052487
+INFO  knossos.core - [89 / 166] 6471 extant worlds, 28974 visited/s, 4034 skipped/s, hitrate 0.122 cache size 1067422
+INFO  knossos.core - [89 / 166] 6422 extant worlds, 27522 visited/s, 4057 skipped/s, hitrate 0.128 cache size 1081358
+INFO  knossos.core - [89 / 166] 6497 extant worlds, 15356 visited/s, 2605 skipped/s, hitrate 0.145 cache size 1088773
+INFO  knossos.core - [89 / 166] 6480 extant worlds, 6052 visited/s, 898 skipped/s, hitrate 0.129 cache size 1091841
+INFO  knossos.core - [89 / 166] 6726 extant worlds, 17886 visited/s, 2672 skipped/s, hitrate 0.130 cache size 1101417
+INFO  knossos.core - [89 / 166] 6456 extant worlds, 26910 visited/s, 3812 skipped/s, hitrate 0.124 cache size 1115382
+INFO  knossos.core - [89 / 166] 6433 extant worlds, 13464 visited/s, 1935 skipped/s, hitrate 0.126 cache size 1122618
+INFO  knossos.core - [89 / 166] 6897 extant worlds, 5147 visited/s, 689 skipped/s, hitrate 0.118 cache size 1125738
+INFO  knossos.core - [89 / 166] 6898 extant worlds, 29968 visited/s, 4259 skipped/s, hitrate 0.124 cache size 1142788
+INFO  knossos.core - [89 / 166] 6970 extant worlds, 19566 visited/s, 3170 skipped/s, hitrate 0.139 cache size 1152762
+INFO  knossos.core - [89 / 166] 6862 extant worlds, 25628 visited/s, 3844 skipped/s, hitrate 0.130 cache size 1166507
+INFO  knossos.core - [89 / 166] 6873 extant worlds, 21452 visited/s, 3390 skipped/s, hitrate 0.136 cache size 1177595
+INFO  knossos.core - [89 / 166] 7051 extant worlds, 17922 visited/s, 2759 skipped/s, hitrate 0.133 cache size 1187626
+INFO  knossos.core - [89 / 166] 6918 extant worlds, 27704 visited/s, 3745 skipped/s, hitrate 0.119 cache size 1201693
+INFO  knossos.core - [89 / 166] 6976 extant worlds, 19461 visited/s, 3038 skipped/s, hitrate 0.135 cache size 1211844
+INFO  knossos.core - [89 / 166] 6912 extant worlds, 21714 visited/s, 3416 skipped/s, hitrate 0.136 cache size 1222175
+INFO  knossos.core - [89 / 166] 6865 extant worlds, 20911 visited/s, 3329 skipped/s, hitrate 0.137 cache size 1232254
+INFO  knossos.core - [89 / 166] 6841 extant worlds, 19233 visited/s, 2960 skipped/s, hitrate 0.133 cache size 1242311
+INFO  knossos.core - [89 / 166] 6894 extant worlds, 17441 visited/s, 2848 skipped/s, hitrate 0.140 cache size 1252025
+INFO  knossos.core - [89 / 166] 6857 extant worlds, 21209 visited/s, 3375 skipped/s, hitrate 0.137 cache size 1262921
+INFO  knossos.core - [89 / 166] 7236 extant worlds, 15878 visited/s, 2517 skipped/s, hitrate 0.137 cache size 1271675
+INFO  knossos.core - [89 / 166] 6959 extant worlds, 20320 visited/s, 2929 skipped/s, hitrate 0.126 cache size 1282230
+INFO  knossos.core - [89 / 166] 6929 extant worlds, 23807 visited/s, 3761 skipped/s, hitrate 0.136 cache size 1293497
+INFO  knossos.core - [89 / 166] 6883 extant worlds, 18316 visited/s, 2971 skipped/s, hitrate 0.140 cache size 1301233
+INFO  knossos.core - [89 / 166] 7037 extant worlds, 19820 visited/s, 3262 skipped/s, hitrate 0.141 cache size 1312129
+INFO  knossos.core - [89 / 166] 7063 extant worlds, 22047 visited/s, 3312 skipped/s, hitrate 0.131 cache size 1324010
+INFO  knossos.core - [89 / 166] 7165 extant worlds, 22654 visited/s, 3213 skipped/s, hitrate 0.124 cache size 1335027
+INFO  knossos.core - [89 / 166] 7123 extant worlds, 22195 visited/s, 3088 skipped/s, hitrate 0.122 cache size 1345581
+INFO  knossos.core - [89 / 166] 6786 extant worlds, 14732 visited/s, 2507 skipped/s, hitrate 0.145 cache size 1353693
+INFO  knossos.core - [89 / 166] 6834 extant worlds, 21390 visited/s, 3434 skipped/s, hitrate 0.138 cache size 1364425
+INFO  knossos.core - [89 / 166] 6839 extant worlds, 20274 visited/s, 2932 skipped/s, hitrate 0.126 cache size 1374923
+INFO  knossos.core - [89 / 166] 6898 extant worlds, 28885 visited/s, 3976 skipped/s, hitrate 0.121 cache size 1390499
+INFO  knossos.core - [89 / 166] 6848 extant worlds, 20393 visited/s, 2965 skipped/s, hitrate 0.127 cache size 1400707
+INFO  knossos.core - [89 / 166] 7355 extant worlds, 40027 visited/s, 4874 skipped/s, hitrate 0.109 cache size 1422228
+INFO  knossos.core - [89 / 166] 7660 extant worlds, 24371 visited/s, 3572 skipped/s, hitrate 0.128 cache size 1436070
+INFO  knossos.core - [89 / 166] 7518 extant worlds, 23161 visited/s, 3506 skipped/s, hitrate 0.131 cache size 1447280
+INFO  knossos.core - [89 / 166] 7558 extant worlds, 26509 visited/s, 3845 skipped/s, hitrate 0.127 cache size 1460326
+INFO  knossos.core - [89 / 166] 7576 extant worlds, 25203 visited/s, 3800 skipped/s, hitrate 0.131 cache size 1471686
+INFO  knossos.core - [89 / 166] 7566 extant worlds, 31310 visited/s, 4437 skipped/s, hitrate 0.124 cache size 1487229
+INFO  knossos.core - [89 / 166] 7507 extant worlds, 27783 visited/s, 3929 skipped/s, hitrate 0.124 cache size 1501285
+INFO  knossos.core - [89 / 166] 7516 extant worlds, 29362 visited/s, 4075 skipped/s, hitrate 0.122 cache size 1515344
+INFO  knossos.core - [89 / 166] 7514 extant worlds, 29109 visited/s, 3881 skipped/s, hitrate 0.118 cache size 1529063
+INFO  knossos.core - [89 / 166] 7520 extant worlds, 29260 visited/s, 4076 skipped/s, hitrate 0.122 cache size 1542546
+INFO  knossos.core - [89 / 166] 7640 extant worlds, 24398 visited/s, 3823 skipped/s, hitrate 0.135 cache size 1553834
+INFO  knossos.core - [89 / 166] 7482 extant worlds, 19720 visited/s, 3066 skipped/s, hitrate 0.135 cache size 1561735
+INFO  knossos.core - [89 / 166] 7376 extant worlds, 20355 visited/s, 3362 skipped/s, hitrate 0.142 cache size 1571013
+INFO  knossos.core - [89 / 166] 7457 extant worlds, 18477 visited/s, 2804 skipped/s, hitrate 0.132 cache size 1580024
+INFO  knossos.core - [89 / 166] 7425 extant worlds, 20146 visited/s, 2771 skipped/s, hitrate 0.121 cache size 1590440
+INFO  knossos.core - [89 / 166] 7486 extant worlds, 16081 visited/s, 2348 skipped/s, hitrate 0.127 cache size 1597923
+INFO  knossos.core - [89 / 166] 7450 extant worlds, 24790 visited/s, 3311 skipped/s, hitrate 0.118 cache size 1611704
+INFO  knossos.core - [89 / 166] 7362 extant worlds, 29547 visited/s, 4090 skipped/s, hitrate 0.122 cache size 1627316
+INFO  knossos.core - [89 / 166] 7476 extant worlds, 29361 visited/s, 4392 skipped/s, hitrate 0.130 cache size 1640631
+INFO  knossos.core - [89 / 166] 7351 extant worlds, 25830 visited/s, 3882 skipped/s, hitrate 0.131 cache size 1652879
+INFO  knossos.core - [89 / 166] 7346 extant worlds, 32501 visited/s, 4502 skipped/s, hitrate 0.122 cache size 1670019
+INFO  knossos.core - [89 / 166] 7575 extant worlds, 27246 visited/s, 4130 skipped/s, hitrate 0.132 cache size 1682770
+INFO  knossos.core - [89 / 166] 7303 extant worlds, 29993 visited/s, 4187 skipped/s, hitrate 0.123 cache size 1698414
+INFO  knossos.core - [89 / 166] 7403 extant worlds, 32246 visited/s, 4452 skipped/s, hitrate 0.121 cache size 1715860
+INFO  knossos.core - [89 / 166] 7392 extant worlds, 26590 visited/s, 3963 skipped/s, hitrate 0.130 cache size 1728193
+INFO  knossos.core - [89 / 166] 7349 extant worlds, 33333 visited/s, 4656 skipped/s, hitrate 0.123 cache size 1744492
+INFO  knossos.core - [89 / 166] 7451 extant worlds, 30370 visited/s, 4389 skipped/s, hitrate 0.126 cache size 1760119
+INFO  knossos.core - [89 / 166] 7398 extant worlds, 18658 visited/s, 2933 skipped/s, hitrate 0.136 cache size 1769144
+INFO  knossos.core - [89 / 166] 7317 extant worlds, 25980 visited/s, 3615 skipped/s, hitrate 0.122 cache size 1782196
+INFO  knossos.core - [89 / 166] 7392 extant worlds, 21903 visited/s, 3391 skipped/s, hitrate 0.134 cache size 1794348
+INFO  knossos.core - [89 / 166] 7409 extant worlds, 29439 visited/s, 4296 skipped/s, hitrate 0.127 cache size 1809855
+INFO  knossos.core - [89 / 166] 7430 extant worlds, 26961 visited/s, 4022 skipped/s, hitrate 0.130 cache size 1823460
+INFO  knossos.core - [89 / 166] 7457 extant worlds, 22303 visited/s, 3406 skipped/s, hitrate 0.133 cache size 1834686
+INFO  knossos.core - [89 / 166] 7372 extant worlds, 23970 visited/s, 3584 skipped/s, hitrate 0.130 cache size 1846740
+INFO  knossos.core - [89 / 166] 7426 extant worlds, 19227 visited/s, 2965 skipped/s, hitrate 0.134 cache size 1857315
+INFO  knossos.core - [89 / 166] 7449 extant worlds, 24958 visited/s, 3836 skipped/s, hitrate 0.133 cache size 1868670
+INFO  knossos.core - [89 / 166] 7398 extant worlds, 14261 visited/s, 2464 skipped/s, hitrate 0.147 cache size 1875575
+INFO  knossos.core - [89 / 166] 7441 extant worlds, 17568 visited/s, 2858 skipped/s, hitrate 0.140 cache size 1885657
+INFO  knossos.core - [89 / 166] 7535 extant worlds, 13970 visited/s, 2251 skipped/s, hitrate 0.139 cache size 1892400
+INFO  knossos.core - [89 / 166] 7515 extant worlds, 19358 visited/s, 3191 skipped/s, hitrate 0.142 cache size 1902074
+INFO  knossos.core - [89 / 166] 7554 extant worlds, 16858 visited/s, 2791 skipped/s, hitrate 0.142 cache size 1909859
+INFO  knossos.core - [89 / 166] 7465 extant worlds, 24638 visited/s, 3356 skipped/s, hitrate 0.120 cache size 1922612
+INFO  knossos.core - [89 / 166] 7403 extant worlds, 21151 visited/s, 3067 skipped/s, hitrate 0.127 cache size 1932107
+INFO  knossos.core - [89 / 166] 7491 extant worlds, 22042 visited/s, 3381 skipped/s, hitrate 0.133 cache size 1941602
+INFO  knossos.core - [89 / 166] 7479 extant worlds, 33728 visited/s, 4532 skipped/s, hitrate 0.118 cache size 1956835
+INFO  knossos.core - [89 / 166] 7424 extant worlds, 29421 visited/s, 4012 skipped/s, hitrate 0.120 cache size 1969686
+INFO  knossos.core - [89 / 166] 7439 extant worlds, 24339 visited/s, 3768 skipped/s, hitrate 0.134 cache size 1981712
+INFO  knossos.core - [89 / 166] 7510 extant worlds, 28766 visited/s, 3660 skipped/s, hitrate 0.113 cache size 1994149
+INFO  knossos.core - [89 / 166] 7483 extant worlds, 27161 visited/s, 3928 skipped/s, hitrate 0.126 cache size 2007635
+INFO  knossos.core - [89 / 166] 7566 extant worlds, 17816 visited/s, 3014 skipped/s, hitrate 0.145 cache size 2016144
+INFO  knossos.core - [89 / 166] 7564 extant worlds, 19938 visited/s, 2938 skipped/s, hitrate 0.128 cache size 2026608
+INFO  knossos.core - [89 / 166] 7508 extant worlds, 26957 visited/s, 3415 skipped/s, hitrate 0.112 cache size 2039251
+INFO  knossos.core - [89 / 166] 7633 extant worlds, 27156 visited/s, 3851 skipped/s, hitrate 0.124 cache size 2052418
+INFO  knossos.core - [89 / 166] 7642 extant worlds, 26989 visited/s, 3901 skipped/s, hitrate 0.126 cache size 2064887
+INFO  knossos.core - [89 / 166] 7702 extant worlds, 26484 visited/s, 3665 skipped/s, hitrate 0.122 cache size 2077471
+INFO  knossos.core - [89 / 166] 7690 extant worlds, 33155 visited/s, 4341 skipped/s, hitrate 0.116 cache size 2092116
+INFO  knossos.core - [89 / 166] 7508 extant worlds, 31381 visited/s, 4254 skipped/s, hitrate 0.119 cache size 2105559
+INFO  knossos.core - [89 / 166] 7412 extant worlds, 25991 visited/s, 4054 skipped/s, hitrate 0.135 cache size 2116794
+INFO  knossos.core - [89 / 166] 7379 extant worlds, 29928 visited/s, 4158 skipped/s, hitrate 0.122 cache size 2131923
+INFO  knossos.core - [89 / 166] 7462 extant worlds, 27309 visited/s, 4097 skipped/s, hitrate 0.130 cache size 2144168
+INFO  knossos.core - [89 / 166] 7472 extant worlds, 31305 visited/s, 4257 skipped/s, hitrate 0.120 cache size 2160151
+INFO  knossos.core - [89 / 166] 7571 extant worlds, 26031 visited/s, 3816 skipped/s, hitrate 0.128 cache size 2172429
+INFO  knossos.core - [89 / 166] 7422 extant worlds, 36885 visited/s, 4875 skipped/s, hitrate 0.117 cache size 2188917
+INFO  knossos.core - [89 / 166] 7456 extant worlds, 33334 visited/s, 4514 skipped/s, hitrate 0.119 cache size 2202132
+INFO  knossos.core - [89 / 166] 8575 extant worlds, 40123 visited/s, 5441 skipped/s, hitrate 0.119 cache size 2218854
+INFO  knossos.core - [89 / 166] 8624 extant worlds, 43063 visited/s, 5487 skipped/s, hitrate 0.113 cache size 2238188
+INFO  knossos.core - [89 / 166] 8595 extant worlds, 35010 visited/s, 4668 skipped/s, hitrate 0.118 cache size 2252388
+INFO  knossos.core - [89 / 166] 8683 extant worlds, 37355 visited/s, 5294 skipped/s, hitrate 0.124 cache size 2266989
+INFO  knossos.core - [89 / 166] 8565 extant worlds, 27559 visited/s, 3709 skipped/s, hitrate 0.119 cache size 2280212
+INFO  knossos.core - [89 / 166] 8566 extant worlds, 25941 visited/s, 3652 skipped/s, hitrate 0.123 cache size 2291913
+INFO  knossos.core - [89 / 166] 8573 extant worlds, 5148 visited/s, 784 skipped/s, hitrate 0.132 cache size 2294276
+INFO  knossos.core - [89 / 166] 8683 extant worlds, 2396 visited/s, 387 skipped/s, hitrate 0.139 cache size 2295159
+INFO  knossos.core - [89 / 166] 8499 extant worlds, 11579 visited/s, 1833 skipped/s, hitrate 0.137 cache size 2300059
+INFO  knossos.core - [89 / 166] 8541 extant worlds, 16740 visited/s, 2569 skipped/s, hitrate 0.133 cache size 2307644
+INFO  knossos.core - [89 / 166] 8592 extant worlds, 6323 visited/s, 864 skipped/s, hitrate 0.120 cache size 2310272
+INFO  knossos.core - [89 / 166] 8470 extant worlds, 2080 visited/s, 230 skipped/s, hitrate 0.100 cache size 2311218
+INFO  knossos.core - [89 / 166] 8496 extant worlds, 8241 visited/s, 1107 skipped/s, hitrate 0.119 cache size 2315125
+INFO  knossos.core - [89 / 166] 8539 extant worlds, 32605 visited/s, 4537 skipped/s, hitrate 0.122 cache size 2330361
+INFO  knossos.core - [89 / 166] 8587 extant worlds, 32536 visited/s, 4728 skipped/s, hitrate 0.127 cache size 2343421
+INFO  knossos.core - [89 / 166] 8778 extant worlds, 26897 visited/s, 3981 skipped/s, hitrate 0.129 cache size 2354358
+INFO  knossos.core - [89 / 166] 8629 extant worlds, 34499 visited/s, 4607 skipped/s, hitrate 0.118 cache size 2369156
+INFO  knossos.core - [89 / 166] 8679 extant worlds, 34196 visited/s, 4626 skipped/s, hitrate 0.119 cache size 2382689
+INFO  knossos.core - [89 / 166] 9013 extant worlds, 30066 visited/s, 4638 skipped/s, hitrate 0.134 cache size 2396304
+INFO  knossos.core - [89 / 166] 8855 extant worlds, 31319 visited/s, 4478 skipped/s, hitrate 0.125 cache size 2410755
+INFO  knossos.core - [89 / 166] 9131 extant worlds, 24478 visited/s, 3468 skipped/s, hitrate 0.124 cache size 2422207
+INFO  knossos.core - [89 / 166] 9211 extant worlds, 27444 visited/s, 4338 skipped/s, hitrate 0.136 cache size 2432493
+INFO  knossos.core - [89 / 166] 8823 extant worlds, 25616 visited/s, 3824 skipped/s, hitrate 0.130 cache size 2443811
+INFO  knossos.core - [89 / 166] 8842 extant worlds, 22204 visited/s, 3742 skipped/s, hitrate 0.144 cache size 2453312
+INFO  knossos.core - [89 / 166] 8728 extant worlds, 20058 visited/s, 3430 skipped/s, hitrate 0.146 cache size 2461525
+INFO  knossos.core - [89 / 166] 8790 extant worlds, 20467 visited/s, 3316 skipped/s, hitrate 0.139 cache size 2470957
+INFO  knossos.core - [89 / 166] 10720 extant worlds, 27196 visited/s, 4249 skipped/s, hitrate 0.135 cache size 2483645
+INFO  knossos.core - [89 / 166] 10805 extant worlds, 21797 visited/s, 3520 skipped/s, hitrate 0.139 cache size 2493483
+INFO  knossos.core - [89 / 166] 10706 extant worlds, 21620 visited/s, 3157 skipped/s, hitrate 0.127 cache size 2504118
+INFO  knossos.core - [89 / 166] 10649 extant worlds, 23494 visited/s, 3380 skipped/s, hitrate 0.126 cache size 2514364
+INFO  knossos.core - [89 / 166] 12052 extant worlds, 26579 visited/s, 3925 skipped/s, hitrate 0.129 cache size 2523859
+INFO  knossos.core - [89 / 166] 11738 extant worlds, 31473 visited/s, 4400 skipped/s, hitrate 0.123 cache size 2537074
+INFO  knossos.core - [89 / 166] 11739 extant worlds, 33513 visited/s, 4702 skipped/s, hitrate 0.123 cache size 2549375
+INFO  knossos.core - [89 / 166] 11774 extant worlds, 25998 visited/s, 3816 skipped/s, hitrate 0.128 cache size 2558374
+INFO  knossos.core - [89 / 166] 11770 extant worlds, 26646 visited/s, 3973 skipped/s, hitrate 0.130 cache size 2570467
+INFO  knossos.core - [89 / 166] 11681 extant worlds, 24391 visited/s, 3592 skipped/s, hitrate 0.128 cache size 2580535
+INFO  knossos.core - [89 / 166] 11742 extant worlds, 21966 visited/s, 3413 skipped/s, hitrate 0.134 cache size 2588467
+INFO  knossos.core - [89 / 166] 11673 extant worlds, 26844 visited/s, 3879 skipped/s, hitrate 0.126 cache size 2598841
+INFO  knossos.core - [89 / 166] 11730 extant worlds, 19731 visited/s, 3379 skipped/s, hitrate 0.146 cache size 2606703
+INFO  knossos.core - [89 / 166] 11698 extant worlds, 23839 visited/s, 3595 skipped/s, hitrate 0.131 cache size 2614939
+INFO  knossos.core - [89 / 166] 11998 extant worlds, 22414 visited/s, 3372 skipped/s, hitrate 0.131 cache size 2624033
+INFO  knossos.core - [89 / 166] 11748 extant worlds, 16930 visited/s, 2856 skipped/s, hitrate 0.144 cache size 2630253
+INFO  knossos.core - [89 / 166] 11788 extant worlds, 19318 visited/s, 2738 skipped/s, hitrate 0.124 cache size 2636747
+INFO  knossos.core - [89 / 166] 11986 extant worlds, 17581 visited/s, 2881 skipped/s, hitrate 0.141 cache size 2644256
+INFO  knossos.core - [89 / 166] 11839 extant worlds, 17947 visited/s, 3377 skipped/s, hitrate 0.158 cache size 2651901
+INFO  knossos.core - [89 / 166] 11789 extant worlds, 23579 visited/s, 3211 skipped/s, hitrate 0.120 cache size 2661917
+INFO  knossos.core - [89 / 166] 12206 extant worlds, 15630 visited/s, 2651 skipped/s, hitrate 0.145 cache size 2667871
+INFO  knossos.core - [89 / 166] 11990 extant worlds, 18465 visited/s, 3713 skipped/s, hitrate 0.167 cache size 2673997
+INFO  knossos.core - [89 / 166] 11873 extant worlds, 17017 visited/s, 2885 skipped/s, hitrate 0.145 cache size 2680619
+INFO  knossos.core - [89 / 166] 11764 extant worlds, 18811 visited/s, 3017 skipped/s, hitrate 0.138 cache size 2688823
+INFO  knossos.core - [89 / 166] 11913 extant worlds, 20130 visited/s, 3009 skipped/s, hitrate 0.130 cache size 2698548
+INFO  knossos.core - [89 / 166] 13889 extant worlds, 28399 visited/s, 3724 skipped/s, hitrate 0.116 cache size 2711448
+INFO  knossos.core - [89 / 166] 13779 extant worlds, 29271 visited/s, 3969 skipped/s, hitrate 0.119 cache size 2724960
+INFO  knossos.core - [89 / 166] 13750 extant worlds, 32120 visited/s, 4361 skipped/s, hitrate 0.120 cache size 2738254
+INFO  knossos.core - [89 / 166] 13740 extant worlds, 25574 visited/s, 3680 skipped/s, hitrate 0.126 cache size 2749578
+INFO  knossos.core - [89 / 166] 13760 extant worlds, 25753 visited/s, 3643 skipped/s, hitrate 0.124 cache size 2762636
+INFO  knossos.core - [89 / 166] 13810 extant worlds, 18936 visited/s, 2588 skipped/s, hitrate 0.120 cache size 2772688
+INFO  knossos.core - [89 / 166] 13759 extant worlds, 25634 visited/s, 3879 skipped/s, hitrate 0.131 cache size 2785067
+INFO  knossos.core - [89 / 166] 13828 extant worlds, 24916 visited/s, 3493 skipped/s, hitrate 0.123 cache size 2796739
+INFO  knossos.core - [89 / 166] 13725 extant worlds, 29164 visited/s, 3787 skipped/s, hitrate 0.115 cache size 2809534
+INFO  knossos.core - [89 / 166] 13711 extant worlds, 20603 visited/s, 2899 skipped/s, hitrate 0.123 cache size 2819184
+INFO  knossos.core - [89 / 166] 13735 extant worlds, 28979 visited/s, 4253 skipped/s, hitrate 0.128 cache size 2831305
+INFO  knossos.core - [89 / 166] 13874 extant worlds, 31378 visited/s, 4214 skipped/s, hitrate 0.118 cache size 2843951
+INFO  knossos.core - [89 / 166] 14085 extant worlds, 33691 visited/s, 4594 skipped/s, hitrate 0.120 cache size 2859178
+INFO  knossos.core - [89 / 166] 13774 extant worlds, 29778 visited/s, 4168 skipped/s, hitrate 0.123 cache size 2872468
+INFO  knossos.core - [89 / 166] 13707 extant worlds, 26524 visited/s, 3918 skipped/s, hitrate 0.129 cache size 2884985
+INFO  knossos.core - [89 / 166] 13787 extant worlds, 26375 visited/s, 3699 skipped/s, hitrate 0.123 cache size 2896879
+INFO  knossos.core - [89 / 166] 13803 extant worlds, 24718 visited/s, 3542 skipped/s, hitrate 0.125 cache size 2907972
+INFO  knossos.core - [89 / 166] 13889 extant worlds, 21627 visited/s, 3371 skipped/s, hitrate 0.135 cache size 2917300
+INFO  knossos.core - [89 / 166] 13835 extant worlds, 23972 visited/s, 3439 skipped/s, hitrate 0.125 cache size 2928057
+INFO  knossos.core - [89 / 166] 13810 extant worlds, 21212 visited/s, 3296 skipped/s, hitrate 0.135 cache size 2937884
+INFO  knossos.core - [89 / 166] 14055 extant worlds, 22940 visited/s, 3421 skipped/s, hitrate 0.130 cache size 2947454
+INFO  knossos.core - [89 / 166] 14146 extant worlds, 28140 visited/s, 4072 skipped/s, hitrate 0.126 cache size 2959107
+INFO  knossos.core - [89 / 166] 14086 extant worlds, 16292 visited/s, 2936 skipped/s, hitrate 0.153 cache size 2965873
+INFO  knossos.core - [89 / 166] 14060 extant worlds, 23699 visited/s, 3263 skipped/s, hitrate 0.121 cache size 2974950
+INFO  knossos.core - [89 / 166] 13909 extant worlds, 19440 visited/s, 3045 skipped/s, hitrate 0.135 cache size 2983225
+INFO  knossos.core - [89 / 166] 13949 extant worlds, 27021 visited/s, 4099 skipped/s, hitrate 0.132 cache size 2994232
+INFO  knossos.core - [89 / 166] 14350 extant worlds, 22498 visited/s, 3407 skipped/s, hitrate 0.132 cache size 3003359
+INFO  knossos.core - [89 / 166] 13715 extant worlds, 26564 visited/s, 3532 skipped/s, hitrate 0.117 cache size 3013427
+INFO  knossos.core - [89 / 166] 13991 extant worlds, 35558 visited/s, 4916 skipped/s, hitrate 0.121 cache size 3028688
+INFO  knossos.core - [89 / 166] 14879 extant worlds, 26875 visited/s, 3940 skipped/s, hitrate 0.128 cache size 3040405
+INFO  knossos.core - [89 / 166] 14748 extant worlds, 27918 visited/s, 4308 skipped/s, hitrate 0.134 cache size 3050585
+INFO  knossos.core - [89 / 166] 14763 extant worlds, 17273 visited/s, 2845 skipped/s, hitrate 0.141 cache size 3058298
+INFO  knossos.core - [89 / 166] 14767 extant worlds, 24851 visited/s, 3559 skipped/s, hitrate 0.125 cache size 3069387
+INFO  knossos.core - [89 / 166] 14828 extant worlds, 29281 visited/s, 4188 skipped/s, hitrate 0.125 cache size 3081771
+INFO  knossos.core - [89 / 166] 14991 extant worlds, 26324 visited/s, 4054 skipped/s, hitrate 0.133 cache size 3093626
+INFO  knossos.core - [89 / 166] 14788 extant worlds, 23883 visited/s, 3366 skipped/s, hitrate 0.124 cache size 3104332
+INFO  knossos.core - [89 / 166] 14827 extant worlds, 23424 visited/s, 3459 skipped/s, hitrate 0.129 cache size 3114697
+INFO  knossos.core - [89 / 166] 15042 extant worlds, 18853 visited/s, 3202 skipped/s, hitrate 0.145 cache size 3122233
+INFO  knossos.core - [89 / 166] 14983 extant worlds, 21540 visited/s, 3311 skipped/s, hitrate 0.133 cache size 3132743
+INFO  knossos.core - [89 / 166] 14970 extant worlds, 13023 visited/s, 1944 skipped/s, hitrate 0.130 cache size 3138859
+INFO  knossos.core - [89 / 166] 14818 extant worlds, 19609 visited/s, 2792 skipped/s, hitrate 0.125 cache size 3148064
+INFO  knossos.core - [89 / 166] 14749 extant worlds, 28148 visited/s, 4180 skipped/s, hitrate 0.129 cache size 3159137
+INFO  knossos.core - [89 / 166] 14732 extant worlds, 29907 visited/s, 4328 skipped/s, hitrate 0.126 cache size 3171773
+INFO  knossos.core - [89 / 166] 14737 extant worlds, 23007 visited/s, 3594 skipped/s, hitrate 0.135 cache size 3180660
+INFO  knossos.core - [89 / 166] 14665 extant worlds, 20427 visited/s, 3204 skipped/s, hitrate 0.136 cache size 3190001
+INFO  knossos.core - [89 / 166] 14736 extant worlds, 22506 visited/s, 3336 skipped/s, hitrate 0.129 cache size 3199232
+INFO  knossos.core - [89 / 166] 14673 extant worlds, 22893 visited/s, 3462 skipped/s, hitrate 0.131 cache size 3210215
+INFO  knossos.core - [89 / 166] 14676 extant worlds, 27160 visited/s, 3942 skipped/s, hitrate 0.127 cache size 3222746
+INFO  knossos.core - [89 / 166] 14697 extant worlds, 29807 visited/s, 4279 skipped/s, hitrate 0.126 cache size 3234505
+INFO  knossos.core - [89 / 166] 14732 extant worlds, 20370 visited/s, 3234 skipped/s, hitrate 0.137 cache size 3242491
+INFO  knossos.core - [89 / 166] 14857 extant worlds, 21128 visited/s, 3529 skipped/s, hitrate 0.143 cache size 3250644
+INFO  knossos.core - [89 / 166] 14738 extant worlds, 16224 visited/s, 2642 skipped/s, hitrate 0.140 cache size 3256973
+INFO  knossos.core - [89 / 166] 14731 extant worlds, 16598 visited/s, 2824 skipped/s, hitrate 0.145 cache size 3263765
+INFO  knossos.core - [89 / 166] 14769 extant worlds, 20222 visited/s, 3350 skipped/s, hitrate 0.142 cache size 3272095
+INFO  knossos.core - [89 / 166] 14761 extant worlds, 15409 visited/s, 2707 skipped/s, hitrate 0.149 cache size 3278816
+INFO  knossos.core - [89 / 166] 15063 extant worlds, 11789 visited/s, 2124 skipped/s, hitrate 0.153 cache size 3283236
+INFO  knossos.core - [89 / 166] 14922 extant worlds, 16917 visited/s, 2825 skipped/s, hitrate 0.143 cache size 3290129
+INFO  knossos.core - [89 / 166] 15024 extant worlds, 9085 visited/s, 1814 skipped/s, hitrate 0.166 cache size 3293556
+INFO  knossos.core - [89 / 166] 15162 extant worlds, 14141 visited/s, 2232 skipped/s, hitrate 0.136 cache size 3300119
+INFO  knossos.core - [89 / 166] 15050 extant worlds, 10825 visited/s, 1463 skipped/s, hitrate 0.119 cache size 3303829
+INFO  knossos.core - [89 / 166] 14861 extant worlds, 21712 visited/s, 3510 skipped/s, hitrate 0.139 cache size 3312724
+INFO  knossos.core - [89 / 166] 14835 extant worlds, 20407 visited/s, 3236 skipped/s, hitrate 0.137 cache size 3320920
+INFO  knossos.core - [89 / 166] 14789 extant worlds, 20859 visited/s, 3262 skipped/s, hitrate 0.135 cache size 3329844
+INFO  knossos.core - [89 / 166] 14765 extant worlds, 13771 visited/s, 2421 skipped/s, hitrate 0.150 cache size 3335463
+INFO  knossos.core - [89 / 166] 14793 extant worlds, 21651 visited/s, 2860 skipped/s, hitrate 0.117 cache size 3346329
+INFO  knossos.core - [89 / 166] 14673 extant worlds, 27022 visited/s, 3912 skipped/s, hitrate 0.126 cache size 3359024
+INFO  knossos.core - [89 / 166] 14788 extant worlds, 32867 visited/s, 4376 skipped/s, hitrate 0.118 cache size 3374125
+INFO  knossos.core - [89 / 166] 14806 extant worlds, 28534 visited/s, 3953 skipped/s, hitrate 0.122 cache size 3387246
+INFO  knossos.core - [89 / 166] 14680 extant worlds, 24354 visited/s, 3539 skipped/s, hitrate 0.127 cache size 3397542
+INFO  knossos.core - [89 / 166] 14703 extant worlds, 19451 visited/s, 2973 skipped/s, hitrate 0.133 cache size 3405822
+INFO  knossos.core - [89 / 166] 14637 extant worlds, 20207 visited/s, 3180 skipped/s, hitrate 0.136 cache size 3415038
+INFO  knossos.core - [89 / 166] 14788 extant worlds, 24312 visited/s, 3109 skipped/s, hitrate 0.113 cache size 3426114
+INFO  knossos.core - [89 / 166] 14709 extant worlds, 26724 visited/s, 3632 skipped/s, hitrate 0.120 cache size 3437242
+INFO  knossos.core - [89 / 166] 14632 extant worlds, 27174 visited/s, 3706 skipped/s, hitrate 0.120 cache size 3448550
+INFO  knossos.core - [89 / 166] 14661 extant worlds, 27184 visited/s, 3743 skipped/s, hitrate 0.121 cache size 3459781
+INFO  knossos.core - [89 / 166] 14731 extant worlds, 25390 visited/s, 3496 skipped/s, hitrate 0.121 cache size 3470229
+INFO  knossos.core - [89 / 166] 14773 extant worlds, 16721 visited/s, 2550 skipped/s, hitrate 0.132 cache size 3477019
+INFO  knossos.core - [89 / 166] 14624 extant worlds, 23256 visited/s, 3529 skipped/s, hitrate 0.132 cache size 3486614
+INFO  knossos.core - [89 / 166] 14575 extant worlds, 18885 visited/s, 3125 skipped/s, hitrate 0.142 cache size 3494143
+INFO  knossos.core - [89 / 166] 14602 extant worlds, 22605 visited/s, 2984 skipped/s, hitrate 0.117 cache size 3504664
+INFO  knossos.core - [89 / 166] 14665 extant worlds, 27230 visited/s, 3718 skipped/s, hitrate 0.120 cache size 3516542
+INFO  knossos.core - [89 / 166] 14657 extant worlds, 23305 visited/s, 3411 skipped/s, hitrate 0.128 cache size 3525272
+INFO  knossos.core - [89 / 166] 14671 extant worlds, 26546 visited/s, 3706 skipped/s, hitrate 0.123 cache size 3536972
+INFO  knossos.core - [89 / 166] 14629 extant worlds, 25358 visited/s, 3203 skipped/s, hitrate 0.112 cache size 3549239
+INFO  knossos.core - [89 / 166] 14597 extant worlds, 31402 visited/s, 4178 skipped/s, hitrate 0.117 cache size 3564148
+INFO  knossos.core - [89 / 166] 14595 extant worlds, 26355 visited/s, 3823 skipped/s, hitrate 0.127 cache size 3575311
+INFO  knossos.core - [89 / 166] 14653 extant worlds, 25621 visited/s, 3620 skipped/s, hitrate 0.124 cache size 3585850
+INFO  knossos.core - [89 / 166] 14739 extant worlds, 32470 visited/s, 4411 skipped/s, hitrate 0.120 cache size 3599368
+INFO  knossos.core - [89 / 166] 14639 extant worlds, 30072 visited/s, 4252 skipped/s, hitrate 0.124 cache size 3610517
+INFO  knossos.core - [89 / 166] 14678 extant worlds, 31914 visited/s, 4340 skipped/s, hitrate 0.120 cache size 3622741
+INFO  knossos.core - [89 / 166] 14659 extant worlds, 31640 visited/s, 4411 skipped/s, hitrate 0.122 cache size 3635500
+INFO  knossos.core - [89 / 166] 14627 extant worlds, 26867 visited/s, 3795 skipped/s, hitrate 0.124 cache size 3645370
+INFO  knossos.core - [89 / 166] 14645 extant worlds, 32666 visited/s, 4442 skipped/s, hitrate 0.120 cache size 3658312
+INFO  knossos.core - [89 / 166] 14766 extant worlds, 29680 visited/s, 4272 skipped/s, hitrate 0.126 cache size 3670132
+INFO  knossos.core - [89 / 166] 14772 extant worlds, 26076 visited/s, 3739 skipped/s, hitrate 0.125 cache size 3680787
+INFO  knossos.core - [89 / 166] 14597 extant worlds, 26963 visited/s, 3982 skipped/s, hitrate 0.129 cache size 3691989
+INFO  knossos.core - [89 / 166] 14611 extant worlds, 23320 visited/s, 3435 skipped/s, hitrate 0.128 cache size 3700587
+INFO  knossos.core - [89 / 166] 14696 extant worlds, 26147 visited/s, 3718 skipped/s, hitrate 0.125 cache size 3710232
+INFO  knossos.core - [89 / 166] 15405 extant worlds, 20468 visited/s, 3089 skipped/s, hitrate 0.131 cache size 3716998
+INFO  knossos.core - [89 / 166] 14865 extant worlds, 11629 visited/s, 1960 skipped/s, hitrate 0.144 cache size 3721696
+INFO  knossos.core - [89 / 166] 14760 extant worlds, 21009 visited/s, 3047 skipped/s, hitrate 0.127 cache size 3730102
+INFO  knossos.core - [89 / 166] 14708 extant worlds, 25628 visited/s, 3721 skipped/s, hitrate 0.127 cache size 3740302
+INFO  knossos.core - [89 / 166] 14690 extant worlds, 24589 visited/s, 3622 skipped/s, hitrate 0.128 cache size 3749778
+INFO  knossos.core - [89 / 166] 14698 extant worlds, 26036 visited/s, 3963 skipped/s, hitrate 0.132 cache size 3758664
+INFO  knossos.core - [89 / 166] 14670 extant worlds, 20684 visited/s, 3337 skipped/s, hitrate 0.139 cache size 3765882
+INFO  knossos.core - [89 / 166] 15003 extant worlds, 20585 visited/s, 2973 skipped/s, hitrate 0.126 cache size 3774628
+INFO  knossos.core - [89 / 166] 14774 extant worlds, 21343 visited/s, 3419 skipped/s, hitrate 0.138 cache size 3781348
+INFO  knossos.core - [89 / 166] 14860 extant worlds, 15030 visited/s, 2730 skipped/s, hitrate 0.154 cache size 3786279
+INFO  knossos.core - [89 / 166] 14741 extant worlds, 23485 visited/s, 3246 skipped/s, hitrate 0.121 cache size 3793881
+INFO  knossos.core - [89 / 166] 16164 extant worlds, 17380 visited/s, 3169 skipped/s, hitrate 0.154 cache size 3800484
+INFO  knossos.core - [89 / 166] 15069 extant worlds, 23319 visited/s, 3285 skipped/s, hitrate 0.124 cache size 3809544
+INFO  knossos.core - [89 / 166] 15031 extant worlds, 18679 visited/s, 2824 skipped/s, hitrate 0.131 cache size 3815675
+INFO  knossos.core - [89 / 166] 15083 extant worlds, 24280 visited/s, 3232 skipped/s, hitrate 0.118 cache size 3824530
+INFO  knossos.core - [89 / 166] 14929 extant worlds, 15567 visited/s, 2813 skipped/s, hitrate 0.153 cache size 3830262
+INFO  knossos.core - [89 / 166] 14918 extant worlds, 23476 visited/s, 3435 skipped/s, hitrate 0.128 cache size 3839698
+INFO  knossos.core - [89 / 166] 14931 extant worlds, 20454 visited/s, 3164 skipped/s, hitrate 0.134 cache size 3847835
+INFO  knossos.core - [89 / 166] 14928 extant worlds, 23623 visited/s, 3927 skipped/s, hitrate 0.143 cache size 3856230
+INFO  knossos.core - [89 / 166] 14865 extant worlds, 18636 visited/s, 3075 skipped/s, hitrate 0.142 cache size 3862680
+INFO  knossos.core - [89 / 166] 16762 extant worlds, 14133 visited/s, 2559 skipped/s, hitrate 0.153 cache size 3868726
+INFO  knossos.core - [89 / 166] 16745 extant worlds, 18123 visited/s, 2703 skipped/s, hitrate 0.130 cache size 3876385
+INFO  knossos.core - [89 / 166] 16778 extant worlds, 17396 visited/s, 2705 skipped/s, hitrate 0.135 cache size 3883180
+INFO  knossos.core - [89 / 166] 16682 extant worlds, 18285 visited/s, 2811 skipped/s, hitrate 0.133 cache size 3889997
+INFO  knossos.core - [89 / 166] 16644 extant worlds, 20924 visited/s, 3060 skipped/s, hitrate 0.128 cache size 3899825
+INFO  knossos.core - [89 / 166] 16677 extant worlds, 22145 visited/s, 3221 skipped/s, hitrate 0.127 cache size 3909006
+INFO  knossos.core - [89 / 166] 16694 extant worlds, 22862 visited/s, 3346 skipped/s, hitrate 0.128 cache size 3917770
+INFO  knossos.core - [89 / 166] 16757 extant worlds, 8484 visited/s, 1618 skipped/s, hitrate 0.160 cache size 3921513
+INFO  knossos.core - [89 / 166] 16724 extant worlds, 9779 visited/s, 1891 skipped/s, hitrate 0.162 cache size 3926349
+INFO  knossos.core - [89 / 166] 16734 extant worlds, 16794 visited/s, 2463 skipped/s, hitrate 0.128 cache size 3934060
+INFO  knossos.core - [89 / 166] 16734 extant worlds, 15083 visited/s, 2271 skipped/s, hitrate 0.131 cache size 3939157
+INFO  knossos.core - [89 / 166] 16816 extant worlds, 14879 visited/s, 2607 skipped/s, hitrate 0.149 cache size 3944432
+INFO  knossos.core - [89 / 166] 16668 extant worlds, 15013 visited/s, 2773 skipped/s, hitrate 0.156 cache size 3949173
+INFO  knossos.core - [89 / 166] 16592 extant worlds, 13763 visited/s, 2165 skipped/s, hitrate 0.136 cache size 3955761
+INFO  knossos.core - [89 / 166] 16685 extant worlds, 13656 visited/s, 2270 skipped/s, hitrate 0.143 cache size 3961077
+INFO  knossos.core - [89 / 166] 16708 extant worlds, 9623 visited/s, 1914 skipped/s, hitrate 0.166 cache size 3963868
+INFO  knossos.core - [89 / 166] 16925 extant worlds, 15618 visited/s, 2667 skipped/s, hitrate 0.146 cache size 3970364
+INFO  knossos.core - [89 / 166] 16871 extant worlds, 13184 visited/s, 2068 skipped/s, hitrate 0.136 cache size 3975818
+INFO  knossos.core - [89 / 166] 16801 extant worlds, 17294 visited/s, 2208 skipped/s, hitrate 0.113 cache size 3984193
+INFO  knossos.core - [89 / 166] 16604 extant worlds, 15570 visited/s, 2448 skipped/s, hitrate 0.136 cache size 3991792
+INFO  knossos.core - [89 / 166] 17054 extant worlds, 25293 visited/s, 3259 skipped/s, hitrate 0.114 cache size 4003545
+INFO  knossos.core - [89 / 166] 16823 extant worlds, 26675 visited/s, 3756 skipped/s, hitrate 0.123 cache size 4014506
+INFO  knossos.core - [89 / 166] 16762 extant worlds, 22186 visited/s, 3233 skipped/s, hitrate 0.127 cache size 4023763
+INFO  knossos.core - [89 / 166] 16816 extant worlds, 16837 visited/s, 2516 skipped/s, hitrate 0.130 cache size 4031488
+INFO  knossos.core - [89 / 166] 16856 extant worlds, 21403 visited/s, 2994 skipped/s, hitrate 0.123 cache size 4039727
+INFO  knossos.core - [89 / 166] 16753 extant worlds, 24646 visited/s, 3533 skipped/s, hitrate 0.125 cache size 4049835
+INFO  knossos.core - [89 / 166] 16799 extant worlds, 23508 visited/s, 3542 skipped/s, hitrate 0.131 cache size 4060832
+INFO  knossos.core - [89 / 166] 16730 extant worlds, 22627 visited/s, 3418 skipped/s, hitrate 0.131 cache size 4069805
+INFO  knossos.core - [89 / 166] 16784 extant worlds, 19428 visited/s, 3226 skipped/s, hitrate 0.142 cache size 4077640
+INFO  knossos.core - [89 / 166] 16680 extant worlds, 25214 visited/s, 3699 skipped/s, hitrate 0.128 cache size 4087637
+INFO  knossos.core - [89 / 166] 16752 extant worlds, 26140 visited/s, 3724 skipped/s, hitrate 0.125 cache size 4098902
+INFO  knossos.core - [89 / 166] 16762 extant worlds, 26685 visited/s, 3845 skipped/s, hitrate 0.126 cache size 4109824
+INFO  knossos.core - [89 / 166] 16767 extant worlds, 28182 visited/s, 4016 skipped/s, hitrate 0.125 cache size 4120435
+INFO  knossos.core - [89 / 166] 16741 extant worlds, 30430 visited/s, 4138 skipped/s, hitrate 0.120 cache size 4130425
+INFO  knossos.core - [89 / 166] 16877 extant worlds, 25016 visited/s, 3812 skipped/s, hitrate 0.132 cache size 4138968
+INFO  knossos.core - [89 / 166] 16964 extant worlds, 22991 visited/s, 3523 skipped/s, hitrate 0.133 cache size 4146618
+INFO  knossos.core - [89 / 166] 16929 extant worlds, 19343 visited/s, 2832 skipped/s, hitrate 0.128 cache size 4154599
+INFO  knossos.core - [89 / 166] 16889 extant worlds, 19420 visited/s, 2731 skipped/s, hitrate 0.123 cache size 4162813
+INFO  knossos.core - [89 / 166] 16708 extant worlds, 21719 visited/s, 3368 skipped/s, hitrate 0.134 cache size 4170597
+INFO  knossos.core - [89 / 166] 16700 extant worlds, 26695 visited/s, 3710 skipped/s, hitrate 0.122 cache size 4181333
+INFO  knossos.core - [89 / 166] 16727 extant worlds, 28661 visited/s, 4141 skipped/s, hitrate 0.126 cache size 4191600
+INFO  knossos.core - [89 / 166] 16837 extant worlds, 26821 visited/s, 4070 skipped/s, hitrate 0.132 cache size 4201638
+INFO  knossos.core - [89 / 166] 16854 extant worlds, 23341 visited/s, 3701 skipped/s, hitrate 0.137 cache size 4209482
+INFO  knossos.core - [89 / 166] 16730 extant worlds, 23400 visited/s, 3281 skipped/s, hitrate 0.123 cache size 4218520
+INFO  knossos.core - [89 / 166] 16680 extant worlds, 27351 visited/s, 3652 skipped/s, hitrate 0.118 cache size 4228841
+INFO  knossos.core - [89 / 166] 16713 extant worlds, 24983 visited/s, 3535 skipped/s, hitrate 0.124 cache size 4239309
+INFO  knossos.core - [89 / 166] 16762 extant worlds, 25066 visited/s, 3593 skipped/s, hitrate 0.125 cache size 4248827
+INFO  knossos.core - [89 / 166] 16748 extant worlds, 20976 visited/s, 2956 skipped/s, hitrate 0.124 cache size 4258207
+INFO  knossos.core - [89 / 166] 16717 extant worlds, 27911 visited/s, 3667 skipped/s, hitrate 0.116 cache size 4270508
+INFO  knossos.core - [89 / 166] 16836 extant worlds, 29140 visited/s, 4193 skipped/s, hitrate 0.126 cache size 4281740
+INFO  knossos.core - [89 / 166] 16732 extant worlds, 25279 visited/s, 3650 skipped/s, hitrate 0.126 cache size 4291213
+INFO  knossos.core - [89 / 166] 16796 extant worlds, 31067 visited/s, 4222 skipped/s, hitrate 0.120 cache size 4302797
+INFO  knossos.core - [89 / 166] 16919 extant worlds, 26516 visited/s, 3904 skipped/s, hitrate 0.128 cache size 4312126
+INFO  knossos.core - [89 / 166] 16690 extant worlds, 29176 visited/s, 4065 skipped/s, hitrate 0.122 cache size 4322490
+INFO  knossos.core - [89 / 166] 16839 extant worlds, 33183 visited/s, 4560 skipped/s, hitrate 0.121 cache size 4334790
+INFO  knossos.core - [89 / 166] 16692 extant worlds, 26642 visited/s, 3946 skipped/s, hitrate 0.129 cache size 4343707
+INFO  knossos.core - [89 / 166] 16672 extant worlds, 30876 visited/s, 4254 skipped/s, hitrate 0.121 cache size 4355080
+INFO  knossos.core - [89 / 166] 16764 extant worlds, 30288 visited/s, 4543 skipped/s, hitrate 0.130 cache size 4365595
+INFO  knossos.core - [89 / 166] 16701 extant worlds, 25475 visited/s, 3637 skipped/s, hitrate 0.125 cache size 4374183
+INFO  knossos.core - [89 / 166] 16769 extant worlds, 32836 visited/s, 4560 skipped/s, hitrate 0.122 cache size 4385229
+INFO  knossos.core - [89 / 166] 16864 extant worlds, 31970 visited/s, 4637 skipped/s, hitrate 0.127 cache size 4393704
+INFO  knossos.core - [89 / 166] 17993 extant worlds, 30527 visited/s, 4194 skipped/s, hitrate 0.121 cache size 4402466
+INFO  knossos.core - [89 / 166] 17767 extant worlds, 32659 visited/s, 4482 skipped/s, hitrate 0.121 cache size 4412245
+INFO  knossos.core - [89 / 166] 18040 extant worlds, 30347 visited/s, 4167 skipped/s, hitrate 0.121 cache size 4421598
+INFO  knossos.core - [89 / 166] 18313 extant worlds, 27143 visited/s, 3815 skipped/s, hitrate 0.123 cache size 4428671
+INFO  knossos.core - [89 / 166] 17882 extant worlds, 29202 visited/s, 4431 skipped/s, hitrate 0.132 cache size 4438846
+INFO  knossos.core - [89 / 166] 18004 extant worlds, 26867 visited/s, 3818 skipped/s, hitrate 0.124 cache size 4448571
+INFO  knossos.core - [89 / 166] 17994 extant worlds, 19751 visited/s, 3137 skipped/s, hitrate 0.137 cache size 4455271
+INFO  knossos.core - [89 / 166] 17979 extant worlds, 22616 visited/s, 3367 skipped/s, hitrate 0.130 cache size 4462319
+INFO  knossos.core - [89 / 166] 17922 extant worlds, 18600 visited/s, 2869 skipped/s, hitrate 0.134 cache size 4469269
+INFO  knossos.core - [89 / 166] 18238 extant worlds, 19911 visited/s, 3146 skipped/s, hitrate 0.136 cache size 4475352
+INFO  knossos.core - [89 / 166] 17997 extant worlds, 17066 visited/s, 2601 skipped/s, hitrate 0.132 cache size 4479712
+INFO  knossos.core - [89 / 166] 18008 extant worlds, 18659 visited/s, 3157 skipped/s, hitrate 0.145 cache size 4486897
+INFO  knossos.core - [89 / 166] 18235 extant worlds, 19445 visited/s, 3046 skipped/s, hitrate 0.135 cache size 4492378
+INFO  knossos.core - [89 / 166] 18194 extant worlds, 14501 visited/s, 2346 skipped/s, hitrate 0.139 cache size 4496071
+INFO  knossos.core - [89 / 166] 18323 extant worlds, 16271 visited/s, 3014 skipped/s, hitrate 0.156 cache size 4502365
+INFO  knossos.core - [89 / 166] 18209 extant worlds, 22769 visited/s, 3021 skipped/s, hitrate 0.117 cache size 4510874
+INFO  knossos.core - [89 / 166] 18533 extant worlds, 23479 visited/s, 3092 skipped/s, hitrate 0.116 cache size 4518116
+INFO  knossos.core - [89 / 166] 18112 extant worlds, 28448 visited/s, 4215 skipped/s, hitrate 0.129 cache size 4526228
+INFO  knossos.core - [89 / 166] 18239 extant worlds, 31002 visited/s, 4834 skipped/s, hitrate 0.135 cache size 4535059
+INFO  knossos.core - [89 / 166] 18511 extant worlds, 27644 visited/s, 4161 skipped/s, hitrate 0.131 cache size 4543841
+INFO  knossos.core - [89 / 166] 19770 extant worlds, 27990 visited/s, 4120 skipped/s, hitrate 0.128 cache size 4553110
+INFO  knossos.core - [89 / 166] 19915 extant worlds, 25524 visited/s, 3820 skipped/s, hitrate 0.130 cache size 4562323
+INFO  knossos.core - [89 / 166] 20094 extant worlds, 30397 visited/s, 4308 skipped/s, hitrate 0.124 cache size 4572258
+INFO  knossos.core - [89 / 166] 19975 extant worlds, 26974 visited/s, 3882 skipped/s, hitrate 0.126 cache size 4579415
+INFO  knossos.core - [89 / 166] 20229 extant worlds, 15605 visited/s, 2363 skipped/s, hitrate 0.132 cache size 4584323
+INFO  knossos.core - [89 / 166] 20337 extant worlds, 22491 visited/s, 3847 skipped/s, hitrate 0.146 cache size 4591864
+INFO  knossos.core - [89 / 166] 20099 extant worlds, 26964 visited/s, 3980 skipped/s, hitrate 0.129 cache size 4600840
+INFO  knossos.core - [89 / 166] 20141 extant worlds, 26995 visited/s, 4162 skipped/s, hitrate 0.134 cache size 4610742
+INFO  knossos.core - [89 / 166] 20142 extant worlds, 16328 visited/s, 2882 skipped/s, hitrate 0.150 cache size 4615383
+INFO  knossos.core - [89 / 166] 20127 extant worlds, 21115 visited/s, 3024 skipped/s, hitrate 0.125 cache size 4621694
+INFO  knossos.core - [89 / 166] 20395 extant worlds, 18383 visited/s, 3073 skipped/s, hitrate 0.143 cache size 4626777
+INFO  knossos.core - [89 / 166] 20789 extant worlds, 19213 visited/s, 3517 skipped/s, hitrate 0.155 cache size 4632185
+INFO  knossos.core - [89 / 166] 22739 extant worlds, 17653 visited/s, 3111 skipped/s, hitrate 0.150 cache size 4637057
+INFO  knossos.core - [89 / 166] 21821 extant worlds, 16122 visited/s, 2259 skipped/s, hitrate 0.123 cache size 4641862
+INFO  knossos.core - [89 / 166] 20152 extant worlds, 16668 visited/s, 2271 skipped/s, hitrate 0.120 cache size 4645323
+INFO  knossos.core - [89 / 166] 20227 extant worlds, 24202 visited/s, 4032 skipped/s, hitrate 0.143 cache size 4652198
+INFO  knossos.core - [89 / 166] 20029 extant worlds, 21741 visited/s, 3237 skipped/s, hitrate 0.130 cache size 4660401
+INFO  knossos.core - [89 / 166] 19926 extant worlds, 20249 visited/s, 2856 skipped/s, hitrate 0.124 cache size 4665995
+INFO  knossos.core - [89 / 166] 19977 extant worlds, 20675 visited/s, 3086 skipped/s, hitrate 0.130 cache size 4671651
+INFO  knossos.core - [89 / 166] 20384 extant worlds, 18601 visited/s, 3043 skipped/s, hitrate 0.141 cache size 4676855
+INFO  knossos.core - [89 / 166] 20225 extant worlds, 13149 visited/s, 2372 skipped/s, hitrate 0.153 cache size 4680258
+INFO  knossos.core - [89 / 166] 20533 extant worlds, 14469 visited/s, 3328 skipped/s, hitrate 0.187 cache size 4684080
+INFO  knossos.core - [89 / 166] 20218 extant worlds, 7152 visited/s, 1628 skipped/s, hitrate 0.185 cache size 4685525
+INFO  knossos.core - [89 / 166] 22785 extant worlds, 10619 visited/s, 1847 skipped/s, hitrate 0.148 cache size 4690186
+INFO  knossos.core - [89 / 166] 22366 extant worlds, 6568 visited/s, 1055 skipped/s, hitrate 0.138 cache size 4691973
+INFO  knossos.core - [89 / 166] 22398 extant worlds, 13155 visited/s, 2428 skipped/s, hitrate 0.156 cache size 4695936
+INFO  knossos.core - [89 / 166] 22125 extant worlds, 15562 visited/s, 2343 skipped/s, hitrate 0.131 cache size 4701744
+INFO  knossos.core - [89 / 166] 21602 extant worlds, 21346 visited/s, 3186 skipped/s, hitrate 0.130 cache size 4710621
+INFO  knossos.core - [89 / 166] 21706 extant worlds, 21948 visited/s, 3489 skipped/s, hitrate 0.137 cache size 4718820
+INFO  knossos.core - [89 / 166] 21611 extant worlds, 19821 visited/s, 3112 skipped/s, hitrate 0.136 cache size 4725712
+INFO  knossos.core - [89 / 166] 21901 extant worlds, 25135 visited/s, 3690 skipped/s, hitrate 0.128 cache size 4735414
+INFO  knossos.core - [89 / 166] 21831 extant worlds, 20766 visited/s, 3013 skipped/s, hitrate 0.127 cache size 4743676
+INFO  knossos.core - [89 / 166] 21876 extant worlds, 15872 visited/s, 2464 skipped/s, hitrate 0.134 cache size 4749857
+INFO  knossos.core - [89 / 166] 22048 extant worlds, 21877 visited/s, 3440 skipped/s, hitrate 0.136 cache size 4758098
+INFO  knossos.core - [89 / 166] 21771 extant worlds, 21453 visited/s, 3109 skipped/s, hitrate 0.127 cache size 4765459
+INFO  knossos.core - [89 / 166] 21740 extant worlds, 28812 visited/s, 3951 skipped/s, hitrate 0.121 cache size 4777157
+INFO  knossos.core - [89 / 166] 22377 extant worlds, 25895 visited/s, 3960 skipped/s, hitrate 0.133 cache size 4786205
+INFO  knossos.core - [89 / 166] 22426 extant worlds, 27369 visited/s, 3962 skipped/s, hitrate 0.126 cache size 4796622
+INFO  knossos.core - [89 / 166] 22550 extant worlds, 27049 visited/s, 3903 skipped/s, hitrate 0.126 cache size 4805473
+INFO  knossos.core - [89 / 166] 22833 extant worlds, 20918 visited/s, 3358 skipped/s, hitrate 0.138 cache size 4812662
+INFO  knossos.core - [89 / 166] 22369 extant worlds, 22541 visited/s, 3101 skipped/s, hitrate 0.121 cache size 4819230
+INFO  knossos.core - [89 / 166] 23127 extant worlds, 22596 visited/s, 3815 skipped/s, hitrate 0.144 cache size 4827013
+INFO  knossos.core - [89 / 166] 22642 extant worlds, 20048 visited/s, 2991 skipped/s, hitrate 0.130 cache size 4832577
+INFO  knossos.core - [89 / 166] 23058 extant worlds, 19881 visited/s, 3054 skipped/s, hitrate 0.133 cache size 4839368
+INFO  knossos.core - [89 / 166] 22990 extant worlds, 18668 visited/s, 2934 skipped/s, hitrate 0.136 cache size 4845084
+INFO  knossos.core - [89 / 166] 23046 extant worlds, 19343 visited/s, 3315 skipped/s, hitrate 0.146 cache size 4850788
+INFO  knossos.core - [89 / 166] 22794 extant worlds, 21099 visited/s, 3041 skipped/s, hitrate 0.126 cache size 4856693
+INFO  knossos.core - [89 / 166] 22814 extant worlds, 19138 visited/s, 3004 skipped/s, hitrate 0.136 cache size 4863179
+INFO  knossos.core - [89 / 166] 22894 extant worlds, 21011 visited/s, 3285 skipped/s, hitrate 0.135 cache size 4869728
+INFO  knossos.core - [89 / 166] 22678 extant worlds, 15890 visited/s, 2409 skipped/s, hitrate 0.132 cache size 4874493
+INFO  knossos.core - [89 / 166] 22940 extant worlds, 19258 visited/s, 3409 skipped/s, hitrate 0.150 cache size 4879415
+INFO  knossos.core - [89 / 166] 23107 extant worlds, 16886 visited/s, 3099 skipped/s, hitrate 0.155 cache size 4883907
+INFO  knossos.core - [89 / 166] 23535 extant worlds, 13884 visited/s, 2471 skipped/s, hitrate 0.151 cache size 4887325
+INFO  knossos.core - [89 / 166] 23638 extant worlds, 18551 visited/s, 2466 skipped/s, hitrate 0.117 cache size 4892559
+INFO  knossos.core - [89 / 166] 23852 extant worlds, 11654 visited/s, 1598 skipped/s, hitrate 0.121 cache size 4895464
+INFO  knossos.core - [89 / 166] 22881 extant worlds, 22068 visited/s, 2882 skipped/s, hitrate 0.116 cache size 4901965
+INFO  knossos.core - [89 / 166] 23132 extant worlds, 20389 visited/s, 3099 skipped/s, hitrate 0.132 cache size 4909041
+INFO  knossos.core - [89 / 166] 21830 extant worlds, 21852 visited/s, 3205 skipped/s, hitrate 0.128 cache size 4915776
+INFO  knossos.core - [89 / 166] 21895 extant worlds, 16108 visited/s, 2834 skipped/s, hitrate 0.150 cache size 4920666
+INFO  knossos.core - [89 / 166] 21879 extant worlds, 16324 visited/s, 2435 skipped/s, hitrate 0.130 cache size 4926796
+INFO  knossos.core - [89 / 166] 22062 extant worlds, 20737 visited/s, 3327 skipped/s, hitrate 0.138 cache size 4933421
+INFO  knossos.core - [89 / 166] 21900 extant worlds, 15674 visited/s, 2692 skipped/s, hitrate 0.147 cache size 4937780
+INFO  knossos.core - [89 / 166] 22307 extant worlds, 18677 visited/s, 2895 skipped/s, hitrate 0.134 cache size 4943014
+INFO  knossos.core - [89 / 166] 22442 extant worlds, 18138 visited/s, 2547 skipped/s, hitrate 0.123 cache size 4947987
+INFO  knossos.core - [89 / 166] 23808 extant worlds, 19815 visited/s, 3023 skipped/s, hitrate 0.132 cache size 4953488
+INFO  knossos.core - [89 / 166] 24125 extant worlds, 26885 visited/s, 3551 skipped/s, hitrate 0.117 cache size 4963070
+INFO  knossos.core - [89 / 166] 23939 extant worlds, 29168 visited/s, 4437 skipped/s, hitrate 0.132 cache size 4973585
+INFO  knossos.core - [89 / 166] 23739 extant worlds, 25465 visited/s, 3215 skipped/s, hitrate 0.112 cache size 4983906
+INFO  knossos.core - [89 / 166] 23354 extant worlds, 27781 visited/s, 3745 skipped/s, hitrate 0.119 cache size 4993231
+INFO  knossos.core - [89 / 166] 22993 extant worlds, 24254 visited/s, 3225 skipped/s, hitrate 0.117 cache size 5000888
+INFO  knossos.core - [89 / 166] 22940 extant worlds, 21177 visited/s, 3120 skipped/s, hitrate 0.128 cache size 5009375
+INFO  knossos.core - [89 / 166] 22917 extant worlds, 18682 visited/s, 2719 skipped/s, hitrate 0.127 cache size 5016882
+INFO  knossos.core - [89 / 166] 22953 extant worlds, 19780 visited/s, 3134 skipped/s, hitrate 0.137 cache size 5023956
+INFO  knossos.core - [89 / 166] 22904 extant worlds, 24160 visited/s, 3543 skipped/s, hitrate 0.128 cache size 5032146
+INFO  knossos.core - [89 / 166] 22865 extant worlds, 25058 visited/s, 3684 skipped/s, hitrate 0.128 cache size 5041068
+INFO  knossos.core - [89 / 166] 22843 extant worlds, 22592 visited/s, 3306 skipped/s, hitrate 0.128 cache size 5048371
+INFO  knossos.core - [89 / 166] 22994 extant worlds, 27017 visited/s, 3666 skipped/s, hitrate 0.119 cache size 5057705
+INFO  knossos.core - [89 / 166] 22882 extant worlds, 23830 visited/s, 3440 skipped/s, hitrate 0.126 cache size 5065706
+INFO  knossos.core - [89 / 166] 23119 extant worlds, 17802 visited/s, 2911 skipped/s, hitrate 0.141 cache size 5071428
+INFO  knossos.core - [89 / 166] 22890 extant worlds, 16439 visited/s, 2593 skipped/s, hitrate 0.136 cache size 5076732
+INFO  knossos.core - [89 / 166] 22938 extant worlds, 13001 visited/s, 2223 skipped/s, hitrate 0.146 cache size 5080882
+INFO  knossos.core - [89 / 166] 22918 extant worlds, 16497 visited/s, 2658 skipped/s, hitrate 0.139 cache size 5086489
+INFO  knossos.core - [89 / 166] 22858 extant worlds, 12996 visited/s, 1923 skipped/s, hitrate 0.129 cache size 5090363
+INFO  knossos.core - [89 / 166] 22884 extant worlds, 11575 visited/s, 2063 skipped/s, hitrate 0.151 cache size 5094245
+INFO  knossos.core - [89 / 166] 22953 extant worlds, 9880 visited/s, 1747 skipped/s, hitrate 0.150 cache size 5097629
+INFO  knossos.core - [89 / 166] 22928 extant worlds, 16413 visited/s, 2579 skipped/s, hitrate 0.136 cache size 5104138
+INFO  knossos.core - [89 / 166] 22997 extant worlds, 12287 visited/s, 2113 skipped/s, hitrate 0.147 cache size 5108565
+INFO  knossos.core - [89 / 166] 22951 extant worlds, 13778 visited/s, 2123 skipped/s, hitrate 0.134 cache size 5112879
+INFO  knossos.core - [89 / 166] 22874 extant worlds, 18942 visited/s, 2949 skipped/s, hitrate 0.135 cache size 5118496
+INFO  knossos.core - [89 / 166] 23266 extant worlds, 16635 visited/s, 2739 skipped/s, hitrate 0.141 cache size 5123460
+INFO  knossos.core - [89 / 166] 22911 extant worlds, 17505 visited/s, 2726 skipped/s, hitrate 0.135 cache size 5128670
+INFO  knossos.core - [89 / 166] 22984 extant worlds, 16768 visited/s, 2678 skipped/s, hitrate 0.138 cache size 5133536
+INFO  knossos.core - [89 / 166] 22969 extant worlds, 14677 visited/s, 2407 skipped/s, hitrate 0.141 cache size 5137667
+INFO  knossos.core - [89 / 166] 23581 extant worlds, 14932 visited/s, 2572 skipped/s, hitrate 0.147 cache size 5141651
+INFO  knossos.core - [89 / 166] 23262 extant worlds, 23963 visited/s, 3339 skipped/s, hitrate 0.122 cache size 5148044
+INFO  knossos.core - [89 / 166] 23201 extant worlds, 24748 visited/s, 3648 skipped/s, hitrate 0.128 cache size 5153841
+INFO  knossos.core - [89 / 166] 23119 extant worlds, 19580 visited/s, 2726 skipped/s, hitrate 0.122 cache size 5158295
+INFO  knossos.core - [89 / 166] 22958 extant worlds, 17186 visited/s, 2692 skipped/s, hitrate 0.135 cache size 5163599
+INFO  knossos.core - [89 / 166] 22989 extant worlds, 11036 visited/s, 2195 skipped/s, hitrate 0.166 cache size 5167753
+INFO  knossos.core - [89 / 166] 23159 extant worlds, 11429 visited/s, 1652 skipped/s, hitrate 0.126 cache size 5171498
+INFO  knossos.core - [89 / 166] 22953 extant worlds, 19279 visited/s, 3163 skipped/s, hitrate 0.141 cache size 5178777
+INFO  knossos.core - [89 / 166] 22925 extant worlds, 9796 visited/s, 1862 skipped/s, hitrate 0.160 cache size 5182779
+INFO  knossos.core - [89 / 166] 22939 extant worlds, 9146 visited/s, 1662 skipped/s, hitrate 0.154 cache size 5186569
+INFO  knossos.core - [89 / 166] 22965 extant worlds, 11779 visited/s, 1675 skipped/s, hitrate 0.125 cache size 5191239
+INFO  knossos.core - [89 / 166] 22846 extant worlds, 10415 visited/s, 1703 skipped/s, hitrate 0.141 cache size 5194591
+INFO  knossos.core - [89 / 166] 23256 extant worlds, 20165 visited/s, 3027 skipped/s, hitrate 0.131 cache size 5201500
+INFO  knossos.core - [89 / 166] 23430 extant worlds, 22224 visited/s, 3592 skipped/s, hitrate 0.139 cache size 5209015
+INFO  knossos.core - [89 / 166] 23360 extant worlds, 13309 visited/s, 2281 skipped/s, hitrate 0.146 cache size 5212477
+INFO  knossos.core - [89 / 166] 24668 extant worlds, 9520 visited/s, 1349 skipped/s, hitrate 0.124 cache size 5216336
+INFO  knossos.core - [89 / 166] 24732 extant worlds, 25555 visited/s, 4012 skipped/s, hitrate 0.136 cache size 5223960
+INFO  knossos.core - [89 / 166] 24296 extant worlds, 18303 visited/s, 2954 skipped/s, hitrate 0.139 cache size 5229548
+INFO  knossos.core - [89 / 166] 24298 extant worlds, 13674 visited/s, 2408 skipped/s, hitrate 0.150 cache size 5233730
+INFO  knossos.core - [89 / 166] 24697 extant worlds, 14680 visited/s, 2505 skipped/s, hitrate 0.146 cache size 5237696
+INFO  knossos.core - [89 / 166] 24030 extant worlds, 5758 visited/s, 1063 skipped/s, hitrate 0.156 cache size 5238679
+INFO  knossos.core - [89 / 166] 23728 extant worlds, 20087 visited/s, 2411 skipped/s, hitrate 0.107 cache size 5244416
+INFO  knossos.core - [89 / 166] 23414 extant worlds, 13536 visited/s, 2216 skipped/s, hitrate 0.141 cache size 5247574
+INFO  knossos.core - [89 / 166] 23523 extant worlds, 18367 visited/s, 3107 skipped/s, hitrate 0.145 cache size 5253899
+INFO  knossos.core - [89 / 166] 23772 extant worlds, 15712 visited/s, 2586 skipped/s, hitrate 0.141 cache size 5259239
+INFO  knossos.core - [89 / 166] 24100 extant worlds, 9620 visited/s, 1638 skipped/s, hitrate 0.146 cache size 5262545
+INFO  knossos.core - [89 / 166] 23788 extant worlds, 13479 visited/s, 2058 skipped/s, hitrate 0.132 cache size 5266559
+INFO  knossos.core - [89 / 166] 23896 extant worlds, 14222 visited/s, 2484 skipped/s, hitrate 0.149 cache size 5270324
+INFO  knossos.core - [89 / 166] 24219 extant worlds, 15490 visited/s, 2782 skipped/s, hitrate 0.152 cache size 5275703
+INFO  knossos.core - [89 / 166] 25192 extant worlds, 12574 visited/s, 2146 skipped/s, hitrate 0.146 cache size 5279968
+INFO  knossos.core - [89 / 166] 24261 extant worlds, 15501 visited/s, 1995 skipped/s, hitrate 0.114 cache size 5284826
+INFO  knossos.core - [89 / 166] 23735 extant worlds, 7945 visited/s, 1176 skipped/s, hitrate 0.129 cache size 5287374
+INFO  knossos.core - [89 / 166] 23303 extant worlds, 20185 visited/s, 3248 skipped/s, hitrate 0.139 cache size 5292921
+INFO  knossos.core - [89 / 166] 22878 extant worlds, 13673 visited/s, 2380 skipped/s, hitrate 0.148 cache size 5296367
+INFO  knossos.core - [89 / 166] 23237 extant worlds, 16895 visited/s, 2401 skipped/s, hitrate 0.124 cache size 5302219
+INFO  knossos.core - [89 / 166] 23318 extant worlds, 20384 visited/s, 3116 skipped/s, hitrate 0.133 cache size 5307976
+INFO  knossos.core - [89 / 166] 23330 extant worlds, 22132 visited/s, 3571 skipped/s, hitrate 0.139 cache size 5313786
+INFO  knossos.core - [89 / 166] 23373 extant worlds, 17605 visited/s, 2944 skipped/s, hitrate 0.143 cache size 5319216
+INFO  knossos.core - [89 / 166] 23272 extant worlds, 10423 visited/s, 1699 skipped/s, hitrate 0.140 cache size 5321690
+INFO  knossos.core - [89 / 166] 23217 extant worlds, 16207 visited/s, 2298 skipped/s, hitrate 0.124 cache size 5326100
+INFO  knossos.core - [89 / 166] 23394 extant worlds, 18017 visited/s, 3044 skipped/s, hitrate 0.145 cache size 5330513
+INFO  knossos.core - [89 / 166] 23555 extant worlds, 14796 visited/s, 2733 skipped/s, hitrate 0.156 cache size 5334358
+INFO  knossos.core - [89 / 166] 24677 extant worlds, 16268 visited/s, 3350 skipped/s, hitrate 0.171 cache size 5339692
+INFO  knossos.core - [89 / 166] 24637 extant worlds, 13922 visited/s, 1843 skipped/s, hitrate 0.117 cache size 5343595
+INFO  knossos.core - [89 / 166] 25094 extant worlds, 7635 visited/s, 1273 skipped/s, hitrate 0.143 cache size 5344990
+INFO  knossos.core - [89 / 166] 24383 extant worlds, 10854 visited/s, 2425 skipped/s, hitrate 0.183 cache size 5347412
+INFO  knossos.core - [89 / 166] 24234 extant worlds, 10018 visited/s, 1887 skipped/s, hitrate 0.159 cache size 5349857
+INFO  knossos.core - [89 / 166] 24414 extant worlds, 4646 visited/s, 1179 skipped/s, hitrate 0.202 cache size 5350323
+INFO  knossos.core - [89 / 166] 24847 extant worlds, 6507 visited/s, 1169 skipped/s, hitrate 0.152 cache size 5352254
+INFO  knossos.core - [89 / 166] 24242 extant worlds, 5590 visited/s, 899 skipped/s, hitrate 0.139 cache size 5353767
+INFO  knossos.core - [89 / 166] 24264 extant worlds, 11937 visited/s, 2258 skipped/s, hitrate 0.159 cache size 5357170
+INFO  knossos.core - [89 / 166] 24707 extant worlds, 13152 visited/s, 2311 skipped/s, hitrate 0.150 cache size 5360315
+INFO  knossos.core - [89 / 166] 24583 extant worlds, 22965 visited/s, 2879 skipped/s, hitrate 0.111 cache size 5369429
+INFO  knossos.core - [89 / 166] 24276 extant worlds, 19599 visited/s, 2574 skipped/s, hitrate 0.116 cache size 5377485
+INFO  knossos.core - [89 / 166] 27391 extant worlds, 22452 visited/s, 4400 skipped/s, hitrate 0.164 cache size 5386257
+INFO  knossos.core - [89 / 166] 27233 extant worlds, 20362 visited/s, 2834 skipped/s, hitrate 0.122 cache size 5393547
+INFO  knossos.core - [89 / 166] 27387 extant worlds, 22789 visited/s, 2962 skipped/s, hitrate 0.115 cache size 5400978
+INFO  knossos.core - [89 / 166] 28221 extant worlds, 25719 visited/s, 5055 skipped/s, hitrate 0.164 cache size 5409360
+INFO  knossos.core - [89 / 166] 27711 extant worlds, 19789 visited/s, 3048 skipped/s, hitrate 0.133 cache size 5416237
+INFO  knossos.core - [89 / 166] 27963 extant worlds, 17504 visited/s, 2834 skipped/s, hitrate 0.139 cache size 5421961
+INFO  knossos.core - [89 / 166] 28213 extant worlds, 19390 visited/s, 2860 skipped/s, hitrate 0.129 cache size 5427865
+INFO  knossos.core - [89 / 166] 30148 extant worlds, 30519 visited/s, 3654 skipped/s, hitrate 0.107 cache size 5438645
+INFO  knossos.core - [89 / 166] 29900 extant worlds, 21424 visited/s, 3078 skipped/s, hitrate 0.126 cache size 5445582
+INFO  knossos.core - [89 / 166] 29854 extant worlds, 16319 visited/s, 2497 skipped/s, hitrate 0.133 cache size 5450854
+INFO  knossos.core - [89 / 166] 29791 extant worlds, 17213 visited/s, 2642 skipped/s, hitrate 0.133 cache size 5456060
+INFO  knossos.core - [89 / 166] 29788 extant worlds, 19211 visited/s, 2828 skipped/s, hitrate 0.128 cache size 5461904
+INFO  knossos.core - [89 / 166] 29895 extant worlds, 19315 visited/s, 2839 skipped/s, hitrate 0.128 cache size 5467042
+INFO  knossos.core - [89 / 166] 29806 extant worlds, 17316 visited/s, 2362 skipped/s, hitrate 0.120 cache size 5471459
+INFO  knossos.core - [89 / 166] 29649 extant worlds, 15799 visited/s, 2296 skipped/s, hitrate 0.127 cache size 5476225
+INFO  knossos.core - [89 / 166] 29686 extant worlds, 13369 visited/s, 1923 skipped/s, hitrate 0.126 cache size 5479629
+INFO  knossos.core - [89 / 166] 29679 extant worlds, 8097 visited/s, 1517 skipped/s, hitrate 0.158 cache size 5482290
+INFO  knossos.core - [89 / 166] 29669 extant worlds, 9271 visited/s, 1329 skipped/s, hitrate 0.125 cache size 5485361
+INFO  knossos.core - [89 / 166] 29726 extant worlds, 8557 visited/s, 1457 skipped/s, hitrate 0.145 cache size 5488474
+INFO  knossos.core - [89 / 166] 29716 extant worlds, 10183 visited/s, 1786 skipped/s, hitrate 0.149 cache size 5491387
+INFO  knossos.core - [89 / 166] 29708 extant worlds, 8092 visited/s, 1220 skipped/s, hitrate 0.131 cache size 5494058
+INFO  knossos.core - [89 / 166] 29656 extant worlds, 13558 visited/s, 1956 skipped/s, hitrate 0.126 cache size 5498836
+INFO  knossos.core - [89 / 166] 31102 extant worlds, 14695 visited/s, 2014 skipped/s, hitrate 0.121 cache size 5502774
+INFO  knossos.core - [89 / 166] 30950 extant worlds, 8670 visited/s, 1334 skipped/s, hitrate 0.133 cache size 5504936
+INFO  knossos.core - [89 / 166] 30971 extant worlds, 10502 visited/s, 1552 skipped/s, hitrate 0.129 cache size 5508477
+INFO  knossos.core - [89 / 166] 32265 extant worlds, 13008 visited/s, 1668 skipped/s, hitrate 0.114 cache size 5512257
+INFO  knossos.core - [89 / 166] 32279 extant worlds, 6458 visited/s, 1089 skipped/s, hitrate 0.144 cache size 5514355
+INFO  knossos.core - [89 / 166] 34842 extant worlds, 15850 visited/s, 4171 skipped/s, hitrate 0.208 cache size 5517499
+INFO  knossos.core - [89 / 166] 32258 extant worlds, 15711 visited/s, 1956 skipped/s, hitrate 0.111 cache size 5522415
+INFO  knossos.core - [89 / 166] 32282 extant worlds, 7899 visited/s, 1369 skipped/s, hitrate 0.148 cache size 5524475
+INFO  knossos.core - [89 / 166] 32308 extant worlds, 16597 visited/s, 2358 skipped/s, hitrate 0.124 cache size 5529994
+INFO  knossos.core - [89 / 166] 31721 extant worlds, 24898 visited/s, 5626 skipped/s, hitrate 0.184 cache size 5535016
+INFO  knossos.core - [89 / 166] 31396 extant worlds, 13587 visited/s, 2181 skipped/s, hitrate 0.138 cache size 5539792
+INFO  knossos.core - [89 / 166] 31331 extant worlds, 20128 visited/s, 2989 skipped/s, hitrate 0.129 cache size 5545471
+INFO  knossos.core - [89 / 166] 30375 extant worlds, 13949 visited/s, 2175 skipped/s, hitrate 0.135 cache size 5549897
+INFO  knossos.core - [89 / 166] 29966 extant worlds, 18633 visited/s, 3022 skipped/s, hitrate 0.140 cache size 5555879
+INFO  knossos.core - [89 / 166] 29789 extant worlds, 13354 visited/s, 2488 skipped/s, hitrate 0.157 cache size 5559248
+INFO  knossos.core - [89 / 166] 29808 extant worlds, 14468 visited/s, 2521 skipped/s, hitrate 0.148 cache size 5563083
+INFO  knossos.core - [89 / 166] 29855 extant worlds, 14435 visited/s, 2410 skipped/s, hitrate 0.143 cache size 5566798
+INFO  knossos.core - [89 / 166] 29845 extant worlds, 16477 visited/s, 3025 skipped/s, hitrate 0.155 cache size 5570894
+INFO  knossos.core - [89 / 166] 29800 extant worlds, 13029 visited/s, 2438 skipped/s, hitrate 0.158 cache size 5574049
+INFO  knossos.core - [89 / 166] 29845 extant worlds, 14219 visited/s, 2211 skipped/s, hitrate 0.135 cache size 5578815
+INFO  knossos.core - [89 / 166] 29939 extant worlds, 14572 visited/s, 2710 skipped/s, hitrate 0.157 cache size 5582176
+INFO  knossos.core - [89 / 166] 29912 extant worlds, 14606 visited/s, 2560 skipped/s, hitrate 0.149 cache size 5585894
+INFO  knossos.core - [89 / 166] 30174 extant worlds, 15608 visited/s, 2602 skipped/s, hitrate 0.143 cache size 5589523
+INFO  knossos.core - [89 / 166] 30458 extant worlds, 18834 visited/s, 3062 skipped/s, hitrate 0.140 cache size 5593661
+INFO  knossos.core - [89 / 166] 30518 extant worlds, 11692 visited/s, 2070 skipped/s, hitrate 0.150 cache size 5595600
+INFO  knossos.core - [89 / 166] 29966 extant worlds, 13857 visited/s, 2534 skipped/s, hitrate 0.155 cache size 5599195
+INFO  knossos.core - [89 / 166] 29976 extant worlds, 13429 visited/s, 2090 skipped/s, hitrate 0.135 cache size 5601848
+INFO  knossos.core - [89 / 166] 30199 extant worlds, 16665 visited/s, 2985 skipped/s, hitrate 0.152 cache size 5605595
+INFO  knossos.core - [89 / 166] 30223 extant worlds, 13562 visited/s, 2543 skipped/s, hitrate 0.158 cache size 5607903
+INFO  knossos.core - [89 / 166] 30240 extant worlds, 11689 visited/s, 2491 skipped/s, hitrate 0.176 cache size 5610551
+INFO  knossos.core - [89 / 166] 30295 extant worlds, 6519 visited/s, 1254 skipped/s, hitrate 0.161 cache size 5612402
+INFO  knossos.core - [89 / 166] 30217 extant worlds, 7225 visited/s, 1158 skipped/s, hitrate 0.138 cache size 5614222
+INFO  knossos.core - [89 / 166] 30165 extant worlds, 5963 visited/s, 1041 skipped/s, hitrate 0.149 cache size 5615819
+INFO  knossos.core - [89 / 166] 30159 extant worlds, 8468 visited/s, 1235 skipped/s, hitrate 0.127 cache size 5619395
+INFO  knossos.core - [89 / 166] 30161 extant worlds, 7768 visited/s, 1243 skipped/s, hitrate 0.138 cache size 5621804
+INFO  knossos.core - [89 / 166] 30160 extant worlds, 9467 visited/s, 2019 skipped/s, hitrate 0.176 cache size 5624257
+INFO  knossos.core - [89 / 166] 30161 extant worlds, 5486 visited/s, 1053 skipped/s, hitrate 0.161 cache size 5626448
+INFO  knossos.core - [89 / 166] 30368 extant worlds, 8016 visited/s, 1706 skipped/s, hitrate 0.176 cache size 5628159
+INFO  knossos.core - [89 / 166] 30690 extant worlds, 5258 visited/s, 1278 skipped/s, hitrate 0.196 cache size 5629373
+INFO  knossos.core - [89 / 166] 30664 extant worlds, 6456 visited/s, 1114 skipped/s, hitrate 0.147 cache size 5631377
+INFO  knossos.core - [89 / 166] 30685 extant worlds, 4961 visited/s, 1002 skipped/s, hitrate 0.168 cache size 5632617
+INFO  knossos.core - [89 / 166] 36788 extant worlds, 12355 visited/s, 1936 skipped/s, hitrate 0.135 cache size 5637607
+INFO  knossos.core - [89 / 166] 36537 extant worlds, 13332 visited/s, 2807 skipped/s, hitrate 0.174 cache size 5639884
+INFO  knossos.core - [89 / 166] 31234 extant worlds, 12806 visited/s, 1442 skipped/s, hitrate 0.101 cache size 5643482
+INFO  knossos.core - [89 / 166] 36955 extant worlds, 18587 visited/s, 2425 skipped/s, hitrate 0.115 cache size 5649831
+INFO  knossos.core - [89 / 166] 36735 extant worlds, 9466 visited/s, 1244 skipped/s, hitrate 0.116 cache size 5652335
+INFO  knossos.core - [89 / 166] 36658 extant worlds, 14086 visited/s, 2069 skipped/s, hitrate 0.128 cache size 5655696
+INFO  knossos.core - [89 / 166] 36703 extant worlds, 11659 visited/s, 1707 skipped/s, hitrate 0.128 cache size 5658497
+INFO  knossos.core - [89 / 166] 36576 extant worlds, 8420 visited/s, 1287 skipped/s, hitrate 0.133 cache size 5660726
+INFO  knossos.core - [89 / 166] 36659 extant worlds, 5156 visited/s, 879 skipped/s, hitrate 0.146 cache size 5661938
+INFO  knossos.core - [89 / 166] 36652 extant worlds, 6700 visited/s, 1174 skipped/s, hitrate 0.149 cache size 5663403
+INFO  knossos.core - [89 / 166] 36562 extant worlds, 7170 visited/s, 1325 skipped/s, hitrate 0.156 cache size 5665026
+INFO  knossos.core - [89 / 166] 36576 extant worlds, 6055 visited/s, 1003 skipped/s, hitrate 0.142 cache size 5666920
+INFO  knossos.core - [89 / 166] 36786 extant worlds, 7728 visited/s, 1361 skipped/s, hitrate 0.150 cache size 5669119
+INFO  knossos.core - [89 / 166] 36735 extant worlds, 3877 visited/s, 590 skipped/s, hitrate 0.132 cache size 5669691
+INFO  knossos.core - [89 / 166] 37174 extant worlds, 3641 visited/s, 496 skipped/s, hitrate 0.120 cache size 5670522
+INFO  knossos.core - [89 / 166] 36007 extant worlds, 14190 visited/s, 2140 skipped/s, hitrate 0.131 cache size 5672987
+INFO  knossos.core - [89 / 166] 32590 extant worlds, 21050 visited/s, 2655 skipped/s, hitrate 0.112 cache size 5679027
+INFO  knossos.core - [89 / 166] 21661 extant worlds, 19264 visited/s, 3121 skipped/s, hitrate 0.139 cache size 5683149
+INFO  knossos.core - [89 / 166] 15274 extant worlds, 21253 visited/s, 3419 skipped/s, hitrate 0.139 cache size 5688189
+INFO  knossos.core - [89 / 166] 17951 extant worlds, 29059 visited/s, 3736 skipped/s, hitrate 0.114 cache size 5697949
+INFO  knossos.core - [89 / 166] 18674 extant worlds, 16018 visited/s, 2921 skipped/s, hitrate 0.154 cache size 5702929
+INFO  knossos.core - [89 / 166] 18015 extant worlds, 18665 visited/s, 2538 skipped/s, hitrate 0.120 cache size 5708441
+INFO  knossos.core - [89 / 166] 17582 extant worlds, 21032 visited/s, 3397 skipped/s, hitrate 0.139 cache size 5716300
+INFO  knossos.core - [89 / 166] 17616 extant worlds, 29081 visited/s, 4131 skipped/s, hitrate 0.124 cache size 5725482
+INFO  knossos.core - [89 / 166] 17651 extant worlds, 30016 visited/s, 4090 skipped/s, hitrate 0.120 cache size 5734985
+INFO  knossos.core - [89 / 166] 17975 extant worlds, 18594 visited/s, 2915 skipped/s, hitrate 0.136 cache size 5741859
+INFO  knossos.core - [89 / 166] 17798 extant worlds, 13251 visited/s, 2329 skipped/s, hitrate 0.149 cache size 5745536
+INFO  knossos.core - [89 / 166] 17890 extant worlds, 20125 visited/s, 3025 skipped/s, hitrate 0.131 cache size 5753114
+INFO  knossos.core - [89 / 166] 17692 extant worlds, 12565 visited/s, 2097 skipped/s, hitrate 0.143 cache size 5757472
+INFO  knossos.core - [89 / 166] 17670 extant worlds, 17639 visited/s, 2782 skipped/s, hitrate 0.136 cache size 5763576
+INFO  knossos.core - [89 / 166] 17671 extant worlds, 17878 visited/s, 2735 skipped/s, hitrate 0.133 cache size 5768998
+INFO  knossos.core - [89 / 166] 17625 extant worlds, 16712 visited/s, 2872 skipped/s, hitrate 0.147 cache size 5773752
+INFO  knossos.core - [89 / 166] 17699 extant worlds, 24307 visited/s, 3778 skipped/s, hitrate 0.135 cache size 5780975
+INFO  knossos.core - [89 / 166] 17591 extant worlds, 20229 visited/s, 3021 skipped/s, hitrate 0.130 cache size 5786829
+INFO  knossos.core - [89 / 166] 17835 extant worlds, 23023 visited/s, 3426 skipped/s, hitrate 0.130 cache size 5794341
+INFO  knossos.core - [89 / 166] 18197 extant worlds, 29241 visited/s, 4107 skipped/s, hitrate 0.123 cache size 5801930
+INFO  knossos.core - [89 / 166] 17745 extant worlds, 31387 visited/s, 4094 skipped/s, hitrate 0.115 cache size 5808955
+INFO  knossos.core - [89 / 166] 17817 extant worlds, 23684 visited/s, 3568 skipped/s, hitrate 0.131 cache size 5815227
+INFO  knossos.core - [89 / 166] 17877 extant worlds, 17073 visited/s, 2742 skipped/s, hitrate 0.138 cache size 5820407
+INFO  knossos.core - [89 / 166] 17786 extant worlds, 14017 visited/s, 2412 skipped/s, hitrate 0.147 cache size 5823979
+INFO  knossos.core - [89 / 166] 18548 extant worlds, 13884 visited/s, 2352 skipped/s, hitrate 0.145 cache size 5828037
+INFO  knossos.core - [89 / 166] 19010 extant worlds, 10521 visited/s, 2272 skipped/s, hitrate 0.178 cache size 5830695
+INFO  knossos.core - [89 / 166] 18894 extant worlds, 8827 visited/s, 1562 skipped/s, hitrate 0.150 cache size 5833435
+INFO  knossos.core - [89 / 166] 19048 extant worlds, 12464 visited/s, 2164 skipped/s, hitrate 0.148 cache size 5836278
+INFO  knossos.core - [89 / 166] 18491 extant worlds, 6517 visited/s, 1025 skipped/s, hitrate 0.136 cache size 5838005
+INFO  knossos.core - [89 / 166] 17658 extant worlds, 20570 visited/s, 3024 skipped/s, hitrate 0.128 cache size 5844110
+INFO  knossos.core - [89 / 166] 18238 extant worlds, 26592 visited/s, 3890 skipped/s, hitrate 0.128 cache size 5853401
+INFO  knossos.core - [89 / 166] 17911 extant worlds, 23418 visited/s, 3634 skipped/s, hitrate 0.134 cache size 5859993
+INFO  knossos.core - [89 / 166] 17802 extant worlds, 21505 visited/s, 3246 skipped/s, hitrate 0.131 cache size 5866698
+INFO  knossos.core - [89 / 166] 19584 extant worlds, 18787 visited/s, 3141 skipped/s, hitrate 0.143 cache size 5872633
+INFO  knossos.core - [89 / 166] 19398 extant worlds, 8555 visited/s, 2043 skipped/s, hitrate 0.193 cache size 5874053
+INFO  knossos.core - [89 / 166] 18997 extant worlds, 15500 visited/s, 2303 skipped/s, hitrate 0.129 cache size 5879788
+INFO  knossos.core - [89 / 166] 18895 extant worlds, 16614 visited/s, 2680 skipped/s, hitrate 0.139 cache size 5884414
+INFO  knossos.core - [89 / 166] 19116 extant worlds, 8341 visited/s, 1713 skipped/s, hitrate 0.170 cache size 5886309
+INFO  knossos.core - [89 / 166] 19327 extant worlds, 17363 visited/s, 2796 skipped/s, hitrate 0.139 cache size 5891133
+INFO  knossos.core - [89 / 166] 21262 extant worlds, 15422 visited/s, 2286 skipped/s, hitrate 0.129 cache size 5897235
+INFO  knossos.core - [89 / 166] 20866 extant worlds, 14357 visited/s, 1929 skipped/s, hitrate 0.118 cache size 5901781
+INFO  knossos.core - [89 / 166] 17800 extant worlds, 9632 visited/s, 1493 skipped/s, hitrate 0.134 cache size 5904919
+INFO  knossos.core - [89 / 166] 17888 extant worlds, 14971 visited/s, 2594 skipped/s, hitrate 0.148 cache size 5909986
+INFO  knossos.core - [89 / 166] 18128 extant worlds, 19993 visited/s, 2825 skipped/s, hitrate 0.124 cache size 5916748
+INFO  knossos.core - [89 / 166] 18569 extant worlds, 22500 visited/s, 3387 skipped/s, hitrate 0.131 cache size 5923406
+INFO  knossos.core - [89 / 166] 18255 extant worlds, 25882 visited/s, 3708 skipped/s, hitrate 0.125 cache size 5930279
+INFO  knossos.core - [89 / 166] 17801 extant worlds, 28685 visited/s, 4120 skipped/s, hitrate 0.126 cache size 5938028
+INFO  knossos.core - [89 / 166] 17834 extant worlds, 19198 visited/s, 2933 skipped/s, hitrate 0.133 cache size 5943505
+INFO  knossos.core - [89 / 166] 20773 extant worlds, 25504 visited/s, 3953 skipped/s, hitrate 0.134 cache size 5951613
+INFO  knossos.core - [89 / 166] 20710 extant worlds, 21735 visited/s, 3270 skipped/s, hitrate 0.131 cache size 5957810
+INFO  knossos.core - [89 / 166] 21112 extant worlds, 23949 visited/s, 3826 skipped/s, hitrate 0.138 cache size 5965257
+INFO  knossos.core - [89 / 166] 21189 extant worlds, 15518 visited/s, 2662 skipped/s, hitrate 0.146 cache size 5969721
+INFO  knossos.core - [89 / 166] 22503 extant worlds, 17333 visited/s, 2330 skipped/s, hitrate 0.119 cache size 5975583
+INFO  knossos.core - [89 / 166] 22770 extant worlds, 16983 visited/s, 2273 skipped/s, hitrate 0.118 cache size 5981448
+INFO  knossos.core - [89 / 166] 21427 extant worlds, 21924 visited/s, 2886 skipped/s, hitrate 0.116 cache size 5989526
+INFO  knossos.core - [89 / 166] 21329 extant worlds, 15894 visited/s, 2268 skipped/s, hitrate 0.125 cache size 5995241
+INFO  knossos.core - [89 / 166] 22412 extant worlds, 26836 visited/s, 3743 skipped/s, hitrate 0.122 cache size 6004242
+INFO  knossos.core - [89 / 166] 22339 extant worlds, 22734 visited/s, 3146 skipped/s, hitrate 0.122 cache size 6010860
+INFO  knossos.core - [89 / 166] 24471 extant worlds, 30290 visited/s, 4323 skipped/s, hitrate 0.125 cache size 6020467
+INFO  knossos.core - [89 / 166] 24621 extant worlds, 20670 visited/s, 3416 skipped/s, hitrate 0.142 cache size 6027126
+INFO  knossos.core - [89 / 166] 24262 extant worlds, 21208 visited/s, 2854 skipped/s, hitrate 0.119 cache size 6033854
+INFO  knossos.core - [89 / 166] 25053 extant worlds, 26169 visited/s, 3658 skipped/s, hitrate 0.123 cache size 6042735
+INFO  knossos.core - [89 / 166] 24890 extant worlds, 20766 visited/s, 2966 skipped/s, hitrate 0.125 cache size 6048799
+INFO  knossos.core - [89 / 166] 24937 extant worlds, 18108 visited/s, 2859 skipped/s, hitrate 0.136 cache size 6053733
+INFO  knossos.core - [89 / 166] 25062 extant worlds, 20085 visited/s, 3256 skipped/s, hitrate 0.140 cache size 6059444
+INFO  knossos.core - [89 / 166] 25923 extant worlds, 15752 visited/s, 2886 skipped/s, hitrate 0.155 cache size 6063964
+INFO  knossos.core - [89 / 166] 25573 extant worlds, 17705 visited/s, 3187 skipped/s, hitrate 0.153 cache size 6067917
+INFO  knossos.core - [89 / 166] 25623 extant worlds, 16753 visited/s, 2517 skipped/s, hitrate 0.131 cache size 6073224
+INFO  knossos.core - [89 / 166] 26011 extant worlds, 15263 visited/s, 2055 skipped/s, hitrate 0.119 cache size 6078257
+INFO  knossos.core - [89 / 166] 25672 extant worlds, 14942 visited/s, 2301 skipped/s, hitrate 0.133 cache size 6082570
+INFO  knossos.core - [89 / 166] 22113 extant worlds, 18755 visited/s, 2829 skipped/s, hitrate 0.131 cache size 6087895
+INFO  knossos.core - [89 / 166] 22114 extant worlds, 10833 visited/s, 1903 skipped/s, hitrate 0.149 cache size 6091132
+INFO  knossos.core - [89 / 166] 23373 extant worlds, 5877 visited/s, 925 skipped/s, hitrate 0.136 cache size 6093251
+INFO  knossos.core - [89 / 166] 21934 extant worlds, 17864 visited/s, 2225 skipped/s, hitrate 0.111 cache size 6099058
+INFO  knossos.core - [89 / 166] 21814 extant worlds, 16757 visited/s, 2921 skipped/s, hitrate 0.148 cache size 6103684
+INFO  knossos.core - [89 / 166] 27686 extant worlds, 19527 visited/s, 3693 skipped/s, hitrate 0.159 cache size 6111042
+INFO  knossos.core - [89 / 166] 31122 extant worlds, 13797 visited/s, 2118 skipped/s, hitrate 0.133 cache size 6116161
+INFO  knossos.core - [89 / 166] 32472 extant worlds, 9987 visited/s, 1367 skipped/s, hitrate 0.120 cache size 6120381
+INFO  knossos.core - [89 / 166] 31818 extant worlds, 18862 visited/s, 2786 skipped/s, hitrate 0.129 cache size 6126079
+INFO  knossos.core - [89 / 166] 31848 extant worlds, 20147 visited/s, 3145 skipped/s, hitrate 0.135 cache size 6131021
+INFO  knossos.core - [89 / 166] 32526 extant worlds, 12566 visited/s, 2015 skipped/s, hitrate 0.138 cache size 6134579
+INFO  knossos.core - [89 / 166] 31596 extant worlds, 17036 visited/s, 2422 skipped/s, hitrate 0.125 cache size 6139211
+INFO  knossos.core - [89 / 166] 31677 extant worlds, 10919 visited/s, 1926 skipped/s, hitrate 0.150 cache size 6141811
+INFO  knossos.core - [89 / 166] 31802 extant worlds, 8413 visited/s, 1648 skipped/s, hitrate 0.164 cache size 6145023
+INFO  knossos.core - [89 / 166] 31775 extant worlds, 10077 visited/s, 1641 skipped/s, hitrate 0.140 cache size 6147800
+INFO  knossos.core - [89 / 166] 31842 extant worlds, 6930 visited/s, 1106 skipped/s, hitrate 0.138 cache size 6149351
+INFO  knossos.core - [89 / 166] 31720 extant worlds, 5939 visited/s, 1362 skipped/s, hitrate 0.187 cache size 6151238
+INFO  knossos.core - [89 / 166] 30915 extant worlds, 11628 visited/s, 4302 skipped/s, hitrate 0.270 cache size 6152498
+INFO  knossos.core - [89 / 166] 28318 extant worlds, 8075 visited/s, 2123 skipped/s, hitrate 0.208 cache size 6154374
+INFO  knossos.core - [89 / 166] 28216 extant worlds, 11980 visited/s, 1409 skipped/s, hitrate 0.105 cache size 6158910
+INFO  knossos.core - [89 / 166] 27496 extant worlds, 18350 visited/s, 2596 skipped/s, hitrate 0.124 cache size 6165227
+INFO  knossos.core - [89 / 166] 27287 extant worlds, 18154 visited/s, 2709 skipped/s, hitrate 0.130 cache size 6171646
+INFO  knossos.core - [89 / 166] 27301 extant worlds, 14432 visited/s, 2222 skipped/s, hitrate 0.133 cache size 6176592
+INFO  knossos.core - [89 / 166] 27524 extant worlds, 18165 visited/s, 2380 skipped/s, hitrate 0.116 cache size 6182307
+INFO  knossos.core - [89 / 166] 27489 extant worlds, 15919 visited/s, 2064 skipped/s, hitrate 0.115 cache size 6187059
+INFO  knossos.core - [89 / 166] 27044 extant worlds, 15936 visited/s, 2571 skipped/s, hitrate 0.139 cache size 6192057
+INFO  knossos.core - [89 / 166] 27020 extant worlds, 26311 visited/s, 3624 skipped/s, hitrate 0.121 cache size 6200256
+INFO  knossos.core - [89 / 166] 27074 extant worlds, 20043 visited/s, 2478 skipped/s, hitrate 0.110 cache size 6206049
+INFO  knossos.core - [89 / 166] 27061 extant worlds, 21643 visited/s, 2807 skipped/s, hitrate 0.115 cache size 6213070
+INFO  knossos.core - [89 / 166] 27141 extant worlds, 14454 visited/s, 2005 skipped/s, hitrate 0.122 cache size 6218202
+INFO  knossos.core - [89 / 166] 27317 extant worlds, 17374 visited/s, 2383 skipped/s, hitrate 0.121 cache size 6223423
+INFO  knossos.core - [89 / 166] 27157 extant worlds, 6938 visited/s, 1244 skipped/s, hitrate 0.152 cache size 6225561
+INFO  knossos.core - [89 / 166] 27048 extant worlds, 10659 visited/s, 1655 skipped/s, hitrate 0.134 cache size 6228801
+INFO  knossos.core - [89 / 166] 27186 extant worlds, 7801 visited/s, 1284 skipped/s, hitrate 0.141 cache size 6232101
+INFO  knossos.core - [89 / 166] 27165 extant worlds, 9198 visited/s, 1414 skipped/s, hitrate 0.133 cache size 6235622
+INFO  knossos.core - [89 / 166] 27317 extant worlds, 12146 visited/s, 1796 skipped/s, hitrate 0.129 cache size 6239384
+INFO  knossos.core - [89 / 166] 28257 extant worlds, 16633 visited/s, 1978 skipped/s, hitrate 0.106 cache size 6244090
+INFO  knossos.core - [89 / 166] 27627 extant worlds, 17149 visited/s, 2674 skipped/s, hitrate 0.135 cache size 6249855
+INFO  knossos.core - [89 / 166] 27411 extant worlds, 16245 visited/s, 2694 skipped/s, hitrate 0.142 cache size 6254560
+INFO  knossos.core - [89 / 166] 27395 extant worlds, 12027 visited/s, 2048 skipped/s, hitrate 0.146 cache size 6258186
+INFO  knossos.core - [89 / 166] 27373 extant worlds, 13394 visited/s, 2199 skipped/s, hitrate 0.141 cache size 6262936
+INFO  knossos.core - [89 / 166] 27394 extant worlds, 14420 visited/s, 2195 skipped/s, hitrate 0.132 cache size 6267121
+INFO  knossos.core - [89 / 166] 27208 extant worlds, 10035 visited/s, 1745 skipped/s, hitrate 0.148 cache size 6270110
+INFO  knossos.core - [89 / 166] 27785 extant worlds, 16224 visited/s, 2413 skipped/s, hitrate 0.130 cache size 6275376
+INFO  knossos.core - [89 / 166] 27852 extant worlds, 15139 visited/s, 2389 skipped/s, hitrate 0.136 cache size 6279870
+INFO  knossos.core - [89 / 166] 27191 extant worlds, 19771 visited/s, 3101 skipped/s, hitrate 0.136 cache size 6286086
+INFO  knossos.core - [89 / 166] 27373 extant worlds, 16231 visited/s, 2596 skipped/s, hitrate 0.138 cache size 6291892
+INFO  knossos.core - [89 / 166] 27436 extant worlds, 13953 visited/s, 2136 skipped/s, hitrate 0.133 cache size 6297596
+INFO  knossos.core - [89 / 166] 27190 extant worlds, 14806 visited/s, 2116 skipped/s, hitrate 0.125 cache size 6303136
+INFO  knossos.core - [89 / 166] 27248 extant worlds, 19405 visited/s, 2809 skipped/s, hitrate 0.126 cache size 6309585
+INFO  knossos.core - [89 / 166] 27307 extant worlds, 18465 visited/s, 2750 skipped/s, hitrate 0.130 cache size 6315171
+INFO  knossos.core - [89 / 166] 27375 extant worlds, 13821 visited/s, 2232 skipped/s, hitrate 0.139 cache size 6319264
+INFO  knossos.core - [89 / 166] 27362 extant worlds, 9681 visited/s, 1717 skipped/s, hitrate 0.151 cache size 6322234
+INFO  knossos.core - [89 / 166] 28915 extant worlds, 13364 visited/s, 2731 skipped/s, hitrate 0.170 cache size 6326444
+INFO  knossos.core - [89 / 166] 27747 extant worlds, 16300 visited/s, 2421 skipped/s, hitrate 0.129 cache size 6331303
+INFO  knossos.core - [89 / 166] 27746 extant worlds, 10404 visited/s, 1843 skipped/s, hitrate 0.151 cache size 6334308
+INFO  knossos.core - [89 / 166] 28351 extant worlds, 12514 visited/s, 2274 skipped/s, hitrate 0.154 cache size 6338072
+INFO  knossos.core - [89 / 166] 28014 extant worlds, 6968 visited/s, 1208 skipped/s, hitrate 0.148 cache size 6339940
+INFO  knossos.core - [89 / 166] 28141 extant worlds, 7560 visited/s, 1394 skipped/s, hitrate 0.156 cache size 6342460
+INFO  knossos.core - [89 / 166] 27993 extant worlds, 7350 visited/s, 1359 skipped/s, hitrate 0.156 cache size 6344607
+INFO  knossos.core - [89 / 166] 27681 extant worlds, 12389 visited/s, 1705 skipped/s, hitrate 0.121 cache size 6347997
+INFO  knossos.core - [89 / 166] 27967 extant worlds, 13776 visited/s, 1896 skipped/s, hitrate 0.121 cache size 6351882
+INFO  knossos.core - [89 / 166] 27592 extant worlds, 13325 visited/s, 1834 skipped/s, hitrate 0.121 cache size 6355703
+INFO  knossos.core - [89 / 166] 27567 extant worlds, 22807 visited/s, 3578 skipped/s, hitrate 0.136 cache size 6362023
+INFO  knossos.core - [89 / 166] 28089 extant worlds, 16574 visited/s, 2623 skipped/s, hitrate 0.137 cache size 6367008
+INFO  knossos.core - [89 / 166] 28051 extant worlds, 9394 visited/s, 1624 skipped/s, hitrate 0.147 cache size 6370257
+INFO  knossos.core - [89 / 166] 28026 extant worlds, 13155 visited/s, 1810 skipped/s, hitrate 0.121 cache size 6375399
+INFO  knossos.core - [89 / 166] 28960 extant worlds, 20673 visited/s, 2641 skipped/s, hitrate 0.113 cache size 6383373
+INFO  knossos.core - [89 / 166] 29908 extant worlds, 18389 visited/s, 2448 skipped/s, hitrate 0.117 cache size 6389836
+INFO  knossos.core - [89 / 166] 29838 extant worlds, 17335 visited/s, 2441 skipped/s, hitrate 0.123 cache size 6395523
+INFO  knossos.core - [89 / 166] 35955 extant worlds, 26250 visited/s, 4318 skipped/s, hitrate 0.141 cache size 6403435
+INFO  knossos.core - [89 / 166] 35752 extant worlds, 14525 visited/s, 1999 skipped/s, hitrate 0.121 cache size 6408397
+INFO  knossos.core - [89 / 166] 35691 extant worlds, 20505 visited/s, 2787 skipped/s, hitrate 0.120 cache size 6415371
+INFO  knossos.core - [89 / 166] 35789 extant worlds, 15177 visited/s, 2352 skipped/s, hitrate 0.134 cache size 6420007
+INFO  knossos.core - [89 / 166] 35745 extant worlds, 12078 visited/s, 1822 skipped/s, hitrate 0.131 cache size 6424237
+INFO  knossos.core - [89 / 166] 35621 extant worlds, 10198 visited/s, 1697 skipped/s, hitrate 0.143 cache size 6427978
+INFO  knossos.core - [89 / 166] 35554 extant worlds, 7427 visited/s, 1136 skipped/s, hitrate 0.133 cache size 6431153
+INFO  knossos.core - [89 / 166] 37802 extant worlds, 22493 visited/s, 5117 skipped/s, hitrate 0.185 cache size 6436292
+INFO  knossos.core - [89 / 166] 35424 extant worlds, 19339 visited/s, 2852 skipped/s, hitrate 0.129 cache size 6443088
+INFO  knossos.core - [89 / 166] 32897 extant worlds, 23602 visited/s, 3585 skipped/s, hitrate 0.132 cache size 6449628
+INFO  knossos.core - [89 / 166] 31780 extant worlds, 25372 visited/s, 3136 skipped/s, hitrate 0.110 cache size 6457122
+INFO  knossos.core - [89 / 166] 31465 extant worlds, 20938 visited/s, 3001 skipped/s, hitrate 0.125 cache size 6463394
+INFO  knossos.core - [89 / 166] 31375 extant worlds, 19818 visited/s, 2698 skipped/s, hitrate 0.120 cache size 6468523
+INFO  knossos.core - [89 / 166] 31238 extant worlds, 18691 visited/s, 2815 skipped/s, hitrate 0.131 cache size 6474170
+INFO  knossos.core - [89 / 166] 31236 extant worlds, 19906 visited/s, 2651 skipped/s, hitrate 0.118 cache size 6479339
+INFO  knossos.core - [89 / 166] 31241 extant worlds, 25143 visited/s, 3497 skipped/s, hitrate 0.122 cache size 6485927
+INFO  knossos.core - [89 / 166] 31261 extant worlds, 16541 visited/s, 2542 skipped/s, hitrate 0.133 cache size 6490207
+INFO  knossos.core - [89 / 166] 31206 extant worlds, 24265 visited/s, 3348 skipped/s, hitrate 0.121 cache size 6497123
+INFO  knossos.core - [89 / 166] 31696 extant worlds, 20076 visited/s, 2759 skipped/s, hitrate 0.121 cache size 6502897
+INFO  knossos.core - [89 / 166] 31526 extant worlds, 21966 visited/s, 3206 skipped/s, hitrate 0.127 cache size 6508900
+INFO  knossos.core - [89 / 166] 31451 extant worlds, 15421 visited/s, 2757 skipped/s, hitrate 0.152 cache size 6512730
+INFO  knossos.core - [89 / 166] 31840 extant worlds, 17149 visited/s, 2934 skipped/s, hitrate 0.146 cache size 6516432
+INFO  knossos.core - [89 / 166] 32083 extant worlds, 19743 visited/s, 2899 skipped/s, hitrate 0.128 cache size 6521110
+INFO  knossos.core - [89 / 166] 32116 extant worlds, 16377 visited/s, 2155 skipped/s, hitrate 0.116 cache size 6525586
+INFO  knossos.core - [89 / 166] 32016 extant worlds, 11422 visited/s, 1954 skipped/s, hitrate 0.146 cache size 6528611
+INFO  knossos.core - [89 / 166] 31149 extant worlds, 15250 visited/s, 2393 skipped/s, hitrate 0.136 cache size 6532216
+INFO  knossos.core - [89 / 166] 30218 extant worlds, 16182 visited/s, 2215 skipped/s, hitrate 0.120 cache size 6535999
+INFO  knossos.core - [89 / 166] 29560 extant worlds, 20008 visited/s, 2736 skipped/s, hitrate 0.120 cache size 6540257
+INFO  knossos.core - [89 / 166] 29443 extant worlds, 18306 visited/s, 2501 skipped/s, hitrate 0.120 cache size 6544525
+INFO  knossos.core - [89 / 166] 29421 extant worlds, 18115 visited/s, 2590 skipped/s, hitrate 0.125 cache size 6547821
+INFO  knossos.core - [89 / 166] 29310 extant worlds, 17725 visited/s, 2295 skipped/s, hitrate 0.115 cache size 6551507
+INFO  knossos.core - [89 / 166] 29147 extant worlds, 17710 visited/s, 2332 skipped/s, hitrate 0.116 cache size 6555555
+INFO  knossos.core - [89 / 166] 29181 extant worlds, 13715 visited/s, 2000 skipped/s, hitrate 0.127 cache size 6558816
+INFO  knossos.core - [89 / 166] 29295 extant worlds, 16382 visited/s, 2570 skipped/s, hitrate 0.136 cache size 6562077
+INFO  knossos.core - [89 / 166] 29162 extant worlds, 14036 visited/s, 2166 skipped/s, hitrate 0.134 cache size 6565645
+INFO  knossos.core - [89 / 166] 29571 extant worlds, 16492 visited/s, 2465 skipped/s, hitrate 0.130 cache size 6571242
+INFO  knossos.core - [89 / 166] 29146 extant worlds, 10502 visited/s, 1631 skipped/s, hitrate 0.134 cache size 6574040
+INFO  knossos.core - [89 / 166] 29433 extant worlds, 13747 visited/s, 2133 skipped/s, hitrate 0.134 cache size 6577524
+INFO  knossos.core - [89 / 166] 29460 extant worlds, 21221 visited/s, 3015 skipped/s, hitrate 0.124 cache size 6582738
+INFO  knossos.core - [89 / 166] 30194 extant worlds, 16741 visited/s, 2368 skipped/s, hitrate 0.124 cache size 6587218
+INFO  knossos.core - [89 / 166] 30585 extant worlds, 15880 visited/s, 2515 skipped/s, hitrate 0.137 cache size 6591452
+INFO  knossos.core - [89 / 166] 25680 extant worlds, 16648 visited/s, 2356 skipped/s, hitrate 0.124 cache size 6595189
+INFO  knossos.core - [89 / 166] 20028 extant worlds, 16507 visited/s, 2761 skipped/s, hitrate 0.143 cache size 6599176
+INFO  knossos.core - [89 / 166] 20285 extant worlds, 21684 visited/s, 3393 skipped/s, hitrate 0.135 cache size 6604219
+INFO  knossos.core - [89 / 166] 19972 extant worlds, 21608 visited/s, 3161 skipped/s, hitrate 0.128 cache size 6609266
+INFO  knossos.core - [89 / 166] 19864 extant worlds, 18546 visited/s, 2753 skipped/s, hitrate 0.129 cache size 6614322
+INFO  knossos.core - [89 / 166] 19874 extant worlds, 15149 visited/s, 2771 skipped/s, hitrate 0.155 cache size 6618154
+INFO  knossos.core - [89 / 166] 20081 extant worlds, 12033 visited/s, 2158 skipped/s, hitrate 0.152 cache size 6620990
+INFO  knossos.core - [89 / 166] 19991 extant worlds, 19673 visited/s, 3457 skipped/s, hitrate 0.149 cache size 6625913
+INFO  knossos.core - [89 / 166] 20530 extant worlds, 11564 visited/s, 2295 skipped/s, hitrate 0.166 cache size 6628956
+INFO  knossos.core - [89 / 166] 18538 extant worlds, 14328 visited/s, 2427 skipped/s, hitrate 0.145 cache size 6632709
+INFO  knossos.core - [89 / 166] 20347 extant worlds, 9244 visited/s, 1298 skipped/s, hitrate 0.123 cache size 6635690
+INFO  knossos.core - [89 / 166] 17966 extant worlds, 18868 visited/s, 2370 skipped/s, hitrate 0.112 cache size 6642021
+INFO  knossos.core - [89 / 166] 17805 extant worlds, 16518 visited/s, 2620 skipped/s, hitrate 0.137 cache size 6647565
+INFO  knossos.core - [89 / 166] 17825 extant worlds, 19531 visited/s, 2977 skipped/s, hitrate 0.132 cache size 6653361
+INFO  knossos.core - [89 / 166] 18043 extant worlds, 20609 visited/s, 2945 skipped/s, hitrate 0.125 cache size 6659301
+INFO  knossos.core - [89 / 166] 17739 extant worlds, 12920 visited/s, 2231 skipped/s, hitrate 0.147 cache size 6662500
+INFO  knossos.core - [89 / 166] 17913 extant worlds, 14948 visited/s, 2405 skipped/s, hitrate 0.139 cache size 6667523
+INFO  knossos.core - [89 / 166] 18192 extant worlds, 24397 visited/s, 3381 skipped/s, hitrate 0.122 cache size 6674546
+INFO  knossos.core - [89 / 166] 17829 extant worlds, 15931 visited/s, 2700 skipped/s, hitrate 0.145 cache size 6678531
+INFO  knossos.core - [89 / 166] 18638 extant worlds, 17268 visited/s, 3060 skipped/s, hitrate 0.151 cache size 6683077
+INFO  knossos.core - [89 / 166] 18612 extant worlds, 13801 visited/s, 2045 skipped/s, hitrate 0.129 cache size 6686714
+INFO  knossos.core - [89 / 166] 18638 extant worlds, 18486 visited/s, 2957 skipped/s, hitrate 0.138 cache size 6691092
+INFO  knossos.core - [89 / 166] 18608 extant worlds, 15435 visited/s, 2399 skipped/s, hitrate 0.135 cache size 6694649
+INFO  knossos.core - [89 / 166] 19044 extant worlds, 15191 visited/s, 2226 skipped/s, hitrate 0.128 cache size 6699361
+INFO  knossos.core - [89 / 166] 18115 extant worlds, 16186 visited/s, 2582 skipped/s, hitrate 0.138 cache size 6704038
+INFO  knossos.core - [89 / 166] 18267 extant worlds, 20030 visited/s, 3381 skipped/s, hitrate 0.144 cache size 6710729
+INFO  knossos.core - [89 / 166] 18063 extant worlds, 21468 visited/s, 2921 skipped/s, hitrate 0.120 cache size 6717340
+INFO  knossos.core - [89 / 166] 18496 extant worlds, 24546 visited/s, 3047 skipped/s, hitrate 0.110 cache size 6723989
+INFO  knossos.core - [89 / 166] 18500 extant worlds, 23845 visited/s, 3646 skipped/s, hitrate 0.133 cache size 6730202
+INFO  knossos.core - [89 / 166] 18258 extant worlds, 19582 visited/s, 3012 skipped/s, hitrate 0.133 cache size 6735712
+INFO  knossos.core - [89 / 166] 18100 extant worlds, 11047 visited/s, 2132 skipped/s, hitrate 0.162 cache size 6738840
+INFO  knossos.core - [89 / 166] 18462 extant worlds, 12412 visited/s, 2248 skipped/s, hitrate 0.153 cache size 6742524
+INFO  knossos.core - [89 / 166] 21367 extant worlds, 12090 visited/s, 1963 skipped/s, hitrate 0.140 cache size 6746561
+INFO  knossos.core - [89 / 166] 18969 extant worlds, 17456 visited/s, 2249 skipped/s, hitrate 0.114 cache size 6751121
+INFO  knossos.core - [89 / 166] 18026 extant worlds, 17299 visited/s, 2361 skipped/s, hitrate 0.120 cache size 6755733
+INFO  knossos.core - [89 / 166] 17884 extant worlds, 16468 visited/s, 2807 skipped/s, hitrate 0.146 cache size 6760375
+INFO  knossos.core - [89 / 166] 18053 extant worlds, 16381 visited/s, 2303 skipped/s, hitrate 0.123 cache size 6765846
+INFO  knossos.core - [89 / 166] 18251 extant worlds, 13834 visited/s, 2397 skipped/s, hitrate 0.148 cache size 6769694
+INFO  knossos.core - [89 / 166] 18133 extant worlds, 15239 visited/s, 2479 skipped/s, hitrate 0.140 cache size 6774200
+INFO  knossos.core - [89 / 166] 18081 extant worlds, 12626 visited/s, 2163 skipped/s, hitrate 0.146 cache size 6777331
+INFO  knossos.core - [89 / 166] 17700 extant worlds, 8560 visited/s, 1306 skipped/s, hitrate 0.132 cache size 6780013
+INFO  knossos.core - [89 / 166] 17794 extant worlds, 12331 visited/s, 1942 skipped/s, hitrate 0.136 cache size 6784138
+INFO  knossos.core - [89 / 166] 18247 extant worlds, 10860 visited/s, 1824 skipped/s, hitrate 0.144 cache size 6787114
+INFO  knossos.core - [89 / 166] 17713 extant worlds, 15704 visited/s, 2306 skipped/s, hitrate 0.128 cache size 6792218
+INFO  knossos.core - [89 / 166] 17869 extant worlds, 20483 visited/s, 3020 skipped/s, hitrate 0.128 cache size 6797993
+INFO  knossos.core - [89 / 166] 17717 extant worlds, 10464 visited/s, 1844 skipped/s, hitrate 0.150 cache size 6800804
+INFO  knossos.core - [89 / 166] 17965 extant worlds, 15750 visited/s, 2568 skipped/s, hitrate 0.140 cache size 6805526
+INFO  knossos.core - [89 / 166] 17935 extant worlds, 12746 visited/s, 1918 skipped/s, hitrate 0.131 cache size 6809356
+INFO  knossos.core - [89 / 166] 18049 extant worlds, 8940 visited/s, 1620 skipped/s, hitrate 0.153 cache size 6811586
+INFO  knossos.core - [89 / 166] 18173 extant worlds, 7531 visited/s, 1587 skipped/s, hitrate 0.174 cache size 6813812
+INFO  knossos.core - [89 / 166] 18444 extant worlds, 5476 visited/s, 1249 skipped/s, hitrate 0.186 cache size 6815683
+INFO  knossos.core - [89 / 166] 18433 extant worlds, 2304 visited/s, 360 skipped/s, hitrate 0.135 cache size 6816429
+INFO  knossos.core - [89 / 166] 18423 extant worlds, 4266 visited/s, 1195 skipped/s, hitrate 0.219 cache size 6817365
+INFO  knossos.core - [89 / 166] 18569 extant worlds, 7039 visited/s, 1291 skipped/s, hitrate 0.155 cache size 6819437
+INFO  knossos.core - [89 / 166] 19251 extant worlds, 12027 visited/s, 1606 skipped/s, hitrate 0.118 cache size 6823763
+INFO  knossos.core - [89 / 166] 18540 extant worlds, 16115 visited/s, 2358 skipped/s, hitrate 0.128 cache size 6829329
+INFO  knossos.core - [89 / 166] 18560 extant worlds, 19289 visited/s, 2589 skipped/s, hitrate 0.118 cache size 6835616
+INFO  knossos.core - [89 / 166] 17929 extant worlds, 30281 visited/s, 4046 skipped/s, hitrate 0.118 cache size 6844148
+INFO  knossos.core - [89 / 166] 18290 extant worlds, 16969 visited/s, 2724 skipped/s, hitrate 0.138 cache size 6849545
+INFO  knossos.core - [89 / 166] 17930 extant worlds, 20076 visited/s, 2922 skipped/s, hitrate 0.127 cache size 6855327
+INFO  knossos.core - [89 / 166] 17873 extant worlds, 18161 visited/s, 2931 skipped/s, hitrate 0.139 cache size 6860722
+INFO  knossos.core - [89 / 166] 18792 extant worlds, 27072 visited/s, 3754 skipped/s, hitrate 0.122 cache size 6868517
+INFO  knossos.core - [89 / 166] 18328 extant worlds, 29562 visited/s, 4144 skipped/s, hitrate 0.123 cache size 6875356
+INFO  knossos.core - [89 / 166] 18218 extant worlds, 16233 visited/s, 2811 skipped/s, hitrate 0.148 cache size 6880129
+INFO  knossos.core - [89 / 166] 18268 extant worlds, 16733 visited/s, 2610 skipped/s, hitrate 0.135 cache size 6884137
+INFO  knossos.core - [89 / 166] 18875 extant worlds, 13009 visited/s, 1910 skipped/s, hitrate 0.128 cache size 6887515
+INFO  knossos.core - [89 / 166] 19411 extant worlds, 15949 visited/s, 2977 skipped/s, hitrate 0.157 cache size 6891521
+INFO  knossos.core - [89 / 166] 18310 extant worlds, 14301 visited/s, 2196 skipped/s, hitrate 0.133 cache size 6895156
+INFO  knossos.core - [89 / 166] 18363 extant worlds, 15339 visited/s, 2641 skipped/s, hitrate 0.147 cache size 6898721
+INFO  knossos.core - [89 / 166] 18349 extant worlds, 16227 visited/s, 2886 skipped/s, hitrate 0.151 cache size 6902524
+INFO  knossos.core - [89 / 166] 18228 extant worlds, 14233 visited/s, 2405 skipped/s, hitrate 0.145 cache size 6905845
+INFO  knossos.core - [89 / 166] 19280 extant worlds, 16673 visited/s, 2181 skipped/s, hitrate 0.116 cache size 6910313
+INFO  knossos.core - [89 / 166] 18704 extant worlds, 13594 visited/s, 2127 skipped/s, hitrate 0.135 cache size 6913610
+INFO  knossos.core - [89 / 166] 18213 extant worlds, 25836 visited/s, 3888 skipped/s, hitrate 0.131 cache size 6920567
+INFO  knossos.core - [89 / 166] 18088 extant worlds, 29166 visited/s, 3878 skipped/s, hitrate 0.117 cache size 6928216
+INFO  knossos.core - [89 / 166] 18120 extant worlds, 23816 visited/s, 3636 skipped/s, hitrate 0.132 cache size 6934144
+INFO  knossos.core - [89 / 166] 17969 extant worlds, 22453 visited/s, 3177 skipped/s, hitrate 0.124 cache size 6939955
+INFO  knossos.core - [89 / 166] 18012 extant worlds, 10028 visited/s, 1625 skipped/s, hitrate 0.139 cache size 6942977
+INFO  knossos.core - [89 / 166] 17931 extant worlds, 6835 visited/s, 1374 skipped/s, hitrate 0.167 cache size 6944784
+INFO  knossos.core - [89 / 166] 18260 extant worlds, 19196 visited/s, 2828 skipped/s, hitrate 0.128 cache size 6949838
+INFO  knossos.core - [89 / 166] 17970 extant worlds, 22372 visited/s, 3316 skipped/s, hitrate 0.129 cache size 6954516
+INFO  knossos.core - [89 / 166] 18152 extant worlds, 17762 visited/s, 2622 skipped/s, hitrate 0.129 cache size 6959026
+INFO  knossos.core - [89 / 166] 18365 extant worlds, 17240 visited/s, 2588 skipped/s, hitrate 0.131 cache size 6963638
+INFO  knossos.core - [89 / 166] 18143 extant worlds, 21605 visited/s, 3106 skipped/s, hitrate 0.126 cache size 6968623
+INFO  knossos.core - [89 / 166] 19326 extant worlds, 19155 visited/s, 2792 skipped/s, hitrate 0.127 cache size 6973213
+INFO  knossos.core - [89 / 166] 17811 extant worlds, 15784 visited/s, 2851 skipped/s, hitrate 0.153 cache size 6976417
+INFO  knossos.core - [89 / 166] 19311 extant worlds, 18708 visited/s, 3109 skipped/s, hitrate 0.143 cache size 6980980
+INFO  knossos.core - [89 / 166] 18814 extant worlds, 18299 visited/s, 2474 skipped/s, hitrate 0.119 cache size 6986006
+INFO  knossos.core - [89 / 166] 18798 extant worlds, 12851 visited/s, 2677 skipped/s, hitrate 0.172 cache size 6988428
+INFO  knossos.core - [89 / 166] 18938 extant worlds, 16862 visited/s, 2339 skipped/s, hitrate 0.122 cache size 6992935
+INFO  knossos.core - [89 / 166] 19339 extant worlds, 16857 visited/s, 2860 skipped/s, hitrate 0.145 cache size 6996053
+INFO  knossos.core - [89 / 166] 19026 extant worlds, 12219 visited/s, 2289 skipped/s, hitrate 0.158 cache size 6998577
+INFO  knossos.core - [89 / 166] 19708 extant worlds, 13155 visited/s, 2580 skipped/s, hitrate 0.164 cache size 7001926
+INFO  knossos.core - [89 / 166] 20341 extant worlds, 11997 visited/s, 2044 skipped/s, hitrate 0.146 cache size 7004996
+INFO  knossos.core - [89 / 166] 21472 extant worlds, 10570 visited/s, 1446 skipped/s, hitrate 0.120 cache size 7007466
+INFO  knossos.core - [89 / 166] 21083 extant worlds, 7579 visited/s, 1278 skipped/s, hitrate 0.144 cache size 7009246
+INFO  knossos.core - [89 / 166] 18436 extant worlds, 13550 visited/s, 2300 skipped/s, hitrate 0.145 cache size 7012294
+INFO  knossos.core - [89 / 166] 17785 extant worlds, 8768 visited/s, 1497 skipped/s, hitrate 0.146 cache size 7014003
+INFO  knossos.core - [89 / 166] 18678 extant worlds, 15389 visited/s, 2511 skipped/s, hitrate 0.140 cache size 7018231
+INFO  knossos.core - [89 / 166] 18292 extant worlds, 15653 visited/s, 2312 skipped/s, hitrate 0.129 cache size 7021932
+INFO  knossos.core - [89 / 166] 18643 extant worlds, 13208 visited/s, 2285 skipped/s, hitrate 0.147 cache size 7025086
+INFO  knossos.core - [89 / 166] 19151 extant worlds, 14852 visited/s, 2141 skipped/s, hitrate 0.126 cache size 7028618
+INFO  knossos.core - [89 / 166] 18122 extant worlds, 19730 visited/s, 3127 skipped/s, hitrate 0.137 cache size 7032724
+INFO  knossos.core - [89 / 166] 18219 extant worlds, 24780 visited/s, 3548 skipped/s, hitrate 0.125 cache size 7037766
+INFO  knossos.core - [89 / 166] 17993 extant worlds, 18156 visited/s, 2652 skipped/s, hitrate 0.127 cache size 7040851
+INFO  knossos.core - [89 / 166] 19028 extant worlds, 20239 visited/s, 3507 skipped/s, hitrate 0.148 cache size 7044648
+INFO  knossos.core - [89 / 166] 19561 extant worlds, 15673 visited/s, 2956 skipped/s, hitrate 0.159 cache size 7047877
+INFO  knossos.core - [89 / 166] 17858 extant worlds, 7651 visited/s, 1586 skipped/s, hitrate 0.172 cache size 7048330
+INFO  knossos.core - [89 / 166] 18877 extant worlds, 8729 visited/s, 1372 skipped/s, hitrate 0.136 cache size 7049904
+INFO  knossos.core - [89 / 166] 20011 extant worlds, 20158 visited/s, 2079 skipped/s, hitrate 0.094 cache size 7056044
+INFO  knossos.core - [89 / 166] 17870 extant worlds, 15176 visited/s, 2278 skipped/s, hitrate 0.131 cache size 7060280
+INFO  knossos.core - [89 / 166] 17958 extant worlds, 17304 visited/s, 2625 skipped/s, hitrate 0.132 cache size 7064659
+INFO  knossos.core - [89 / 166] 18219 extant worlds, 12350 visited/s, 1841 skipped/s, hitrate 0.130 cache size 7068128
+INFO  knossos.core - [89 / 166] 17655 extant worlds, 13611 visited/s, 2324 skipped/s, hitrate 0.146 cache size 7071588
+INFO  knossos.core - [89 / 166] 17671 extant worlds, 19810 visited/s, 2957 skipped/s, hitrate 0.130 cache size 7076181
+INFO  knossos.core - [89 / 166] 17796 extant worlds, 7888 visited/s, 1573 skipped/s, hitrate 0.166 cache size 7078039
+INFO  knossos.core - [89 / 166] 17798 extant worlds, 9287 visited/s, 1643 skipped/s, hitrate 0.150 cache size 7080399
+INFO  knossos.core - [89 / 166] 18546 extant worlds, 8290 visited/s, 1694 skipped/s, hitrate 0.170 cache size 7082573
+INFO  knossos.core - [89 / 166] 17676 extant worlds, 8111 visited/s, 1299 skipped/s, hitrate 0.138 cache size 7084173
+INFO  knossos.core - [89 / 166] 18070 extant worlds, 12142 visited/s, 1998 skipped/s, hitrate 0.141 cache size 7086874
+INFO  knossos.core - [89 / 166] 17930 extant worlds, 15319 visited/s, 2295 skipped/s, hitrate 0.130 cache size 7090526
+INFO  knossos.core - [89 / 166] 17704 extant worlds, 25115 visited/s, 3630 skipped/s, hitrate 0.126 cache size 7094818
+INFO  knossos.core - [89 / 166] 17855 extant worlds, 16171 visited/s, 2739 skipped/s, hitrate 0.145 cache size 7098856
+INFO  knossos.core - [89 / 166] 18377 extant worlds, 9047 visited/s, 1631 skipped/s, hitrate 0.153 cache size 7100380
+INFO  knossos.core - [89 / 166] 19125 extant worlds, 17817 visited/s, 2632 skipped/s, hitrate 0.129 cache size 7104155
+INFO  knossos.core - [89 / 166] 17697 extant worlds, 15536 visited/s, 2481 skipped/s, hitrate 0.138 cache size 7106950
+INFO  knossos.core - [89 / 166] 17631 extant worlds, 14347 visited/s, 2335 skipped/s, hitrate 0.140 cache size 7109438
+INFO  knossos.core - [89 / 166] 18137 extant worlds, 7290 visited/s, 1909 skipped/s, hitrate 0.208 cache size 7110353
+INFO  knossos.core - [89 / 166] 21415 extant worlds, 10706 visited/s, 1739 skipped/s, hitrate 0.140 cache size 7113634
+INFO  knossos.core - [89 / 166] 20398 extant worlds, 9159 visited/s, 1015 skipped/s, hitrate 0.100 cache size 7115010
+INFO  knossos.core - [89 / 166] 18767 extant worlds, 8773 visited/s, 1149 skipped/s, hitrate 0.116 cache size 7116698
+INFO  knossos.core - [89 / 166] 19449 extant worlds, 15318 visited/s, 3033 skipped/s, hitrate 0.165 cache size 7120449
+INFO  knossos.core - [89 / 166] 19428 extant worlds, 12743 visited/s, 1838 skipped/s, hitrate 0.126 cache size 7122838
+INFO  knossos.core - [89 / 166] 20306 extant worlds, 12685 visited/s, 2213 skipped/s, hitrate 0.149 cache size 7125422
+INFO  knossos.core - [89 / 166] 20096 extant worlds, 13944 visited/s, 2552 skipped/s, hitrate 0.155 cache size 7127621
+INFO  knossos.core - [89 / 166] 21031 extant worlds, 11859 visited/s, 2760 skipped/s, hitrate 0.189 cache size 7128836
+INFO  knossos.core - [89 / 166] 21471 extant worlds, 7216 visited/s, 1890 skipped/s, hitrate 0.208 cache size 7129785
+INFO  knossos.core - [89 / 166] 23475 extant worlds, 4375 visited/s, 725 skipped/s, hitrate 0.142 cache size 7130855
+INFO  knossos.core - [89 / 166] 22496 extant worlds, 8947 visited/s, 1009 skipped/s, hitrate 0.101 cache size 7132500
+INFO  knossos.core - [89 / 166] 20666 extant worlds, 8804 visited/s, 1401 skipped/s, hitrate 0.137 cache size 7134668
+INFO  knossos.core - [89 / 166] 17809 extant worlds, 13577 visited/s, 2195 skipped/s, hitrate 0.139 cache size 7138028
+INFO  knossos.core - [89 / 166] 18323 extant worlds, 7654 visited/s, 1542 skipped/s, hitrate 0.168 cache size 7140240
+INFO  knossos.core - [89 / 166] 18869 extant worlds, 7796 visited/s, 1361 skipped/s, hitrate 0.149 cache size 7142407
+INFO  knossos.core - [89 / 166] 19461 extant worlds, 15512 visited/s, 3242 skipped/s, hitrate 0.173 cache size 7146264
+INFO  knossos.core - [89 / 166] 22906 extant worlds, 16187 visited/s, 3131 skipped/s, hitrate 0.162 cache size 7151336
+INFO  knossos.core - [89 / 166] 22679 extant worlds, 15985 visited/s, 2558 skipped/s, hitrate 0.138 cache size 7155482
+INFO  knossos.core - [89 / 166] 22949 extant worlds, 14844 visited/s, 2442 skipped/s, hitrate 0.141 cache size 7159061
+INFO  knossos.core - [89 / 166] 22955 extant worlds, 13717 visited/s, 2221 skipped/s, hitrate 0.139 cache size 7162417
+INFO  knossos.core - [89 / 166] 23590 extant worlds, 9244 visited/s, 1395 skipped/s, hitrate 0.131 cache size 7164406
+INFO  knossos.core - [89 / 166] 23538 extant worlds, 4986 visited/s, 662 skipped/s, hitrate 0.117 cache size 7165522
+INFO  knossos.core - [89 / 166] 21625 extant worlds, 8661 visited/s, 1307 skipped/s, hitrate 0.131 cache size 7167232
+INFO  knossos.core - [89 / 166] 21664 extant worlds, 9188 visited/s, 1622 skipped/s, hitrate 0.150 cache size 7170061
+INFO  knossos.core - [89 / 166] 21690 extant worlds, 11832 visited/s, 1464 skipped/s, hitrate 0.110 cache size 7174140
+INFO  knossos.core - [89 / 166] 21637 extant worlds, 13381 visited/s, 1793 skipped/s, hitrate 0.118 cache size 7178429
+INFO  knossos.core - [89 / 166] 21632 extant worlds, 10037 visited/s, 1411 skipped/s, hitrate 0.123 cache size 7181808
+INFO  knossos.core - [89 / 166] 21671 extant worlds, 11071 visited/s, 1621 skipped/s, hitrate 0.128 cache size 7185128
+INFO  knossos.core - [89 / 166] 21710 extant worlds, 9358 visited/s, 1491 skipped/s, hitrate 0.137 cache size 7187510
+INFO  knossos.core - [89 / 166] 23066 extant worlds, 33309 visited/s, 6287 skipped/s, hitrate 0.159 cache size 7192081
+INFO  knossos.core - [89 / 166] 23929 extant worlds, 26255 visited/s, 3638 skipped/s, hitrate 0.122 cache size 7199845
+INFO  knossos.core - [89 / 166] 24376 extant worlds, 24804 visited/s, 3498 skipped/s, hitrate 0.124 cache size 7206134
+INFO  knossos.core - [89 / 166] 23860 extant worlds, 25311 visited/s, 3802 skipped/s, hitrate 0.131 cache size 7211320
+INFO  knossos.core - [89 / 166] 22569 extant worlds, 18696 visited/s, 3077 skipped/s, hitrate 0.141 cache size 7214989
+INFO  knossos.core - [89 / 166] 23133 extant worlds, 21277 visited/s, 3600 skipped/s, hitrate 0.145 cache size 7219319
+INFO  knossos.core - [89 / 166] 23140 extant worlds, 10622 visited/s, 2144 skipped/s, hitrate 0.168 cache size 7221572
+INFO  knossos.core - [89 / 166] 22550 extant worlds, 15682 visited/s, 2451 skipped/s, hitrate 0.135 cache size 7225343
+INFO  knossos.core - [89 / 166] 23809 extant worlds, 18788 visited/s, 3055 skipped/s, hitrate 0.140 cache size 7229025
+INFO  knossos.core - [89 / 166] 22729 extant worlds, 20489 visited/s, 3671 skipped/s, hitrate 0.152 cache size 7233643
+INFO  knossos.core - [89 / 166] 22650 extant worlds, 12559 visited/s, 1816 skipped/s, hitrate 0.126 cache size 7235611
+INFO  knossos.core - [89 / 166] 23250 extant worlds, 14364 visited/s, 2263 skipped/s, hitrate 0.136 cache size 7237747
+INFO  knossos.core - [89 / 166] 23036 extant worlds, 12153 visited/s, 2498 skipped/s, hitrate 0.171 cache size 7240061
+INFO  knossos.core - [89 / 166] 22845 extant worlds, 8321 visited/s, 2044 skipped/s, hitrate 0.197 cache size 7241032
+INFO  knossos.core - [89 / 166] 24790 extant worlds, 7288 visited/s, 1468 skipped/s, hitrate 0.168 cache size 7242650
+INFO  knossos.core - [89 / 166] 24414 extant worlds, 8873 visited/s, 1611 skipped/s, hitrate 0.154 cache size 7243668
+INFO  knossos.core - [89 / 166] 22243 extant worlds, 12625 visited/s, 2202 skipped/s, hitrate 0.149 cache size 7245945
+INFO  knossos.core - [89 / 166] 22282 extant worlds, 16127 visited/s, 2934 skipped/s, hitrate 0.154 cache size 7249154
+INFO  knossos.core - [89 / 166] 23274 extant worlds, 17372 visited/s, 3052 skipped/s, hitrate 0.149 cache size 7254580
+INFO  knossos.core - [89 / 166] 23296 extant worlds, 14558 visited/s, 2390 skipped/s, hitrate 0.141 cache size 7258736
+INFO  knossos.core - [89 / 166] 23276 extant worlds, 9748 visited/s, 1605 skipped/s, hitrate 0.141 cache size 7261795
+INFO  knossos.core - [89 / 166] 23233 extant worlds, 9082 visited/s, 1540 skipped/s, hitrate 0.145 cache size 7264406
+INFO  knossos.core - [89 / 166] 23269 extant worlds, 9690 visited/s, 1444 skipped/s, hitrate 0.130 cache size 7267884
+INFO  knossos.core - [89 / 166] 23356 extant worlds, 15251 visited/s, 2339 skipped/s, hitrate 0.133 cache size 7271966
+INFO  knossos.core - [89 / 166] 23248 extant worlds, 7932 visited/s, 1404 skipped/s, hitrate 0.150 cache size 7274333
+INFO  knossos.core - [89 / 166] 23161 extant worlds, 7440 visited/s, 1267 skipped/s, hitrate 0.146 cache size 7276095
+INFO  knossos.core - [89 / 166] 23402 extant worlds, 8038 visited/s, 1411 skipped/s, hitrate 0.149 cache size 7278294
+INFO  knossos.core - [89 / 166] 23567 extant worlds, 12424 visited/s, 2590 skipped/s, hitrate 0.173 cache size 7281332
+INFO  knossos.core - [89 / 166] 23517 extant worlds, 9354 visited/s, 1494 skipped/s, hitrate 0.138 cache size 7284237
+INFO  knossos.core - [89 / 166] 23492 extant worlds, 9309 visited/s, 1370 skipped/s, hitrate 0.128 cache size 7287520
+INFO  knossos.core - [89 / 166] 23557 extant worlds, 10236 visited/s, 1537 skipped/s, hitrate 0.131 cache size 7290595
+INFO  knossos.core - [89 / 166] 23549 extant worlds, 7026 visited/s, 991 skipped/s, hitrate 0.124 cache size 7292961
+INFO  knossos.core - [89 / 166] 23493 extant worlds, 13067 visited/s, 1986 skipped/s, hitrate 0.132 cache size 7296887
+INFO  knossos.core - [89 / 166] 30202 extant worlds, 22352 visited/s, 3343 skipped/s, hitrate 0.130 cache size 7303987
+INFO  knossos.core - [89 / 166] 29911 extant worlds, 11473 visited/s, 1874 skipped/s, hitrate 0.140 cache size 7306636
+INFO  knossos.core - [89 / 166] 29867 extant worlds, 9726 visited/s, 1580 skipped/s, hitrate 0.140 cache size 7309715
+INFO  knossos.core - [89 / 166] 29827 extant worlds, 12558 visited/s, 1820 skipped/s, hitrate 0.127 cache size 7312763
+INFO  knossos.core - [89 / 166] 29982 extant worlds, 7205 visited/s, 1399 skipped/s, hitrate 0.163 cache size 7314406
+INFO  knossos.core - [89 / 166] 30333 extant worlds, 11703 visited/s, 1875 skipped/s, hitrate 0.138 cache size 7317633
+INFO  knossos.core - [89 / 166] 30099 extant worlds, 11795 visited/s, 1597 skipped/s, hitrate 0.119 cache size 7320735
+INFO  knossos.core - [89 / 166] 30010 extant worlds, 8672 visited/s, 1339 skipped/s, hitrate 0.134 cache size 7323154
+INFO  knossos.core - [89 / 166] 30305 extant worlds, 13265 visited/s, 1920 skipped/s, hitrate 0.126 cache size 7327269
+INFO  knossos.core - [89 / 166] 29790 extant worlds, 14446 visited/s, 2291 skipped/s, hitrate 0.137 cache size 7331038
+INFO  knossos.core - [89 / 166] 29811 extant worlds, 12074 visited/s, 2129 skipped/s, hitrate 0.150 cache size 7334669
+INFO  knossos.core - [89 / 166] 29810 extant worlds, 11097 visited/s, 1614 skipped/s, hitrate 0.127 cache size 7337570
+INFO  knossos.core - [89 / 166] 30170 extant worlds, 12628 visited/s, 1679 skipped/s, hitrate 0.117 cache size 7341347
+INFO  knossos.core - [89 / 166] 27057 extant worlds, 15729 visited/s, 2409 skipped/s, hitrate 0.133 cache size 7344489
+INFO  knossos.core - [89 / 166] 21636 extant worlds, 23973 visited/s, 3001 skipped/s, hitrate 0.111 cache size 7349964
+INFO  knossos.core - [89 / 166] 21805 extant worlds, 14629 visited/s, 2654 skipped/s, hitrate 0.154 cache size 7353572
+INFO  knossos.core - [89 / 166] 22734 extant worlds, 19061 visited/s, 3327 skipped/s, hitrate 0.149 cache size 7358156
+INFO  knossos.core - [89 / 166] 22450 extant worlds, 18178 visited/s, 2925 skipped/s, hitrate 0.139 cache size 7362458
+INFO  knossos.core - [89 / 166] 23112 extant worlds, 17675 visited/s, 2287 skipped/s, hitrate 0.115 cache size 7366373
+INFO  knossos.core - [89 / 166] 22406 extant worlds, 10451 visited/s, 1744 skipped/s, hitrate 0.143 cache size 7368514
+INFO  knossos.core - [89 / 166] 23329 extant worlds, 17127 visited/s, 2473 skipped/s, hitrate 0.126 cache size 7372854
+INFO  knossos.core - [89 / 166] 23576 extant worlds, 18290 visited/s, 2958 skipped/s, hitrate 0.139 cache size 7377341
+INFO  knossos.core - [89 / 166] 22715 extant worlds, 20252 visited/s, 2611 skipped/s, hitrate 0.114 cache size 7383681
+INFO  knossos.core - [89 / 166] 22616 extant worlds, 17853 visited/s, 3017 skipped/s, hitrate 0.145 cache size 7389054
+INFO  knossos.core - [89 / 166] 21918 extant worlds, 16105 visited/s, 2850 skipped/s, hitrate 0.150 cache size 7393671
+INFO  knossos.core - [89 / 166] 23053 extant worlds, 22551 visited/s, 3144 skipped/s, hitrate 0.122 cache size 7400188
+INFO  knossos.core - [89 / 166] 22694 extant worlds, 14427 visited/s, 1960 skipped/s, hitrate 0.120 cache size 7404466
+INFO  knossos.core - [89 / 166] 21460 extant worlds, 24817 visited/s, 3351 skipped/s, hitrate 0.119 cache size 7410804
+INFO  knossos.core - [89 / 166] 21437 extant worlds, 19344 visited/s, 2950 skipped/s, hitrate 0.132 cache size 7416587
+INFO  knossos.core - [89 / 166] 21641 extant worlds, 18696 visited/s, 2899 skipped/s, hitrate 0.134 cache size 7421995
+INFO  knossos.core - [89 / 166] 21464 extant worlds, 19610 visited/s, 3033 skipped/s, hitrate 0.134 cache size 7427131
+INFO  knossos.core - [89 / 166] 21455 extant worlds, 15952 visited/s, 2362 skipped/s, hitrate 0.129 cache size 7431722
+INFO  knossos.core - [89 / 166] 21539 extant worlds, 20868 visited/s, 3011 skipped/s, hitrate 0.126 cache size 7437498
+INFO  knossos.core - [89 / 166] 21462 extant worlds, 13405 visited/s, 2258 skipped/s, hitrate 0.144 cache size 7441105
+INFO  knossos.core - [89 / 166] 21771 extant worlds, 20017 visited/s, 2842 skipped/s, hitrate 0.124 cache size 7446944
+INFO  knossos.core - [89 / 166] 21716 extant worlds, 19633 visited/s, 3051 skipped/s, hitrate 0.134 cache size 7451891
+INFO  knossos.core - [89 / 166] 21630 extant worlds, 19259 visited/s, 2953 skipped/s, hitrate 0.133 cache size 7456934
+INFO  knossos.core - [89 / 166] 21402 extant worlds, 17108 visited/s, 2479 skipped/s, hitrate 0.127 cache size 7461342
+INFO  knossos.core - [89 / 166] 21846 extant worlds, 14627 visited/s, 2277 skipped/s, hitrate 0.135 cache size 7465702
+INFO  knossos.core - [89 / 166] 22166 extant worlds, 12680 visited/s, 2172 skipped/s, hitrate 0.146 cache size 7468962
+INFO  knossos.core - [89 / 166] 21574 extant worlds, 11275 visited/s, 1895 skipped/s, hitrate 0.144 cache size 7472061
+INFO  knossos.core - [89 / 166] 21641 extant worlds, 14915 visited/s, 2490 skipped/s, hitrate 0.143 cache size 7475572
+INFO  knossos.core - [89 / 166] 21755 extant worlds, 10554 visited/s, 1794 skipped/s, hitrate 0.145 cache size 7478013
+INFO  knossos.core - [89 / 166] 21443 extant worlds, 6436 visited/s, 1293 skipped/s, hitrate 0.167 cache size 7479583
+INFO  knossos.core - [89 / 166] 22103 extant worlds, 14830 visited/s, 2437 skipped/s, hitrate 0.141 cache size 7483955
+INFO  knossos.core - [89 / 166] 21945 extant worlds, 13819 visited/s, 2228 skipped/s, hitrate 0.139 cache size 7487532
+INFO  knossos.core - [89 / 166] 22364 extant worlds, 15256 visited/s, 2308 skipped/s, hitrate 0.131 cache size 7491605
+INFO  knossos.core - [89 / 166] 21967 extant worlds, 9245 visited/s, 1421 skipped/s, hitrate 0.133 cache size 7493817
+INFO  knossos.core - [89 / 166] 21636 extant worlds, 17923 visited/s, 2921 skipped/s, hitrate 0.140 cache size 7498031
+INFO  knossos.core - [89 / 166] 21730 extant worlds, 22025 visited/s, 3248 skipped/s, hitrate 0.129 cache size 7502770
+INFO  knossos.core - [89 / 166] 21620 extant worlds, 17081 visited/s, 2423 skipped/s, hitrate 0.124 cache size 7506575
+INFO  knossos.core - [89 / 166] 21583 extant worlds, 17627 visited/s, 2808 skipped/s, hitrate 0.137 cache size 7510047
+INFO  knossos.core - [89 / 166] 21725 extant worlds, 6000 visited/s, 1387 skipped/s, hitrate 0.188 cache size 7511319
+INFO  knossos.core - [89 / 166] 21687 extant worlds, 6896 visited/s, 1325 skipped/s, hitrate 0.161 cache size 7513200
+INFO  knossos.core - [89 / 166] 22057 extant worlds, 14277 visited/s, 1803 skipped/s, hitrate 0.112 cache size 7518119
+INFO  knossos.core - [89 / 166] 21673 extant worlds, 12647 visited/s, 1987 skipped/s, hitrate 0.136 cache size 7522558
+INFO  knossos.core - [89 / 166] 21754 extant worlds, 21633 visited/s, 2831 skipped/s, hitrate 0.116 cache size 7528741
+INFO  knossos.core - [89 / 166] 21650 extant worlds, 11842 visited/s, 1739 skipped/s, hitrate 0.128 cache size 7532593
+INFO  knossos.core - [89 / 166] 21797 extant worlds, 17258 visited/s, 2921 skipped/s, hitrate 0.145 cache size 7537889
+INFO  knossos.core - [89 / 166] 21605 extant worlds, 18271 visited/s, 2737 skipped/s, hitrate 0.130 cache size 7542951
+INFO  knossos.core - [89 / 166] 22020 extant worlds, 17702 visited/s, 2470 skipped/s, hitrate 0.122 cache size 7547826
+INFO  knossos.core - [89 / 166] 21755 extant worlds, 29769 visited/s, 3723 skipped/s, hitrate 0.111 cache size 7554596
+INFO  knossos.core - [89 / 166] 21574 extant worlds, 18218 visited/s, 2979 skipped/s, hitrate 0.141 cache size 7558903
+INFO  knossos.core - [89 / 166] 21815 extant worlds, 12588 visited/s, 2263 skipped/s, hitrate 0.152 cache size 7562090
+INFO  knossos.core - [89 / 166] 21989 extant worlds, 15036 visited/s, 2173 skipped/s, hitrate 0.126 cache size 7565841
+INFO  knossos.core - [89 / 166] 21475 extant worlds, 14295 visited/s, 2421 skipped/s, hitrate 0.145 cache size 7568666
+INFO  knossos.core - [89 / 166] 21642 extant worlds, 15101 visited/s, 2612 skipped/s, hitrate 0.147 cache size 7573010
+INFO  knossos.core - [89 / 166] 21616 extant worlds, 13561 visited/s, 2053 skipped/s, hitrate 0.132 cache size 7576175
+INFO  knossos.core - [89 / 166] 22198 extant worlds, 14957 visited/s, 2262 skipped/s, hitrate 0.131 cache size 7579691
+INFO  knossos.core - [89 / 166] 22261 extant worlds, 17934 visited/s, 3233 skipped/s, hitrate 0.153 cache size 7583356
+INFO  knossos.core - [89 / 166] 22041 extant worlds, 19248 visited/s, 2825 skipped/s, hitrate 0.128 cache size 7588026
+INFO  knossos.core - [89 / 166] 22346 extant worlds, 20247 visited/s, 3185 skipped/s, hitrate 0.136 cache size 7592497
+INFO  knossos.core - [89 / 166] 22360 extant worlds, 18495 visited/s, 3372 skipped/s, hitrate 0.154 cache size 7596243
+INFO  knossos.core - [89 / 166] 22883 extant worlds, 19342 visited/s, 2768 skipped/s, hitrate 0.125 cache size 7600629
+INFO  knossos.core - [89 / 166] 23103 extant worlds, 30173 visited/s, 3344 skipped/s, hitrate 0.100 cache size 7606864
+INFO  knossos.core - [89 / 166] 21780 extant worlds, 25883 visited/s, 3918 skipped/s, hitrate 0.131 cache size 7610362
+INFO  knossos.core - [89 / 166] 22338 extant worlds, 21259 visited/s, 3179 skipped/s, hitrate 0.130 cache size 7615935
+INFO  knossos.core - [89 / 166] 22051 extant worlds, 15249 visited/s, 2298 skipped/s, hitrate 0.131 cache size 7619446
+INFO  knossos.core - [89 / 166] 22051 extant worlds, 20477 visited/s, 3384 skipped/s, hitrate 0.142 cache size 7624158
+INFO  knossos.core - [89 / 166] 22565 extant worlds, 11247 visited/s, 1829 skipped/s, hitrate 0.140 cache size 7626607
+INFO  knossos.core - [89 / 166] 22105 extant worlds, 17481 visited/s, 2977 skipped/s, hitrate 0.146 cache size 7630298
+INFO  knossos.core - [89 / 166] 23309 extant worlds, 13810 visited/s, 2533 skipped/s, hitrate 0.155 cache size 7633150
+INFO  knossos.core - [89 / 166] 22573 extant worlds, 10629 visited/s, 2040 skipped/s, hitrate 0.161 cache size 7635042
+INFO  knossos.core - [89 / 166] 22587 extant worlds, 11048 visited/s, 2105 skipped/s, hitrate 0.160 cache size 7637146
+INFO  knossos.core - [89 / 166] 22639 extant worlds, 7657 visited/s, 1150 skipped/s, hitrate 0.131 cache size 7638883
+INFO  knossos.core - [89 / 166] 23160 extant worlds, 6951 visited/s, 1362 skipped/s, hitrate 0.164 cache size 7639941
+INFO  knossos.core - [89 / 166] 22398 extant worlds, 8432 visited/s, 1264 skipped/s, hitrate 0.130 cache size 7641677
+INFO  knossos.core - [89 / 166] 22743 extant worlds, 15604 visited/s, 2683 skipped/s, hitrate 0.147 cache size 7645285
+INFO  knossos.core - [89 / 166] 21930 extant worlds, 11547 visited/s, 1786 skipped/s, hitrate 0.134 cache size 7647892
+INFO  knossos.core - [89 / 166] 21768 extant worlds, 16729 visited/s, 2620 skipped/s, hitrate 0.135 cache size 7651203
+INFO  knossos.core - [89 / 166] 22179 extant worlds, 14369 visited/s, 2695 skipped/s, hitrate 0.158 cache size 7654247
+INFO  knossos.core - [89 / 166] 23041 extant worlds, 14972 visited/s, 2538 skipped/s, hitrate 0.145 cache size 7657682
+INFO  knossos.core - [89 / 166] 22618 extant worlds, 16139 visited/s, 2019 skipped/s, hitrate 0.111 cache size 7661684
+INFO  knossos.core - [89 / 166] 22636 extant worlds, 16032 visited/s, 3129 skipped/s, hitrate 0.163 cache size 7664943
+INFO  knossos.core - [89 / 166] 23114 extant worlds, 22148 visited/s, 3050 skipped/s, hitrate 0.121 cache size 7670386
+INFO  knossos.core - [89 / 166] 23201 extant worlds, 18398 visited/s, 2961 skipped/s, hitrate 0.139 cache size 7673729
+INFO  knossos.core - [89 / 166] 23600 extant worlds, 13816 visited/s, 2637 skipped/s, hitrate 0.160 cache size 7675976
+INFO  knossos.core - [89 / 166] 22996 extant worlds, 13482 visited/s, 2712 skipped/s, hitrate 0.167 cache size 7678504
+INFO  knossos.core - [89 / 166] 25261 extant worlds, 15334 visited/s, 2673 skipped/s, hitrate 0.148 cache size 7681985
+INFO  knossos.core - [89 / 166] 24990 extant worlds, 18376 visited/s, 3451 skipped/s, hitrate 0.158 cache size 7685798
+INFO  knossos.core - [89 / 166] 22043 extant worlds, 15774 visited/s, 2476 skipped/s, hitrate 0.136 cache size 7688514
+INFO  knossos.core - [89 / 166] 21771 extant worlds, 15352 visited/s, 2935 skipped/s, hitrate 0.161 cache size 7690585
+INFO  knossos.core - [89 / 166] 21816 extant worlds, 12263 visited/s, 2007 skipped/s, hitrate 0.141 cache size 7693683
+INFO  knossos.core - [89 / 166] 23861 extant worlds, 11244 visited/s, 1545 skipped/s, hitrate 0.121 cache size 7696328
+INFO  knossos.core - [89 / 166] 21693 extant worlds, 11189 visited/s, 1433 skipped/s, hitrate 0.114 cache size 7698249
+INFO  knossos.core - [89 / 166] 24519 extant worlds, 15439 visited/s, 2418 skipped/s, hitrate 0.135 cache size 7703122
+INFO  knossos.core - [89 / 166] 24519 extant worlds, 17976 visited/s, 2400 skipped/s, hitrate 0.118 cache size 7707944
+INFO  knossos.core - [89 / 166] 24977 extant worlds, 16289 visited/s, 2199 skipped/s, hitrate 0.119 cache size 7712315
+INFO  knossos.core - [89 / 166] 25663 extant worlds, 14424 visited/s, 2042 skipped/s, hitrate 0.124 cache size 7716764
+INFO  knossos.core - [89 / 166] 26324 extant worlds, 15267 visited/s, 2259 skipped/s, hitrate 0.129 cache size 7720890
+INFO  knossos.core - [89 / 166] 26608 extant worlds, 16286 visited/s, 2164 skipped/s, hitrate 0.117 cache size 7725253
+INFO  knossos.core - [89 / 166] 26614 extant worlds, 18427 visited/s, 2518 skipped/s, hitrate 0.120 cache size 7729256
+INFO  knossos.core - [89 / 166] 27014 extant worlds, 14186 visited/s, 1945 skipped/s, hitrate 0.121 cache size 7732891
+INFO  knossos.core - [89 / 166] 26428 extant worlds, 18518 visited/s, 2578 skipped/s, hitrate 0.122 cache size 7737842
+INFO  knossos.core - [89 / 166] 25955 extant worlds, 17269 visited/s, 2467 skipped/s, hitrate 0.125 cache size 7742057
+INFO  knossos.core - [89 / 166] 26957 extant worlds, 19333 visited/s, 2443 skipped/s, hitrate 0.112 cache size 7747771
+INFO  knossos.core - [89 / 166] 27493 extant worlds, 19823 visited/s, 2667 skipped/s, hitrate 0.119 cache size 7753149
+INFO  knossos.core - [89 / 166] 27857 extant worlds, 20745 visited/s, 2501 skipped/s, hitrate 0.108 cache size 7758833
+INFO  knossos.core - [89 / 166] 28596 extant worlds, 17636 visited/s, 2782 skipped/s, hitrate 0.136 cache size 7763483
+INFO  knossos.core - [89 / 166] 27944 extant worlds, 23247 visited/s, 3168 skipped/s, hitrate 0.120 cache size 7769604
+INFO  knossos.core - [89 / 166] 27963 extant worlds, 19203 visited/s, 2986 skipped/s, hitrate 0.135 cache size 7774358
+INFO  knossos.core - [89 / 166] 27856 extant worlds, 15276 visited/s, 2686 skipped/s, hitrate 0.150 cache size 7777650
+INFO  knossos.core - [89 / 166] 27795 extant worlds, 16590 visited/s, 2578 skipped/s, hitrate 0.135 cache size 7781978
+INFO  knossos.core - [89 / 166] 27760 extant worlds, 9584 visited/s, 1539 skipped/s, hitrate 0.138 cache size 7784990
+INFO  knossos.core - [89 / 166] 28190 extant worlds, 9882 visited/s, 1566 skipped/s, hitrate 0.137 cache size 7787949
+INFO  knossos.core - [89 / 166] 28478 extant worlds, 13266 visited/s, 2272 skipped/s, hitrate 0.146 cache size 7791400
+INFO  knossos.core - [89 / 166] 28645 extant worlds, 18888 visited/s, 3010 skipped/s, hitrate 0.137 cache size 7796458
+INFO  knossos.core - [89 / 166] 28893 extant worlds, 19691 visited/s, 2653 skipped/s, hitrate 0.119 cache size 7802431
+INFO  knossos.core - [89 / 166] 29212 extant worlds, 21095 visited/s, 3144 skipped/s, hitrate 0.130 cache size 7808031
+INFO  knossos.core - [89 / 166] 29226 extant worlds, 13478 visited/s, 2169 skipped/s, hitrate 0.139 cache size 7811627
+INFO  knossos.core - [89 / 166] 28965 extant worlds, 16485 visited/s, 2474 skipped/s, hitrate 0.131 cache size 7815681
+INFO  knossos.core - [89 / 166] 28959 extant worlds, 11483 visited/s, 2089 skipped/s, hitrate 0.154 cache size 7817773
+INFO  knossos.core - [89 / 166] 28915 extant worlds, 17419 visited/s, 2877 skipped/s, hitrate 0.142 cache size 7822032
+INFO  knossos.core - [89 / 166] 28826 extant worlds, 8768 visited/s, 1701 skipped/s, hitrate 0.162 cache size 7824905
+INFO  knossos.core - [89 / 166] 28601 extant worlds, 9935 visited/s, 1647 skipped/s, hitrate 0.142 cache size 7827681
+INFO  knossos.core - [89 / 166] 28757 extant worlds, 12839 visited/s, 2032 skipped/s, hitrate 0.137 cache size 7831356
+INFO  knossos.core - [89 / 166] 28912 extant worlds, 14663 visited/s, 2971 skipped/s, hitrate 0.169 cache size 7834693
+INFO  knossos.core - [89 / 166] 28859 extant worlds, 11159 visited/s, 1841 skipped/s, hitrate 0.142 cache size 7837942
+INFO  knossos.core - [89 / 166] 29155 extant worlds, 10231 visited/s, 1722 skipped/s, hitrate 0.144 cache size 7840707
+INFO  knossos.core - [89 / 166] 28805 extant worlds, 11808 visited/s, 1796 skipped/s, hitrate 0.132 cache size 7844044
+INFO  knossos.core - [89 / 166] 28778 extant worlds, 5160 visited/s, 747 skipped/s, hitrate 0.126 cache size 7845891
+INFO  knossos.core - [89 / 166] 28138 extant worlds, 12119 visited/s, 1782 skipped/s, hitrate 0.128 cache size 7849298
+INFO  knossos.core - [89 / 166] 28091 extant worlds, 17662 visited/s, 2506 skipped/s, hitrate 0.124 cache size 7853456
+INFO  knossos.core - [89 / 166] 28479 extant worlds, 10497 visited/s, 1788 skipped/s, hitrate 0.146 cache size 7856070
+INFO  knossos.core - [89 / 166] 28115 extant worlds, 10221 visited/s, 2148 skipped/s, hitrate 0.174 cache size 7857979
+INFO  knossos.core - [89 / 166] 28177 extant worlds, 17229 visited/s, 2581 skipped/s, hitrate 0.130 cache size 7861211
+INFO  knossos.core - [89 / 166] 28388 extant worlds, 13816 visited/s, 2216 skipped/s, hitrate 0.138 cache size 7864737
+INFO  knossos.core - [89 / 166] 28374 extant worlds, 10086 visited/s, 1500 skipped/s, hitrate 0.129 cache size 7866637
+INFO  knossos.core - [89 / 166] 28861 extant worlds, 8389 visited/s, 1363 skipped/s, hitrate 0.140 cache size 7868089
+INFO  knossos.core - [89 / 166] 29856 extant worlds, 10088 visited/s, 1989 skipped/s, hitrate 0.165 cache size 7870688
+INFO  knossos.core - [89 / 166] 35131 extant worlds, 14773 visited/s, 2322 skipped/s, hitrate 0.136 cache size 7874636
+INFO  knossos.core - [89 / 166] 35148 extant worlds, 8871 visited/s, 2014 skipped/s, hitrate 0.185 cache size 7875914
+INFO  knossos.core - [89 / 166] 35405 extant worlds, 12522 visited/s, 2197 skipped/s, hitrate 0.149 cache size 7878388
+INFO  knossos.core - [89 / 166] 35461 extant worlds, 7531 visited/s, 1593 skipped/s, hitrate 0.175 cache size 7879431
+INFO  knossos.core - [89 / 166] 37312 extant worlds, 8072 visited/s, 1151 skipped/s, hitrate 0.125 cache size 7881538
+INFO  knossos.core - [89 / 166] 36732 extant worlds, 12159 visited/s, 1859 skipped/s, hitrate 0.133 cache size 7885182
+INFO  knossos.core - [89 / 166] 37646 extant worlds, 15589 visited/s, 1973 skipped/s, hitrate 0.112 cache size 7890994
+INFO  knossos.core - [89 / 166] 37295 extant worlds, 20175 visited/s, 2418 skipped/s, hitrate 0.107 cache size 7897827
+INFO  knossos.core - [89 / 166] 37117 extant worlds, 22412 visited/s, 2743 skipped/s, hitrate 0.109 cache size 7903668
+INFO  knossos.core - [89 / 166] 37222 extant worlds, 13773 visited/s, 2302 skipped/s, hitrate 0.143 cache size 7907278
+INFO  knossos.core - [89 / 166] 36963 extant worlds, 9595 visited/s, 1695 skipped/s, hitrate 0.150 cache size 7909739
+INFO  knossos.core - [89 / 166] 36978 extant worlds, 14031 visited/s, 2017 skipped/s, hitrate 0.126 cache size 7913655
+INFO  knossos.core - [89 / 166] 36946 extant worlds, 13212 visited/s, 2083 skipped/s, hitrate 0.136 cache size 7916685
+INFO  knossos.core - [89 / 166] 36883 extant worlds, 14695 visited/s, 2062 skipped/s, hitrate 0.123 cache size 7920444
+INFO  knossos.core - [89 / 166] 36922 extant worlds, 9618 visited/s, 1706 skipped/s, hitrate 0.151 cache size 7922775
+INFO  knossos.core - [89 / 166] 37047 extant worlds, 12868 visited/s, 1925 skipped/s, hitrate 0.130 cache size 7926752
+INFO  knossos.core - [89 / 166] 36852 extant worlds, 13915 visited/s, 2026 skipped/s, hitrate 0.127 cache size 7930178
+OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x00002aba85165000, 4681089024, 0) failed; error='Cannot allocate memory' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 4681089024 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /home/admin/ahorn/jepsen/hs_err_pid18371.log
+Error encountered performing task 'test' with profile(s): 'base,system,user,provided,dev,etcd'
+Tests failed.
+
+real    98m45.831s
+user    186m33.460s
+sys     1m37.376s

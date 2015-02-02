@@ -1,0 +1,110 @@
+
+lein test jepsen.system.etcd-test
+INFO  jepsen.os.debian - :n1 setting up debian
+INFO  jepsen.os.debian - :n5 setting up debian
+INFO  jepsen.os.debian - :n2 setting up debian
+INFO  jepsen.os.debian - :n4 setting up debian
+INFO  jepsen.os.debian - :n3 setting up debian
+INFO  jepsen.os.debian - :n5 debian set up
+INFO  jepsen.os.debian - :n2 debian set up
+INFO  jepsen.os.debian - :n1 debian set up
+INFO  jepsen.os.debian - :n3 debian set up
+INFO  jepsen.os.debian - :n4 debian set up
+INFO  jepsen.system.etcd - :n3 etcd nuked
+
+lein test :only jepsen.system.etcd-test/register-test
+
+ERROR in (register-test) (FutureTask.java:122)
+Uncaught exception, not in assertion.
+expected: nil
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+  actual: java.util.concurrent.ExecutionException: com.jcraft.jsch.JSchException: Packet corrupt
+ at java.util.concurrent.FutureTask.report (FutureTask.java:122)
+    java.util.concurrent.FutureTask.get (FutureTask.java:188)
+    clojure.core$deref_future.invoke (core.clj:2180)
+    clojure.core$future_call$reify__6320.deref (core.clj:6417)
+    clojure.core$deref.invoke (core.clj:2200)
+    clojure.core$pmap$step__6333$fn__6335.invoke (core.clj:6467)
+    clojure.lang.LazySeq.sval (LazySeq.java:40)
+    clojure.lang.LazySeq.seq (LazySeq.java:49)
+    clojure.lang.RT.seq (RT.java:484)
+    clojure.core$seq.invoke (core.clj:133)
+    clojure.core$dorun.invoke (core.clj:2855)
+    jepsen.core$on_nodes.invoke (core.clj:72)
+    jepsen.core$run_BANG_.invoke (core.clj:315)
+    jepsen.system.etcd_test/fn (etcd_test.clj:44)
+    clojure.test$test_var$fn__7187.invoke (test.clj:704)
+    clojure.test$test_var.invoke (test.clj:704)
+    clojure.test$test_vars$fn__7209$fn__7214.invoke (test.clj:721)
+    clojure.test$default_fixture.invoke (test.clj:674)
+    clojure.test$test_vars$fn__7209.invoke (test.clj:721)
+    clojure.test$default_fixture.invoke (test.clj:674)
+    clojure.test$test_vars.invoke (test.clj:718)
+    clojure.test$test_all_vars.invoke (test.clj:727)
+    clojure.test$test_ns.invoke (test.clj:746)
+    clojure.core$map$fn__4245.invoke (core.clj:2559)
+    clojure.lang.LazySeq.sval (LazySeq.java:40)
+    clojure.lang.LazySeq.seq (LazySeq.java:49)
+    clojure.lang.Cons.next (Cons.java:39)
+    clojure.lang.RT.boundedLength (RT.java:1655)
+    clojure.lang.RestFn.applyTo (RestFn.java:130)
+    clojure.core$apply.invoke (core.clj:626)
+    clojure.test$run_tests.doInvoke (test.clj:761)
+    clojure.lang.RestFn.applyTo (RestFn.java:137)
+    clojure.core$apply.invoke (core.clj:624)
+    user$eval85$fn__140$fn__171.invoke (form-init2142813662270882267.clj:1)
+    user$eval85$fn__140$fn__141.invoke (form-init2142813662270882267.clj:1)
+    user$eval85$fn__140.invoke (form-init2142813662270882267.clj:1)
+    user$eval85.invoke (form-init2142813662270882267.clj:1)
+    clojure.lang.Compiler.eval (Compiler.java:6676)
+    clojure.lang.Compiler.eval (Compiler.java:6666)
+    clojure.lang.Compiler.load (Compiler.java:7103)
+    clojure.lang.Compiler.loadFile (Compiler.java:7059)
+    clojure.main$load_script.invoke (main.clj:274)
+    clojure.main$init_opt.invoke (main.clj:279)
+    clojure.main$initialize.invoke (main.clj:307)
+    clojure.main$null_opt.invoke (main.clj:342)
+    clojure.main$main.doInvoke (main.clj:420)
+    clojure.lang.RestFn.invoke (RestFn.java:421)
+    clojure.lang.Var.invoke (Var.java:383)
+    clojure.lang.AFn.applyToHelper (AFn.java:156)
+    clojure.lang.Var.applyTo (Var.java:700)
+    clojure.main.main (main.java:37)
+Caused by: com.jcraft.jsch.JSchException: Packet corrupt
+ at com.jcraft.jsch.Session.start_discard (Session.java:1049)
+    com.jcraft.jsch.Session.read (Session.java:919)
+    com.jcraft.jsch.Session.connect (Session.java:309)
+    com.jcraft.jsch.Session.connect (Session.java:183)
+    clj_ssh.ssh$connect.invoke (ssh.clj:327)
+    clj_ssh.ssh$ssh.invoke (ssh.clj:548)
+    jepsen.control$ssh_STAR_.invoke (control.clj:111)
+    jepsen.control$exec_STAR_.doInvoke (control.clj:117)
+    clojure.lang.RestFn.applyTo (RestFn.java:137)
+    clojure.core$apply.invoke (core.clj:624)
+    jepsen.control$exec.doInvoke (control.clj:131)
+    clojure.lang.RestFn.invoke (RestFn.java:482)
+    jepsen.system.etcd$db$reify__7639$fn__7657.invoke (etcd.clj:147)
+    jepsen.system.etcd$db$reify__7639.teardown_BANG_ (etcd.clj:145)
+    jepsen.db$eval3731$fn__3747$G__3721__3751.invoke (db.clj:4)
+    jepsen.db$eval3731$fn__3747$G__3720__3756.invoke (db.clj:4)
+    clojure.lang.AFn.applyToHelper (AFn.java:160)
+    clojure.lang.AFn.applyTo (AFn.java:144)
+    clojure.core$apply.invoke (core.clj:626)
+    clojure.core$partial$fn__4228.doInvoke (core.clj:2468)
+    clojure.lang.RestFn.invoke (RestFn.java:421)
+    jepsen.core$on_nodes$fn__4843.invoke (core.clj:71)
+    clojure.core$pmap$fn__6328$fn__6329.invoke (core.clj:6463)
+    clojure.core$binding_conveyor_fn$fn__4145.invoke (core.clj:1910)
+    clojure.lang.AFn.call (AFn.java:18)
+    java.util.concurrent.FutureTask.run (FutureTask.java:262)
+    java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1145)
+    java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:615)
+    java.lang.Thread.run (Thread.java:745)
+
+Ran 1 tests containing 1 assertions.
+0 failures, 1 errors.
+Error encountered performing task 'test' with profile(s): 'base,system,user,provided,dev,etcd'
+Tests failed.

@@ -1,0 +1,1552 @@
+
+lein test jepsen.system.etcd-test
+INFO  jepsen.os.debian - :n1 setting up debian
+INFO  jepsen.os.debian - :n5 setting up debian
+INFO  jepsen.os.debian - :n2 setting up debian
+INFO  jepsen.os.debian - :n4 setting up debian
+INFO  jepsen.os.debian - :n3 setting up debian
+INFO  jepsen.os.debian - :n4 debian set up
+INFO  jepsen.os.debian - :n2 debian set up
+INFO  jepsen.os.debian - :n5 debian set up
+INFO  jepsen.os.debian - :n1 debian set up
+INFO  jepsen.os.debian - :n3 debian set up
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - Running nodes: {:n1 false, :n2 false, :n3 false, :n4 false, :n5 false}
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n1 starting etcd
+INFO  jepsen.system.etcd - :n3 starting etcd
+INFO  jepsen.system.etcd - :n4 starting etcd
+INFO  jepsen.system.etcd - :n2 starting etcd
+INFO  jepsen.system.etcd - :n5 starting etcd
+INFO  jepsen.system.etcd - Running nodes: {:n1 true, :n2 true, :n3 true, :n4 true, :n5 true}
+INFO  jepsen.system.etcd - :n3 etcd ready
+INFO  jepsen.system.etcd - :n2 etcd ready
+INFO  jepsen.system.etcd - :n1 etcd ready
+INFO  jepsen.system.etcd - :n4 etcd ready
+INFO  jepsen.system.etcd - :n5 etcd ready
+INFO  jepsen.core - Worker 2 starting
+INFO  jepsen.core - Worker 1 starting
+INFO  jepsen.core - Worker 0 starting
+INFO  jepsen.core - Worker 4 starting
+INFO  jepsen.core - Worker 3 starting
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 2	:invoke	:write	0
+INFO  jepsen.util - 1	:invoke	:write	4
+INFO  jepsen.util - 4	:invoke	:write	4
+INFO  jepsen.util - 3	:invoke	:write	1
+INFO  jepsen.util - 0	:ok	:read	nil
+INFO  jepsen.util - 2	:ok	:write	0
+INFO  jepsen.util - 4	:ok	:write	4
+INFO  jepsen.util - 3	:ok	:write	1
+INFO  jepsen.util - 1	:ok	:write	4
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 2	:ok	:read	1
+INFO  jepsen.util - 4	:invoke	:write	2
+INFO  jepsen.util - 3	:invoke	:write	0
+INFO  jepsen.util - 1	:invoke	:cas	[2 4]
+INFO  jepsen.util - 4	:ok	:write	2
+INFO  jepsen.util - 3	:ok	:write	0
+INFO  jepsen.util - 1	:fail	:cas	[2 4]
+INFO  jepsen.util - 0	:invoke	:write	0
+INFO  jepsen.util - 2	:invoke	:cas	[3 1]
+INFO  jepsen.util - 0	:ok	:write	0
+INFO  jepsen.util - 2	:fail	:cas	[3 1]
+INFO  jepsen.util - 4	:invoke	:write	3
+INFO  jepsen.util - 4	:ok	:write	3
+INFO  jepsen.util - 3	:invoke	:write	3
+INFO  jepsen.util - 1	:invoke	:write	2
+INFO  jepsen.util - 3	:ok	:write	3
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	3
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 1	:ok	:write	2
+INFO  jepsen.util - 4	:invoke	:cas	[0 4]
+INFO  jepsen.util - 2	:ok	:write	2
+INFO  jepsen.util - 4	:fail	:cas	[0 4]
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	2
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	2
+INFO  jepsen.util - 1	:invoke	:write	2
+INFO  jepsen.util - 2	:invoke	:cas	[0 1]
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	2
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n3 :n4}, :n5 #{:n3 :n4}, :n2 #{:n3 :n4}, :n4 #{:n2 :n5 :n1}, :n3 #{:n2 :n5 :n1}}"
+INFO  jepsen.util - 3	:invoke	:write	0
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	2
+INFO  jepsen.util - 1	:info	:write	:timed-out
+INFO  jepsen.util - 2	:info	:cas	:timed-out
+INFO  jepsen.util - 4	:invoke	:write	0
+INFO  jepsen.util - 4	:ok	:write	0
+INFO  jepsen.util - 3	:info	:write	:timed-out
+INFO  jepsen.util - 0	:invoke	:write	4
+INFO  jepsen.util - 0	:ok	:write	4
+INFO  jepsen.util - 6	:invoke	:cas	[0 0]
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	2
+INFO  jepsen.util - 4	:invoke	:write	2
+INFO  jepsen.util - 4	:ok	:write	2
+INFO  jepsen.util - 6	:fail	:cas	[0 0]
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 0	:invoke	:write	1
+INFO  jepsen.util - 0	:ok	:write	1
+INFO  jepsen.util - 7	:invoke	:cas	[1 3]
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	1
+INFO  jepsen.util - 6	:invoke	:write	1
+INFO  jepsen.util - 6	:ok	:write	1
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 7	:info	:cas	:timed-out
+INFO  jepsen.util - 4	:invoke	:write	3
+INFO  jepsen.util - 4	:ok	:write	3
+INFO  jepsen.util - 6	:invoke	:write	4
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 0	:invoke	:write	3
+INFO  jepsen.util - 0	:ok	:write	3
+INFO  jepsen.util - 6	:ok	:write	4
+INFO  jepsen.util - 12	:invoke	:read	nil
+INFO  jepsen.util - 12	:ok	:read	2
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	3
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - 0	:invoke	:write	4
+INFO  jepsen.util - 6	:invoke	:write	2
+INFO  jepsen.util - 12	:invoke	:write	1
+INFO  jepsen.util - 6	:ok	:write	2
+INFO  jepsen.util - 12	:ok	:write	1
+INFO  jepsen.util - 0	:ok	:write	4
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	1
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 6	:invoke	:cas	[1 2]
+INFO  jepsen.util - 12	:invoke	:cas	[4 2]
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 4	:invoke	:cas	[4 2]
+INFO  jepsen.util - 4	:fail	:cas	[4 2]
+INFO  jepsen.util - 12	:fail	:cas	[4 2]
+INFO  jepsen.util - 6	:ok	:cas	[1 2]
+INFO  jepsen.util - 8	:invoke	:write	1
+INFO  jepsen.util - 8	:ok	:write	1
+INFO  jepsen.util - 0	:invoke	:write	3
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	3
+INFO  jepsen.util - 0	:ok	:write	3
+INFO  jepsen.util - 12	:invoke	:write	1
+INFO  jepsen.util - 6	:invoke	:write	0
+INFO  jepsen.util - 12	:ok	:write	1
+INFO  jepsen.util - 6	:ok	:write	0
+INFO  jepsen.util - 8	:invoke	:write	3
+INFO  jepsen.util - 8	:ok	:write	3
+INFO  jepsen.util - 4	:invoke	:write	1
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	3
+INFO  jepsen.util - 4	:ok	:write	1
+INFO  jepsen.util - 12	:invoke	:read	nil
+INFO  jepsen.util - 12	:ok	:read	1
+INFO  jepsen.util - 6	:invoke	:cas	[1 3]
+INFO  jepsen.util - 6	:ok	:cas	[1 3]
+INFO  jepsen.util - 8	:invoke	:write	4
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 4	:invoke	:write	0
+INFO  jepsen.util - 0	:ok	:read	3
+INFO  jepsen.util - 4	:ok	:write	0
+INFO  jepsen.util - 8	:ok	:write	4
+INFO  jepsen.util - 12	:invoke	:write	4
+INFO  jepsen.util - 6	:invoke	:write	2
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 12	:ok	:write	4
+INFO  jepsen.util - 6	:ok	:write	2
+INFO  jepsen.util - 0	:invoke	:write	1
+INFO  jepsen.util - 4	:invoke	:write	0
+INFO  jepsen.util - 0	:ok	:write	1
+INFO  jepsen.util - 8	:invoke	:cas	[3 1]
+INFO  jepsen.util - 4	:ok	:write	0
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n3 :n2}, :n5 #{:n3 :n2}, :n4 #{:n3 :n2}, :n2 #{:n4 :n5 :n1}, :n3 #{:n4 :n5 :n1}}"
+INFO  jepsen.util - 6	:invoke	:write	3
+INFO  jepsen.util - 12	:invoke	:read	nil
+INFO  jepsen.util - 12	:ok	:read	2
+INFO  jepsen.util - 8	:fail	:cas	[3 1]
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	0
+INFO  jepsen.util - 4	:invoke	:cas	[3 4]
+INFO  jepsen.util - 12	:invoke	:read	nil
+INFO  jepsen.util - 6	:info	:write	:timed-out
+INFO  jepsen.util - 12	:ok	:read	2
+INFO  jepsen.util - 4	:fail	:cas	[3 4]
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	0
+INFO  jepsen.util - 0	:invoke	:cas	[0 1]
+INFO  jepsen.util - 11	:invoke	:write	2
+INFO  jepsen.util - 12	:invoke	:cas	[4 4]
+INFO  jepsen.util - 4	:invoke	:cas	[3 2]
+INFO  jepsen.util - 0	:ok	:cas	[0 1]
+INFO  jepsen.util - 8	:invoke	:cas	[2 2]
+INFO  jepsen.util - 4	:fail	:cas	[3 2]
+INFO  jepsen.util - 8	:fail	:cas	[2 2]
+INFO  jepsen.util - 11	:info	:write	:timed-out
+INFO  jepsen.util - 12	:info	:cas	:timed-out
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 4	:invoke	:cas	[2 1]
+INFO  jepsen.util - 4	:fail	:cas	[2 1]
+INFO  jepsen.util - 8	:invoke	:write	4
+INFO  jepsen.util - 8	:ok	:write	4
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.core - nemesis done
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.core - Worker 2 done
+INFO  jepsen.core - Worker 0 done
+INFO  jepsen.core - Worker 4 done
+INFO  jepsen.core - Worker 3 done
+INFO  jepsen.util - 16	:ok	:read	2
+INFO  jepsen.core - Worker 1 done
+INFO  jepsen.core - Run complete, writing
+INFO  jepsen.core - Analyzing
+INFO  knossos.core - [71 / 182] 1352 extant worlds, 14409 visited/s, 1150 skipped/s, hitrate 0.074 cache size 8732
+INFO  knossos.core - [71 / 182] 910 extant worlds, 44703 visited/s, 3962 skipped/s, hitrate 0.081 cache size 36431
+INFO  knossos.core - [71 / 182] 529 extant worlds, 51791 visited/s, 4489 skipped/s, hitrate 0.080 cache size 68265
+INFO  knossos.core - [71 / 182] 288 extant worlds, 47230 visited/s, 4291 skipped/s, hitrate 0.083 cache size 97776
+INFO  jepsen.core - Analysis complete
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+
+lein test :only jepsen.system.etcd-test/register-test
+
+FAIL in (register-test) (etcd_test.clj:45)
+expected: (:valid? (:results test))
+  actual: false
+Not linearizable. Linearizable prefix was:
+0	:invoke	:read	nil
+2	:invoke	:write	0
+1	:invoke	:write	4
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:ok	:read	nil
+2	:ok	:write	0
+4	:ok	:write	4
+3	:ok	:write	1
+1	:ok	:write	4
+0	:invoke	:read	1
+2	:invoke	:read	1
+0	:ok	:read	1
+2	:ok	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+1	:invoke	:cas	[2 4]
+4	:ok	:write	2
+3	:ok	:write	0
+1	:fail	:cas	[2 4]
+0	:invoke	:write	0
+2	:invoke	:cas	[3 1]
+0	:ok	:write	0
+2	:fail	:cas	[3 1]
+4	:invoke	:write	3
+4	:ok	:write	3
+3	:invoke	:write	3
+1	:invoke	:write	2
+3	:ok	:write	3
+0	:invoke	:read	3
+0	:ok	:read	3
+2	:invoke	:write	2
+1	:ok	:write	2
+4	:invoke	:cas	[0 4]
+2	:ok	:write	2
+4	:fail	:cas	[0 4]
+:nemesis	:info	:start	nil
+3	:invoke	:read	2
+3	:ok	:read	2
+0	:invoke	:read	2
+0	:ok	:read	2
+1	:invoke	:write	2
+2	:invoke	:cas	[0 1]
+4	:invoke	:read	2
+4	:ok	:read	2
+:nemesis	:info	:start	"Cut off {:n1 #{:n3 :n4}, :n5 #{:n3 :n4}, :n2 #{:n3 :n4}, :n4 #{:n2 :n5 :n1}, :n3 #{:n2 :n5 :n1}}"
+3	:invoke	:write	0
+0	:invoke	:read	2
+0	:ok	:read	2
+1	:info	:write	:timed-out
+2	:info	:cas	:timed-out
+4	:invoke	:write	0
+4	:ok	:write	0
+3	:info	:write	:timed-out
+0	:invoke	:write	4
+0	:ok	:write	4
+6	:invoke	:cas	[0 0]
+7	:invoke	:read	2
+7	:ok	:read	2
+4	:invoke	:write	2
+4	:ok	:write	2
+6	:fail	:cas	[0 0]
+8	:invoke	:read	2
+8	:ok	:read	2
+0	:invoke	:write	1
+0	:ok	:write	1
+7	:invoke	:cas	[1 3]
+4	:invoke	:read	1
+4	:ok	:read	1
+6	:invoke	:write	1
+6	:ok	:write	1
+
+Followed by inconsistent operation:
+8	:invoke	:read	2
+
+-------------------------------------------------------------
+Just prior to that operation, possible interpretations of the
+linearizable prefix were:
+World with fixed history:
+1	:invoke	:write	4
+4	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+1	:invoke	:write	4
+4	:invoke	:write	4
+0	:invoke	:read	nil
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+3	:invoke	:write	0
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+7	:invoke	:cas	[1 3]
+
+World with fixed history:
+2	:invoke	:write	0
+1	:invoke	:write	4
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+7	:invoke	:cas	[1 3]
+
+World with fixed history:
+1	:invoke	:write	4
+2	:invoke	:write	0
+4	:invoke	:write	4
+0	:invoke	:read	nil
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+0	:invoke	:read	nil
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+2	:invoke	:write	0
+1	:invoke	:write	4
+0	:invoke	:read	nil
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+1	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+2	:invoke	:write	0
+4	:invoke	:write	4
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+1	:invoke	:write	4
+0	:invoke	:read	nil
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+7	:invoke	:cas	[1 3]
+
+World with fixed history:
+1	:invoke	:write	4
+4	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+3	:invoke	:write	0
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+1	:invoke	:write	4
+0	:invoke	:read	nil
+2	:invoke	:write	0
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+0	:invoke	:read	nil
+1	:invoke	:write	4
+2	:invoke	:write	0
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+3	:invoke	:write	0
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+
+led to state: 
+{:value 1}
+
+with pending operations:
+7	:invoke	:cas	[1 3]
+
+World with fixed history:
+2	:invoke	:write	0
+1	:invoke	:write	4
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+1	:invoke	:write	4
+2	:invoke	:write	0
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+1	:invoke	:write	4
+2	:invoke	:write	0
+0	:invoke	:read	nil
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+2	:invoke	:write	0
+4	:invoke	:write	4
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+0	:invoke	:read	nil
+1	:invoke	:write	4
+2	:invoke	:write	0
+4	:invoke	:write	4
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+0	:invoke	:read	nil
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+3	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+0	:invoke	:read	nil
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+2	:invoke	:write	0
+4	:invoke	:write	4
+1	:invoke	:write	4
+0	:invoke	:read	nil
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+3	:invoke	:write	0
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+0	:invoke	:read	nil
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+0	:invoke	:read	nil
+1	:invoke	:write	4
+4	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+3	:invoke	:write	0
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+
+World with fixed history:
+0	:invoke	:read	nil
+4	:invoke	:write	4
+2	:invoke	:write	0
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+3	:invoke	:write	0
+
+World with fixed history:
+1	:invoke	:write	4
+0	:invoke	:read	nil
+4	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+7	:invoke	:cas	[1 3]
+
+World with fixed history:
+1	:invoke	:write	4
+0	:invoke	:read	nil
+4	:invoke	:write	4
+2	:invoke	:write	0
+3	:invoke	:write	1
+0	:invoke	:read	1
+2	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+
+led to state: 
+{:value 3}
+
+with pending operations:
+
+World with fixed history:
+2	:invoke	:write	0
+4	:invoke	:write	4
+0	:invoke	:read	nil
+1	:invoke	:write	4
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+3	:invoke	:write	0
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+2	:invoke	:write	0
+0	:invoke	:read	nil
+1	:invoke	:write	4
+4	:invoke	:write	4
+3	:invoke	:write	1
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+1	:invoke	:write	2
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+2	:invoke	:cas	[0 1]
+3	:invoke	:write	0
+
+World with fixed history:
+2	:invoke	:write	0
+4	:invoke	:write	4
+1	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+3	:invoke	:write	0
+4	:invoke	:write	2
+0	:invoke	:write	0
+4	:invoke	:write	3
+1	:invoke	:write	2
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+3	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	1
+4	:invoke	:read	1
+7	:invoke	:cas	[1 3]
+6	:invoke	:write	1
+
+led to state: 
+{:value 1}
+
+with pending operations:
+
+World with fixed history:
+2	:invoke	:write	0
+1	:invoke	:write	4
+4	:invoke	:write	4
+3	:invoke	:write	1
+0	:invoke	:read	nil
+2	:invoke	:read	1
+0	:invoke	:read	1
+4	:invoke	:write	2
+3	:invoke	:write	0
+0	:invoke	:write	0
+4	:invoke	:write	3
+3	:invoke	:write	3
+0	:invoke	:read	3
+2	:invoke	:write	2
+1	:invoke	:write	2
+3	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:read	2
+0	:invoke	:read	2
+4	:invoke	:write	0
+2	:invoke	:cas	[0 1]
+0	:invoke	:write	4
+1	:invoke	:write	2
+7	:invoke	:read	2
+4	:invoke	:write	2
+8	:invoke	:read	2
+0	:invoke	:write	1
+4	:invoke	:read	1
+6	:invoke	:write	1
+7	:invoke	:cas	[1 3]
+3	:invoke	:write	0
+
+led to state: 
+{:value 0}
+
+with pending operations:
+
+(and 26968 more worlds, elided here)
+--------------------------------------------------------------
+
+Inconsistent state transitions:
+([{:value 1} "can't read 2 from register 1"]
+ [{:value 0} "can't read 2 from register 0"]
+ [{:value 3} "can't read 2 from register 3"])
+
+Ran 1 tests containing 1 assertions.
+1 failures, 0 errors.
+Error encountered performing task 'test' with profile(s): 'base,system,user,provided,dev,etcd'
+Tests failed.

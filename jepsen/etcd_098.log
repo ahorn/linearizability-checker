@@ -1,0 +1,272 @@
+
+lein test jepsen.system.etcd-test
+INFO  jepsen.os.debian - :n3 setting up debian
+INFO  jepsen.os.debian - :n4 setting up debian
+INFO  jepsen.os.debian - :n2 setting up debian
+INFO  jepsen.os.debian - :n1 setting up debian
+INFO  jepsen.os.debian - :n5 setting up debian
+INFO  jepsen.os.debian - :n5 debian set up
+INFO  jepsen.os.debian - :n4 debian set up
+INFO  jepsen.os.debian - :n3 debian set up
+INFO  jepsen.os.debian - :n1 debian set up
+INFO  jepsen.os.debian - :n2 debian set up
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - Running nodes: {:n1 false, :n2 false, :n3 false, :n4 false, :n5 false}
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n1 starting etcd
+INFO  jepsen.system.etcd - :n5 starting etcd
+INFO  jepsen.system.etcd - :n2 starting etcd
+INFO  jepsen.system.etcd - :n4 starting etcd
+INFO  jepsen.system.etcd - :n3 starting etcd
+INFO  jepsen.system.etcd - Running nodes: {:n1 true, :n2 true, :n3 true, :n4 true, :n5 true}
+INFO  jepsen.system.etcd - :n4 etcd ready
+INFO  jepsen.system.etcd - :n5 etcd ready
+INFO  jepsen.system.etcd - :n2 etcd ready
+INFO  jepsen.system.etcd - :n3 etcd ready
+INFO  jepsen.system.etcd - :n1 etcd ready
+INFO  jepsen.core - Worker 4 starting
+INFO  jepsen.core - Worker 2 starting
+INFO  jepsen.core - Worker 1 starting
+INFO  jepsen.core - Worker 3 starting
+INFO  jepsen.core - Worker 0 starting
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 1	:invoke	:read	nil
+INFO  jepsen.util - 2	:ok	:read	nil
+INFO  jepsen.util - 1	:ok	:read	nil
+INFO  jepsen.util - 3	:invoke	:write	2
+INFO  jepsen.util - 4	:invoke	:write	1
+INFO  jepsen.util - 0	:invoke	:cas	[3 0]
+INFO  jepsen.util - 0	:fail	:cas	[3 0]
+INFO  jepsen.util - 4	:ok	:write	1
+INFO  jepsen.util - 3	:ok	:write	2
+INFO  jepsen.util - 2	:invoke	:read	nil
+INFO  jepsen.util - 1	:invoke	:write	2
+INFO  jepsen.util - 2	:ok	:read	2
+INFO  jepsen.util - 1	:ok	:write	2
+INFO  jepsen.util - 0	:invoke	:write	1
+INFO  jepsen.util - 0	:ok	:write	1
+INFO  jepsen.util - 4	:invoke	:cas	[4 0]
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	1
+INFO  jepsen.util - 4	:fail	:cas	[4 0]
+INFO  jepsen.util - 2	:invoke	:write	1
+INFO  jepsen.util - 1	:invoke	:read	nil
+INFO  jepsen.util - 1	:ok	:read	1
+INFO  jepsen.util - 2	:ok	:write	1
+INFO  jepsen.util - 0	:invoke	:read	nil
+INFO  jepsen.util - 0	:ok	:read	1
+INFO  jepsen.util - 3	:invoke	:read	nil
+INFO  jepsen.util - 3	:ok	:read	1
+INFO  jepsen.util - 4	:invoke	:cas	[2 3]
+INFO  jepsen.util - 1	:invoke	:cas	[1 0]
+INFO  jepsen.util - 4	:fail	:cas	[2 3]
+INFO  jepsen.util - 1	:ok	:cas	[1 0]
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 2	:ok	:write	2
+INFO  jepsen.util - 0	:invoke	:write	1
+INFO  jepsen.util - 0	:ok	:write	1
+INFO  jepsen.util - 3	:invoke	:cas	[1 3]
+INFO  jepsen.util - 3	:ok	:cas	[1 3]
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 4	:invoke	:read	nil
+INFO  jepsen.util - 4	:ok	:read	3
+INFO  jepsen.util - 1	:invoke	:write	1
+INFO  jepsen.util - 1	:ok	:write	1
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 2	:ok	:write	2
+INFO  jepsen.util - 0	:invoke	:write	2
+INFO  jepsen.util - 3	:invoke	:write	3
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n1 #{:n2 :n5}, :n4 #{:n2 :n5}, :n3 #{:n2 :n5}, :n5 #{:n3 :n4 :n1}, :n2 #{:n3 :n4 :n1}}"
+INFO  jepsen.util - 4	:invoke	:cas	[3 4]
+INFO  jepsen.util - 1	:invoke	:cas	[3 3]
+INFO  jepsen.util - 2	:invoke	:write	2
+INFO  jepsen.util - 0	:info	:write	:timed-out
+INFO  jepsen.util - 3	:info	:write	:timed-out
+INFO  jepsen.util - 4	:info	:cas	:timed-out
+INFO  jepsen.util - 1	:info	:cas	:timed-out
+INFO  jepsen.util - 2	:info	:write	:timed-out
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	2
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	2
+INFO  jepsen.util - 9	:invoke	:cas	[3 3]
+INFO  jepsen.util - 6	:invoke	:write	1
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	2
+INFO  jepsen.util - 5	:invoke	:cas	[0 0]
+INFO  jepsen.util - 5	:fail	:cas	[0 0]
+INFO  jepsen.util - 8	:invoke	:write	3
+INFO  jepsen.util - 8	:ok	:write	3
+INFO  jepsen.util - 9	:info	:cas	:timed-out
+INFO  jepsen.util - 6	:info	:write	:timed-out
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	3
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	3
+INFO  jepsen.util - 8	:invoke	:cas	[2 3]
+INFO  jepsen.util - 8	:fail	:cas	[2 3]
+INFO  jepsen.util - 14	:invoke	:read	nil
+INFO  jepsen.util - 14	:ok	:read	2
+INFO  jepsen.util - 11	:invoke	:read	nil
+INFO  jepsen.util - 11	:ok	:read	2
+INFO  jepsen.util - 7	:invoke	:cas	[1 1]
+INFO  jepsen.util - 7	:fail	:cas	[1 1]
+INFO  jepsen.util - 5	:invoke	:write	1
+INFO  jepsen.util - 8	:invoke	:cas	[1 4]
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - 8	:ok	:cas	[1 4]
+INFO  jepsen.util - 5	:ok	:write	1
+INFO  jepsen.util - 14	:invoke	:read	nil
+INFO  jepsen.util - 14	:ok	:read	4
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - 11	:invoke	:cas	[3 3]
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	2
+INFO  jepsen.util - 8	:invoke	:cas	[3 4]
+INFO  jepsen.util - 5	:invoke	:cas	[4 3]
+INFO  jepsen.util - 8	:fail	:cas	[3 4]
+INFO  jepsen.util - 5	:fail	:cas	[4 3]
+INFO  jepsen.util - 14	:invoke	:write	0
+INFO  jepsen.util - 14	:ok	:write	0
+INFO  jepsen.util - 11	:info	:cas	:timed-out
+INFO  jepsen.util - 7	:invoke	:cas	[3 1]
+INFO  jepsen.util - 7	:fail	:cas	[3 1]
+INFO  jepsen.util - 8	:invoke	:cas	[0 3]
+INFO  jepsen.util - 5	:invoke	:cas	[2 3]
+INFO  jepsen.util - 8	:ok	:cas	[0 3]
+INFO  jepsen.util - 14	:invoke	:cas	[3 3]
+INFO  jepsen.util - 5	:fail	:cas	[2 3]
+INFO  jepsen.util - 14	:ok	:cas	[3 3]
+INFO  jepsen.util - 16	:invoke	:write	2
+INFO  jepsen.util - 7	:invoke	:cas	[3 4]
+INFO  jepsen.util - 7	:ok	:cas	[3 4]
+INFO  jepsen.util - 16	:ok	:write	2
+INFO  jepsen.util - 8	:invoke	:cas	[3 0]
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	2
+INFO  jepsen.util - 14	:invoke	:write	4
+INFO  jepsen.util - 8	:fail	:cas	[3 0]
+INFO  jepsen.util - 14	:ok	:write	4
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	4
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	4
+INFO  jepsen.util - 5	:invoke	:cas	[2 3]
+INFO  jepsen.util - 5	:fail	:cas	[2 3]
+INFO  jepsen.util - 8	:invoke	:write	2
+INFO  jepsen.util - 8	:ok	:write	2
+INFO  jepsen.util - 14	:invoke	:cas	[1 1]
+INFO  jepsen.util - 7	:invoke	:cas	[2 3]
+INFO  jepsen.util - 7	:ok	:cas	[2 3]
+INFO  jepsen.util - 14	:fail	:cas	[1 1]
+INFO  jepsen.util - 16	:invoke	:cas	[1 0]
+INFO  jepsen.util - 16	:fail	:cas	[1 0]
+INFO  jepsen.util - :nemesis	:info	:start	nil
+INFO  jepsen.util - 5	:invoke	:cas	[0 2]
+INFO  jepsen.util - 8	:invoke	:read	nil
+INFO  jepsen.util - 8	:ok	:read	3
+INFO  jepsen.util - 5	:fail	:cas	[0 2]
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	3
+INFO  jepsen.util - 14	:invoke	:cas	[2 2]
+INFO  jepsen.util - 16	:invoke	:read	nil
+INFO  jepsen.util - 16	:ok	:read	3
+INFO  jepsen.util - :nemesis	:info	:start	"Cut off {:n5 #{:n3 :n1}, :n2 #{:n3 :n1}, :n4 #{:n3 :n1}, :n1 #{:n4 :n2 :n5}, :n3 #{:n4 :n2 :n5}}"
+INFO  jepsen.util - 8	:invoke	:write	3
+INFO  jepsen.util - 5	:invoke	:read	nil
+INFO  jepsen.util - 5	:ok	:read	3
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 7	:ok	:read	3
+INFO  jepsen.util - 14	:info	:cas	:timed-out
+INFO  jepsen.util - 16	:invoke	:write	3
+INFO  jepsen.util - 8	:info	:write	:timed-out
+INFO  jepsen.util - 5	:invoke	:write	2
+INFO  jepsen.util - 7	:invoke	:read	nil
+INFO  jepsen.util - 19	:invoke	:write	0
+INFO  jepsen.util - 7	:ok	:read	3
+INFO  jepsen.util - 16	:info	:write	:timed-out
+INFO  jepsen.util - 13	:invoke	:cas	[4 0]
+INFO  jepsen.util - 5	:info	:write	:timed-out
+INFO  jepsen.util - 7	:invoke	:cas	[4 4]
+INFO  jepsen.util - 19	:info	:write	:timed-out
+INFO  jepsen.util - 21	:invoke	:read	nil
+INFO  jepsen.util - 21	:ok	:read	3
+INFO  jepsen.util - 13	:fail	:cas	[4 0]
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.util - 10	:ok	:read	3
+INFO  jepsen.util - 24	:invoke	:cas	[2 4]
+INFO  jepsen.util - 7	:info	:cas	:timed-out
+INFO  jepsen.util - 24	:fail	:cas	[2 4]
+INFO  jepsen.util - 21	:invoke	:write	0
+INFO  jepsen.util - 21	:ok	:write	0
+INFO  jepsen.util - 13	:invoke	:read	nil
+INFO  jepsen.util - 13	:ok	:read	0
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.util - :nemesis	:info	:stop	nil
+INFO  jepsen.util - :nemesis	:info	:stop	"fully connected"
+INFO  jepsen.core - nemesis done
+INFO  jepsen.util - 10	:invoke	:read	nil
+INFO  jepsen.core - Worker 2 done
+INFO  jepsen.core - Worker 4 done
+INFO  jepsen.core - Worker 1 done
+INFO  jepsen.core - Worker 3 done
+INFO  jepsen.util - 10	:ok	:read	0
+INFO  jepsen.core - Worker 0 done
+INFO  jepsen.core - Run complete, writing
+INFO  jepsen.core - Analyzing
+INFO  knossos.core - [91 / 178] 769 extant worlds, 12039 visited/s, 810 skipped/s, hitrate 0.063 cache size 7238
+INFO  knossos.core - [91 / 178] 2352 extant worlds, 37799 visited/s, 2999 skipped/s, hitrate 0.074 cache size 27269
+INFO  knossos.core - [91 / 178] 2322 extant worlds, 44447 visited/s, 3874 skipped/s, hitrate 0.080 cache size 49741
+INFO  knossos.core - [91 / 178] 2610 extant worlds, 49321 visited/s, 4509 skipped/s, hitrate 0.084 cache size 72188
+INFO  knossos.core - [91 / 178] 3559 extant worlds, 38714 visited/s, 3764 skipped/s, hitrate 0.089 cache size 89201
+INFO  knossos.core - [91 / 178] 3520 extant worlds, 51145 visited/s, 4610 skipped/s, hitrate 0.083 cache size 112762
+INFO  knossos.core - [91 / 178] 3791 extant worlds, 46709 visited/s, 4578 skipped/s, hitrate 0.089 cache size 132532
+INFO  knossos.core - [91 / 178] 4188 extant worlds, 42058 visited/s, 4301 skipped/s, hitrate 0.093 cache size 150574
+INFO  knossos.core - [91 / 178] 4351 extant worlds, 45690 visited/s, 4613 skipped/s, hitrate 0.092 cache size 170541
+INFO  knossos.core - [91 / 178] 4280 extant worlds, 45690 visited/s, 4354 skipped/s, hitrate 0.087 cache size 189079
+INFO  knossos.core - [91 / 178] 3181 extant worlds, 46378 visited/s, 4421 skipped/s, hitrate 0.087 cache size 207539
+INFO  knossos.core - [91 / 178] 4668 extant worlds, 48324 visited/s, 4419 skipped/s, hitrate 0.084 cache size 230535
+INFO  knossos.core - [91 / 178] 5086 extant worlds, 46971 visited/s, 4137 skipped/s, hitrate 0.081 cache size 253760
+INFO  knossos.core - [91 / 178] 5210 extant worlds, 41100 visited/s, 3573 skipped/s, hitrate 0.080 cache size 271920
+INFO  knossos.core - [91 / 178] 5471 extant worlds, 45668 visited/s, 4147 skipped/s, hitrate 0.083 cache size 290339
+INFO  knossos.core - [91 / 178] 6300 extant worlds, 49898 visited/s, 4971 skipped/s, hitrate 0.091 cache size 309989
+INFO  knossos.core - [91 / 178] 7920 extant worlds, 49065 visited/s, 4872 skipped/s, hitrate 0.090 cache size 331257
+INFO  knossos.core - [91 / 178] 8629 extant worlds, 51398 visited/s, 4793 skipped/s, hitrate 0.085 cache size 353185
+INFO  knossos.core - [91 / 178] 8713 extant worlds, 47482 visited/s, 4698 skipped/s, hitrate 0.090 cache size 373393
+INFO  knossos.core - [91 / 178] 9826 extant worlds, 42725 visited/s, 4758 skipped/s, hitrate 0.100 cache size 390601
+INFO  knossos.core - [91 / 178] 9040 extant worlds, 47278 visited/s, 4228 skipped/s, hitrate 0.082 cache size 412334
+INFO  knossos.core - [91 / 178] 9575 extant worlds, 49435 visited/s, 4522 skipped/s, hitrate 0.084 cache size 433995
+INFO  knossos.core - [91 / 178] 9456 extant worlds, 45804 visited/s, 4493 skipped/s, hitrate 0.089 cache size 454048
+INFO  knossos.core - [91 / 178] 9686 extant worlds, 47434 visited/s, 4311 skipped/s, hitrate 0.083 cache size 474282
+INFO  knossos.core - [91 / 178] 9935 extant worlds, 40379 visited/s, 3895 skipped/s, hitrate 0.088 cache size 490389
+INFO  knossos.core - [91 / 178] 10034 extant worlds, 48497 visited/s, 5156 skipped/s, hitrate 0.096 cache size 508579
+INFO  knossos.core - [91 / 178] 10571 extant worlds, 42824 visited/s, 4217 skipped/s, hitrate 0.090 cache size 526298
+INFO  knossos.core - [91 / 178] 11273 extant worlds, 33754 visited/s, 3227 skipped/s, hitrate 0.087 cache size 540324
+INFO  knossos.core - [91 / 178] 11313 extant worlds, 26976 visited/s, 2601 skipped/s, hitrate 0.088 cache size 550710
+INFO  knossos.core - [91 / 178] 10606 extant worlds, 39605 visited/s, 4494 skipped/s, hitrate 0.102 cache size 564447
+INFO  knossos.core - [91 / 178] 10299 extant worlds, 30995 visited/s, 3097 skipped/s, hitrate 0.091 cache size 576207
+INFO  knossos.core - [91 / 178] 10394 extant worlds, 39270 visited/s, 4404 skipped/s, hitrate 0.101 cache size 590914
+INFO  knossos.core - [91 / 178] 11576 extant worlds, 37554 visited/s, 4088 skipped/s, hitrate 0.098 cache size 604699
+INFO  jepsen.core - Analysis complete
+INFO  jepsen.system.etcd - :n2 etcd nuked
+INFO  jepsen.system.etcd - :n1 etcd nuked
+INFO  jepsen.system.etcd - :n4 etcd nuked
+INFO  jepsen.system.etcd - :n5 etcd nuked
+INFO  jepsen.system.etcd - :n3 etcd nuked
+178 element history linearizable. :D
+
+Ran 1 tests containing 1 assertions.
+0 failures, 0 errors.
+
+real    3m39.447s
+user    5m54.368s
+sys     0m4.932s
