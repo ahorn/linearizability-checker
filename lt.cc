@@ -10,6 +10,7 @@
 //
 // 3) Unit tests and experiments with TBB, EMBB, and etcd.
 #include <thread>
+#include <atomic>
 #include <tuple>
 #include <memory>
 #include <vector>
