@@ -160,6 +160,13 @@ public:
 
     m_top -= count;
   }
+
+  /// \internal
+  EntryPtr<S> entry_ptr(std::size_t pos)
+  {
+    assert(pos < m_top);
+    return std::get<0>(m_vector[pos]);
+  }
 };
 
 template<class S> class Entry;
@@ -840,8 +847,10 @@ class Result
 private:
   friend class LinearizabilityTester<S, true>;
   friend class LinearizabilityTester<S, false>;
+  typedef std::vector<EntryPtr<S>> EntryPtrs;
 
   bool m_is_linearizable;
+  EntryPtrs m_entry_ptrs;
 
 #ifdef _LT_DEBUG_
   unsigned m_cutoff_entry_id;
@@ -856,6 +865,7 @@ private:
   void reset()
   {
     m_is_linearizable = true;
+    m_entry_ptrs.clear();
 #ifdef _LT_DEBUG_
     m_cutoff_entry_id = 0U;
     m_log_head_ptr = nullptr;
@@ -869,6 +879,7 @@ public:
   /// Initially linearizable
   Result()
   : m_is_linearizable{true},
+    m_entry_ptrs{},
 #ifdef _LT_DEBUG_
     m_cutoff_entry_id{0U},
     m_log_head_ptr{nullptr},
@@ -902,11 +913,19 @@ public:
   }
 
 #ifdef _LT_DEBUG_
-  /// \pre: not is_linearizable()
   void debug(std::ostream& os, bool verbose = false)
   {
-    assert(not is_linearizable());
+    os << "Linearizable: ";
+    if (m_is_linearizable)
+    {
+      os << "Yes" << std::endl;
+      for (EntryPtr<S> entry_ptr : m_entry_ptrs)
+        os << entry_ptr << " : " << entry_ptr->match()  << std::endl;
 
+      return;
+    }
+
+    os << "No" << std::endl;
     EntryPtr<S> entry_ptr{m_log_head_ptr};
     for (; entry_ptr != nullptr; entry_ptr = entry_ptr->next)
     {
@@ -1236,6 +1255,12 @@ private:
     // all call entries linearized?
     result.m_is_linearizable = m_calls.is_full();
     assert(result.m_is_linearizable == (m_log_head.next == nullptr));
+
+    // witness linearization
+    std::size_t pos{0};
+    result.m_entry_ptrs.resize(m_calls.size());
+    for (EntryPtr<S>& entry_ptr : result.m_entry_ptrs)
+      entry_ptr = m_calls.entry_ptr(pos++);
   }
 
 public:
@@ -4383,7 +4408,8 @@ static void debug()
   std::stringstream os;
   result.debug(os);
 
-  assert(os.str() == "entry id: 0, thread id: " INIT_THREAD_ID ", call: contains(1)\n"
+  assert(os.str() == "Linearizable: No\n"
+    "entry id: 0, thread id: " INIT_THREAD_ID ", call: contains(1)\n"
     "^ previous entries cannot be linearized\n"
     "entry id: 0, thread id: " INIT_THREAD_ID ", return: ret: 1\n"
     "^ previous entries cannot be linearized\n");
