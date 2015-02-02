@@ -1674,7 +1674,7 @@ namespace state
   class Atomic
   {
   public:
-    typedef char Value;
+    typedef signed char Value;
 
   private:
     static constexpr char s_read_op_name[] = "read";
@@ -1892,7 +1892,8 @@ namespace state
       return make_unique<CASRetOp>(0U);
     }
 
-    Atomic() : m_value{0} {}
+    /// Initially, register is negative
+    Atomic() : m_value{-1} {}
 
     Value get() const noexcept
     {
@@ -2529,7 +2530,7 @@ public:
       else
       {
         if (args == s_nil)
-          x = 0;
+          x = -1;
         else
           x = std::stoul(args);
       }
@@ -2708,7 +2709,7 @@ static void test_atomic_op()
 
   std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_0_ret_op);
   assert(atomic == new_atomic);
-  assert(ok);
+  assert(not ok);
 
   std::tie(ok, new_atomic) = read_call_op.apply(atomic, read_1_ret_op);
   assert(atomic == new_atomic);
@@ -4896,7 +4897,7 @@ static void test_parse_jepsen_etcd()
   assert(ostream.str() == "log info, number of entries: 20\n"
     "entry id: 0, thread id: 0x0, call: read()\n"
     "entry id: 1, thread id: 0x0, call: write(4)\n"
-    "entry id: 0, thread id: 0x0, return: read() : 0\n"
+    "entry id: 0, thread id: 0x0, return: read() : -1\n"
     "entry id: 1, thread id: 0x0, return: write() : succeeded\n"
     "entry id: 2, thread id: 0x0, call: write(3)\n"
     "entry id: 3, thread id: 0x0, call: read()\n"
@@ -4939,10 +4940,111 @@ static void test_jepsen_etcd()
                       false, // 004
                       true,  // 005
                       false, // 006
+                      true,  // 007
+                      false, // 008
+                      false, // 009
+                      false, // 010
+                      false, // 011
+                      false, // 012
+                      false, // 013
+                      false, // 014
+                      false, // 015
+                      false, // 016
+                      false, // 017
+                      true,  // 018
+                      false, // 019
+                      false, // 020
+                      false, // 021
+                      false, // 022
+                      false, // 023
+                      false, // 024
+                      true,  // 025
+                      false, // 026
+                      false, // 027
+                      false, // 028
+                      false, // 029
+                      false, // 030
+                      true,  // 031
+                      false, // 032
+                      false, // 033
+                      false, // 034
+                      false, // 035
+                      false, // 036
+                      false, // 037
+                      true,  // 038
+                      false, // 039
+                      false, // 040
+                      false, // 041
+                      false, // 042
+                      false, // 043
+                      false, // 044
+                      true,  // 045
+                      false, // 046
+                      false, // 047
+                      true,  // 048
+                      true,  // 049
+                      false, // 050
+                      true,  // 051
+                      false, // 052
+                      true,  // 053
+                      false, // 054
+                      false, // 055
+                      true,  // 056
+                      false, // 057
+                      false, // 058
+                      false, // 059
+                      false, // 060
+                      false, // 061
+                      false, // 062
+                      false, // 063
+                      false, // 064
+                      false, // 065
+                      false, // 066
+                      true,  // 067
+                      false, // 068
+                      false, // 069
+                      false, // 070
+                      false, // 071
+                      false, // 072
+                      false, // 073
+                      false, // 074
+                      true,  // 075
+                      true,  // 076
+                      false, // 077
+                      false, // 078
+                      false, // 079
+                      true,  // 080
+                      false, // 081
+                      false, // 082
+                      false, // 083
+                      false, // 084
+                      false, // 085
+                      false, // 086
+                      true,  // 087
+                      false, // 088
+                      false, // 089
+                      false, // 090
+                      false, // 091
+                      true,  // 092
+                      false, // 093
+                      false, // 094
+                      false, // 095
+                      false, // 096
+                      false, // 097
+                      true,  // 098
+                      false, // 099
                     };
 
   for (bool expect : expected)
   {
+
+    // etcd cluster failed to start up in benchmark 95
+    if (i == 95)
+    {
+      ++i;
+      continue;
+    }
+
     zeros = "";
     if (i < 10U)
       zeros = std::string(2, '0');
