@@ -71,8 +71,11 @@ easily run on the command line:
     $ make etcd-test 
 
 This runs our tool against 100 collected etcd histories, and completes in a few
-seconds. In contrast, [Knossos][Knossos] times out on benchmark `7` and `99`, and
-runs out of memory on benchmarks `40`, `57`, `85` and `97`.
+seconds. In contrast, [Knossos][Knossos] times out on benchmark 7 and 99, and
+runs out of memory on 40, 57, 85 and 97.
+
+By downloading, compiling and configuring TBB and EMBB in the [Makefile][Makefile],
+you will also be able to run the other experiments.
 
 ## Conclusion
 
@@ -96,3 +99,4 @@ welcome patches (including benchmarks) as Github pull requests.
 [EMBB]: https://github.com/siemens/embb
 [Knossos]: https://github.com/aphyr/knossos
 [Jepsen]: https://github.com/aphyr/jepsen
+[Makefile]: https://github.com/ahorn/linearizability-tester/blob/master/Makefile
