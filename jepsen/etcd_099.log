@@ -228,3 +228,5 @@ INFO  knossos.core - [99 / 174] 251 extant worlds, 186 visited/s, 43 skipped/s, 
 INFO  knossos.core - [99 / 174] 244 extant worlds, 119 visited/s, 40 skipped/s, hitrate 0.252 cache size 1514
 INFO  knossos.core - [99 / 174] 253 extant worlds, 81 visited/s, 10 skipped/s, hitrate 0.117 cache size 1589
 INFO  knossos.core - [99 / 174] 241 extant worlds, 16 visited/s, 0 skipped/s, hitrate 0.000 cache size 1589
+
+TIMEOUT after 4204 minutes (almost 3 days).
