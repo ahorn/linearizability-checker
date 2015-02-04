@@ -120,7 +120,7 @@ public:
     assert(capacity == 0U or not is_full());
   }
 
-  /// Number of entries in the stack
+  /// History length in the stack
   SizeType size() const noexcept
   {
     return m_top;
@@ -690,7 +690,9 @@ public:
     return m_log_head_ptr;
   }
 
-  /// Even number since every call entry is paired with a return entry
+  /// Total number of call entries plus return entries.
+
+  /// Returns even number since every call is paired with a return
   std::size_t number_of_entries() const noexcept
   {
     return m_number_of_entries;
@@ -828,6 +830,9 @@ public:
     return &m_entries.front();
   }
 
+  /// Total number of call entries plus return entries.
+
+  /// Returns even number since every call is paired with a return
   std::size_t number_of_entries() const noexcept
   {
     return m_index;
@@ -1558,6 +1563,10 @@ public:
     return &m_entries.front();
   }
 
+  /// Total number of call entries plus return entries.
+
+  /// Returns even number since every call is paired with a return
+  ///
   /// \warning not thread-safe
   std::size_t number_of_entries() const noexcept
   {
@@ -4619,6 +4628,7 @@ static void embb_experiment(bool is_linearizable)
   start_threads(number_of_threads, embb_worker<N>, std::cref(worker_configuration),
     std::ref(concurrent_log), std::ref(concurrent_stack));
 
+  const std::size_t number_of_entries{concurrent_log.number_of_entries()};
   const LogInfo<state::Stack<N>> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4629,24 +4639,34 @@ static void embb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Stack<N>, true> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=on), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Stack<N>> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Stack<N>, false> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=off), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 }
 #endif
 
@@ -4779,6 +4799,7 @@ static void tbb_experiment(bool is_linearizable)
     std::ref(concurrent_log), std::ref(concurrent_set));
 
   Result<state::Set> result;
+  const std::size_t number_of_entries{concurrent_log.number_of_entries()};
   const LogInfo<state::Set> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4789,24 +4810,34 @@ static void tbb_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=on), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=off), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 }
 
 /// Run as many different kinds of linearizability testers as possible
@@ -4833,6 +4864,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start_threads(number_of_threads, tbb_comprehensive_worker, std::cref(worker_configuration),
     std::ref(concurrent_log), std::ref(concurrent_set));
 
+  const std::size_t number_of_entries{concurrent_log.number_of_entries()};
   const LogInfo<state::Set> log_info{concurrent_log.info()};
   // std::cout << log_info << std::endl;
 
@@ -4843,30 +4875,42 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=on), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=on), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Baseline, enabled state cache (LRU=off), O(1) hash: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=off), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
 
   const unsigned number_of_partitions{worker_configuration.max_value + 1U};
 
   start = std::chrono::system_clock::now();
   {
     Log<state::Set> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
     Slicer<state::Set> slicer{log_copy.info(), number_of_partitions};
     bool r{true};
     for (unsigned partition = 0; partition < slicer.number_of_partitions; ++partition)
@@ -4882,7 +4926,8 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-  std::cout << "Compositional: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+  std::cout << "History length: " << number_of_entries
+            << ", compositional: " << seconds.count() << " s " << mem_usage(result) << std::endl;
 }
 #endif
 
