@@ -78,6 +78,8 @@ runs out of memory on 40, 57, 85 and 97 (all benchmarks can be found in the
 By downloading, compiling and configuring TBB and EMBB in the [Makefile][Makefile],
 you will also be able to run the other experiments.
 
+More details on the experiments were shared in a recent [talk][H2015-group-talk].
+
 ## Conclusion
 
 We have implemented a new linearizability tester that combines insights from the
@@ -94,6 +96,7 @@ We also welcome patches (including benchmarks) as Github pull requests.
 [WG1993]: http://dl.acm.org/citation.cfm?id=163525
 [L2014]: http://www.cs.ox.ac.uk/people/gavin.lowe/LinearizabiltyTesting/
 [K2014]: https://aphyr.com/posts/314-computational-techniques-in-knossos
+[H2015-group-talk]: https://www.cs.ox.ac.uk/people/alex.horn/linearizability-tester-group-talk-2015-02-05.pdf
 
 [etcd]: https://github.com/coreos/etcd
 [TBB]: https://www.threadingbuildingblocks.org/
