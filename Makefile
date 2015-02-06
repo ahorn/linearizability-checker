@@ -11,8 +11,12 @@ export DYLD_LIBRARY_PATH=${EMBB_LIB}:${TBB_LIB}
 export LD_LIBRARY_PATH=${EMBB_LIB}:${TBB_LIB}
 
 etcd-test:
-	${CC} ${CCFLAGS} -lpthread lt.cc -o lt-etcd-test
+	${CC} ${CCFLAGS} -D_ENABLE_ETCD_ -lpthread lt.cc -o lt-etcd-test
 	./lt-etcd-test
+
+hashset-test:
+	${CC} ${CCFLAGS} -D_ENABLE_HASHSET_ -lpthread lt.cc -o lt-hashset-test
+	./lt-hashset-test
 
 tbb-test:
 	${CC} ${CCFLAGS} -D_ENABLE_TBB_ -L${TBB_LIB} -I${TBB_INCLUDE} -lpthread -ltbb lt.cc -o lt-tbb-test

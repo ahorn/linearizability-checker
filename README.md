@@ -65,8 +65,8 @@ they can be implemented, or trying out ideas from the SAT solver community.
 
 This repository gives the source code of a tool that combines techniques that we
 found to be most effective in checking linearizability. To compile our source code,
-a C++11-compliant compiler is required. Our experiments with [etcd][etcd] can be
-easily run on the command line:
+a C++11-compliant compiler is required. To repeat our experiments with [etcd][etcd]
+run the following command:
 
     $ make etcd-test 
 
@@ -75,10 +75,16 @@ seconds. In contrast, [Knossos][Knossos] times out on benchmark 7 and 99, and
 runs out of memory on 40, 57, 85 and 97 (all benchmarks can be found in the
 [jepsen directory][jepsen-benchmarks]).
 
-By downloading, compiling and configuring TBB and EMBB in the [Makefile][Makefile],
-you will also be able to run the other experiments.
+And our experiments with [Lowe's concurrent hashset implementations][L2014] can
+be run via:
 
-More details on the experiments were shared in a recent [talk][H2015-group-talk].
+    $ make hashset-test
+
+Our tool is one order of magnitude faster than [Lowe's linearizability tester][L2014].
+
+In addition, by downloading, compiling and configuring TBB and EMBB in the
+[Makefile][Makefile], you will also be able to run the other experiments. More
+details on those experiments can be found [here][H2015-group-talk].
 
 ## Conclusion
 

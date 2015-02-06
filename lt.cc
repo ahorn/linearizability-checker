@@ -35,6 +35,9 @@
 /// Allow users to print out counterexamples
 #define _LT_DEBUG_
 
+/// Built-in timeout feature
+#define _LT_TIMEOUT_
+
 #ifdef _LT_DEBUG_
 #include <string>
 #include <ostream>
@@ -44,13 +47,11 @@
 #endif
 
 #ifdef _ENABLE_EMBB_
-#define _LT_TIMEOUT_
 #include <embb/base/thread.h>
 #include <embb/containers/lock_free_stack.h>
 #endif
 
 #ifdef _ENABLE_TBB_
-#define _LT_TIMEOUT_
 #include "tbb/concurrent_unordered_set.h"
 #endif
 
@@ -1323,6 +1324,20 @@ public:
 #endif
   }
 };
+
+template<class S, class Duration>
+void compositional_check(Log<S>& log, Result<S> &result,
+  unsigned number_of_partitions, Duration max_duration)
+{
+  Slicer<S> slicer{log.info(), number_of_partitions};
+  for (unsigned partition = 0; partition < slicer.number_of_partitions; ++partition)
+  {
+    LinearizabilityTester<S> tester{slicer.sublog_info(partition), max_duration};
+    tester.check(result);
+    if (not (result.is_timeout() or result.is_linearizable()))
+      break;
+  }
+}
 
 /// RAII class to ensure a thread becomes unjoinable on all paths
 class Thread
@@ -2654,6 +2669,136 @@ public:
 
     for (EntryPtr<state::Atomic> entry_ptr : timeout_cas_calls)
       log.add_ret(entry_ptr, state::Atomic::make_cas_pending());
+  }
+};
+
+/// Reads a history collected with Gavin Lowe's linearizability tester
+class HashsetParser
+{
+private:
+  enum class EntryKind
+  {
+    INVOKE,
+    RETURN,
+  };
+
+  enum class Opname
+  {
+    ADD,
+    REMOVE,
+    CONTAINS,
+  };
+
+  unsigned thread_id;
+
+  std::string entry_kind_string;
+  EntryKind entry_kind;
+
+  std::string opname_string;
+  Opname opname;
+
+  unsigned item;
+
+  std::string ret_string;
+  bool ret;
+
+  std::unordered_map<unsigned, EntryPtr<state::Set>> map;
+
+public:
+  Log<state::Set> log;
+
+  HashsetParser()
+  : map{},
+    log{560000} {}
+
+  /// We want to parse lines like the following:
+  ///
+  ///   2 invokes add 23
+  ///   0 invokes contains 3
+  ///   2 returns true
+  ///   0 returns false
+  ///   1 invokes remove 4
+  ///   1 returns true
+  void parse_line(std::string& line)
+  {
+    static std::string s_invokes = "invokes";
+    static std::string s_returns = "returns";
+    static std::string s_add = "add";
+    static std::string s_remove = "remove";
+    static std::string s_contains = "contains";
+
+    std::stringstream line_stream{line};
+
+    line_stream >> thread_id;
+    line_stream >> entry_kind_string;
+
+    if (entry_kind_string == s_invokes)
+      entry_kind = EntryKind::INVOKE;
+    else if (entry_kind_string == s_returns)
+      entry_kind = EntryKind::RETURN;
+    else
+      throw std::runtime_error("Unexpected entry kind: " + entry_kind_string);
+
+    if (entry_kind == EntryKind::INVOKE)
+    {
+      line_stream >> opname_string;
+      line_stream >> item;
+
+      if (opname_string == s_add)
+        opname = Opname::ADD;
+      else if (opname_string == s_remove)
+        opname = Opname::REMOVE;
+      else if (opname_string == s_contains)
+        opname = Opname::CONTAINS;
+      else
+        throw std::runtime_error("Unexpected operator name: " + opname_string);
+    }
+    else
+    {
+      line_stream >> ret_string;
+      ret = ret_string == "true";
+    }
+
+    EntryPtr<state::Set> entry_ptr{nullptr};
+    auto iter = map.find(thread_id);
+    if (iter == map.cend())
+    {
+      if (entry_kind != EntryKind::INVOKE)
+        throw std::runtime_error("Unexpected: " + std::to_string(thread_id) +
+          " calls " + opname_string + "(" + std::to_string(item) + ")");
+
+      switch (opname)
+      {
+      case Opname::ADD:
+        entry_ptr = log.add_call(state::Set::make_insert_call(item));
+        break;
+      case Opname::REMOVE:
+        entry_ptr = log.add_call(state::Set::make_erase_call(item));
+        break;
+      case Opname::CONTAINS:
+        entry_ptr = log.add_call(state::Set::make_contains_call(item));
+        break;
+      }
+
+      map.emplace(thread_id, entry_ptr);
+    }
+    else
+    {
+      assert(entry_kind == EntryKind::RETURN);
+
+      entry_ptr = iter->second;
+      map.erase(iter);
+      log.add_ret(entry_ptr, state::Set::make_ret(ret));
+    }
+  }
+
+  void parse(std::istream& istream)
+  {
+
+    std::string line;
+    while (std::getline(istream, line))
+      parse_line(line);
+
   }
 };
 
@@ -4910,19 +5055,8 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
   {
     Log<state::Set> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
-
-    Slicer<state::Set> slicer{log_copy.info(), number_of_partitions};
-    bool r{true};
-    for (unsigned partition = 0; partition < slicer.number_of_partitions; ++partition)
-    {
-      LinearizabilityTester<state::Set> tester{slicer.sublog_info(partition), max_duration};
-      if (not tester.check())
-      {
-        r = false;
-        break;
-      }
-    }
-    assert(r == is_linearizable);
+    compositional_check(log_copy, result, number_of_partitions, max_duration);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
   end = std::chrono::system_clock::now();
   seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
@@ -4996,9 +5130,10 @@ static void test_parse_jepsen_etcd()
   assert(not t.check());
 }
 
+#ifdef _ENABLE_ETCD_
 // Cache eviction in the linearizability tester must be disabled for
 // this test to complete within a reasonable amount of time.
-static void test_jepsen_etcd()
+static void jepsen_etcd_experiment()
 {
   static constexpr char s_etcd_prefix[] = "jepsen/etcd_";
   static constexpr char s_etcd_postfix[] = ".log";
@@ -5141,6 +5276,120 @@ static void test_jepsen_etcd()
     ++i;
   }
 }
+#endif
+
+static void test_parse_hashset()
+{
+  static constexpr char s_snippet[] = ""
+    "2 invokes add 23\n"
+    "0 invokes contains 3\n"
+    "2 returns true\n"
+    "0 returns false\n"
+    "1 invokes remove 4\n"
+    "1 returns false\n";
+
+  std::stringstream istream, ostream;
+  HashsetParser hashset_parser;
+  istream << s_snippet;
+  hashset_parser.parse(istream);
+
+  ostream << hashset_parser.log.info();
+
+  // for now, we ignore thread ids because they are not
+  // essential for the linearizability algorithm
+  assert(ostream.str() == "log info, number of entries: 6\n"
+    "entry id: 0, thread id: " INIT_THREAD_ID ", call: insert(23)\n"
+    "entry id: 1, thread id: " INIT_THREAD_ID ", call: contains(3)\n"
+    "entry id: 0, thread id: " INIT_THREAD_ID ", return: ret: 1\n"
+    "entry id: 1, thread id: " INIT_THREAD_ID ", return: ret: 0\n"
+    "entry id: 2, thread id: " INIT_THREAD_ID ", call: erase(4)\n"
+    "entry id: 2, thread id: " INIT_THREAD_ID ", return: ret: 0\n");
+
+  LinearizabilityTester<state::Set> t{hashset_parser.log.info()};
+  assert(t.check());
+}
+
+#ifdef _ENABLE_HASHSET_
+/// Example: benchmark = "lazy_70k_"
+static void hashset_experiment(const std::string& benchmark,
+  unsigned start_nr, unsigned end_nr, bool is_linearizable)
+{
+  std::cout << "hashset_experiment" << std::endl;
+
+  static constexpr std::chrono::hours max_duration{1};
+  static constexpr unsigned number_of_partitions{24U};
+  static constexpr char s_hashset_prefix[] = "hashset/";
+  static constexpr char s_hashset_postfix[] = ".log";
+
+  std::string zeros, filename;
+  Result<state::Set> result;
+
+  auto start = std::chrono::system_clock::now();
+  auto end = std::chrono::system_clock::now();
+  std::chrono::seconds seconds;
+
+  for (unsigned i{start_nr}; i < end_nr; ++i)
+  {
+    zeros = "";
+    if (i < 10U)
+      zeros = std::string(2, '0');
+    else if (i < 100U)
+      zeros = std::string(1, '0');
+
+    std::ifstream file;
+    filename = s_hashset_prefix + benchmark + zeros + std::to_string(i) + s_hashset_postfix;
+    file.open(filename);
+    assert(file.is_open());
+
+    std::cout << filename << std::endl;
+    HashsetParser hashset_parser;
+    hashset_parser.parse(file);
+
+/*
+    start = std::chrono::system_clock::now();
+    {
+      Log<state::Set> log_copy{hashset_parser.log};
+      LinearizabilityTester<state::Set, false> t{log_copy.info(), max_duration};
+      t.check(result);
+      assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+    }
+    end = std::chrono::system_clock::now();
+    seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << "History length: 56K"
+              << ", enabled state cache (LRU=off), O(1) hash: "
+              << seconds.count() << " s "
+              << mem_usage(result) << std::endl;
+
+    start = std::chrono::system_clock::now();
+    {
+      Log<state::Set> log_copy{hashset_parser.log};
+      LinearizabilityTester<state::Set, true> t{log_copy.info(), max_duration};
+      t.check(result);
+      assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+    }
+    end = std::chrono::system_clock::now();
+    seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << "History length: 56K"
+              << ", enabled state cache (LRU=on), O(1) hash: "
+              << seconds.count() << " s "
+              << mem_usage(result) << std::endl;
+*/
+
+    start = std::chrono::system_clock::now();
+    {
+      Log<state::Set> log_copy{hashset_parser.log};
+      compositional_check(log_copy, result, number_of_partitions, max_duration);
+      assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+    }
+    end = std::chrono::system_clock::now();
+    seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << "History length: 56K"
+              << ", compositional: "
+              << seconds.count() << " s "
+              << mem_usage(result) << std::endl;
+  }
+}
+#endif
 
 int main()
 {
@@ -5216,7 +5465,28 @@ int main()
   fuzzy_functional_test();
 
   test_parse_jepsen_etcd();
-  test_jepsen_etcd();
+#ifdef _ENABLE_ETCD_
+  jepsen_etcd_experiment();
+#endif
+
+  test_parse_hashset();
+#ifdef _ENABLE_HASHSET_
+  hashset_experiment("collision_resistant_lazy_skip_list_70k_", 0, 50, true);
+  hashset_experiment("collision_resistant_lock_free_skip_list_70k_", 0, 50, true);
+  hashset_experiment("fine_70k_", 0, 50, true);
+  hashset_experiment("lazy_70k_", 0, 50, true);
+  hashset_experiment("lazy_skip_list_70k_", 0, 50, true);
+  hashset_experiment("lock_free_70k_", 0, 100, true);
+  hashset_experiment("lock_free_skip_list_70k_", 0, 50, true);
+
+  // BadHashString disabled
+  hashset_experiment("lock_free_skip_list_faulty_70k_", 0, 50, true);
+
+  // BadHashString enabled
+  hashset_experiment("lock_free_skip_list_faulty_70k_", 50, 100, false);
+
+  hashset_experiment("optimistic_70k_", 0, 100, true);
+#endif
 
 #ifdef _ENABLE_EMBB_
   embb::base::Thread::SetThreadsMaxCount(255);

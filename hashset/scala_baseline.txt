@@ -1,0 +1,204 @@
+$ time scala-2.11  -J-Xms15000m -J-Xmx15000m BadHashSetTest --fine --iters 70000
+.
+31068
+
+real	0m32.930s
+user	0m59.753s
+sys	0m16.480s
+
+Memory usage: ~5.2 GB
+
+$ time scala-2.11  -J-Xms15000m -J-Xmx15000m BadHashSetTest --optimistic --iters 70000
+.
+30879
+
+real	0m32.445s
+user	1m0.673s
+sys	0m16.686s
+
+Memory usage: ~5.3 GB
+
+$ time scala-2.11  -J-Xms15000m -J-Xmx15000m BadHashSetTest --lazy --iters 70000
+java.lang.OutOfMemoryError: Java heap space
+	at ox.cads.testing.MyBitMapSet.<init>(MyBitMapSet.scala:9)
+	at ox.cads.testing.MyBitMapSet.$plus(MyBitMapSet.scala:32)
+	at ox.cads.testing.DFSLinearizabilityTester.solve(DFSLinearizabilityTester.scala:153)
+	at ox.cads.testing.DFSLinearizabilityTester.apply(DFSLinearizabilityTester.scala:99)
+	at BadHashSetTest$.main(BadHashSetTest.scala:95)
+	at BadHashSetTest.main(BadHashSetTest.scala)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at scala.reflect.internal.util.ScalaClassLoader$$anonfun$run$1.apply(ScalaClassLoader.scala:70)
+	at scala.reflect.internal.util.ScalaClassLoader$class.asContext(ScalaClassLoader.scala:31)
+	at scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.asContext(ScalaClassLoader.scala:101)
+	at scala.reflect.internal.util.ScalaClassLoader$class.run(ScalaClassLoader.scala:70)
+	at scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.run(ScalaClassLoader.scala:101)
+	at scala.tools.nsc.CommonRunner$class.run(ObjectRunner.scala:22)
+	at scala.tools.nsc.ObjectRunner$.run(ObjectRunner.scala:39)
+	at scala.tools.nsc.CommonRunner$class.runAndCatch(ObjectRunner.scala:29)
+	at scala.tools.nsc.ObjectRunner$.runAndCatch(ObjectRunner.scala:39)
+	at scala.tools.nsc.MainGenericRunner.runTarget$1(MainGenericRunner.scala:65)
+	at scala.tools.nsc.MainGenericRunner.run$1(MainGenericRunner.scala:87)
+	at scala.tools.nsc.MainGenericRunner.process(MainGenericRunner.scala:98)
+	at scala.tools.nsc.MainGenericRunner$.main(MainGenericRunner.scala:103)
+	at scala.tools.nsc.MainGenericRunner.main(MainGenericRunner.scala)
+
+$ time scala-2.11  -J-Xms18000m -J-Xmx18000m BadHashSetTest --lazy --iters 70000
+.
+41505
+
+real	0m43.072s
+user	1m24.916s
+sys	0m19.646s
+
+Memory usage: ~7 GB
+
+$ time scala-2.11  -J-Xms18000m -J-Xmx18000m -cp ..:. BadHashSetTest --lockFree --iters 70000
+.
+21764
+
+real	0m24.229s
+user	0m40.352s
+sys	0m14.291s
+
+Memory usage: ~7 GB
+
+$ time scala-2.11  -J-Xms18000m -J-Xmx18000m -cp ..:. BadHashSetTest --lazySkipList --iters 70000
+Exception in thread "Thread-4" java.lang.AssertionError: assertion failed
+	at scala.Predef$.assert(Predef.scala:151)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply$mcVI$sp(LazySkipList.scala:52)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at ox.cads.collection.LazySkipList.find(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList.contains(LazySkipList.scala:61)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$1.apply(BadHashSetTest.scala:31)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$1.apply(BadHashSetTest.scala:31)
+	at ox.cads.testing.Log.log1(Log.scala:67)
+	at ox.cads.testing.DFSLinearizabilityTester.log(DFSLinearizabilityTester.scala:53)
+	at BadHashSetTest$$anonfun$worker$1.apply$mcVI$sp(BadHashSetTest.scala:31)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at BadHashSetTest$.worker(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at ox.cads.testing.DFSLinearizabilityTester$$anonfun$apply$1.apply$mcVI$sp(DFSLinearizabilityTester.scala:98)
+	at ox.cads.util.ThreadUtil$$anonfun$1$$anonfun$apply$1.apply$mcV$sp(ThreadUtil.scala:13)
+	at ox.cads.util.ThreadUtil$$anon$1.run(ThreadUtil.scala:8)
+	at java.lang.Thread.run(Thread.java:695)
+Exception in thread "Thread-1" java.lang.AssertionError: assertion failed
+	at scala.Predef$.assert(Predef.scala:151)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply$mcVI$sp(LazySkipList.scala:52)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at ox.cads.collection.LazySkipList.find(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList.add(LazySkipList.scala:81)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at ox.cads.testing.Log.log1(Log.scala:67)
+	at ox.cads.testing.DFSLinearizabilityTester.log(DFSLinearizabilityTester.scala:53)
+	at BadHashSetTest$$anonfun$worker$1.apply$mcVI$sp(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at BadHashSetTest$.worker(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at ox.cads.testing.DFSLinearizabilityTester$$anonfun$apply$1.apply$mcVI$sp(DFSLinearizabilityTester.scala:98)
+	at ox.cads.util.ThreadUtil$$anonfun$1$$anonfun$apply$1.apply$mcV$sp(ThreadUtil.scala:13)
+	at ox.cads.util.ThreadUtil$$anon$1.run(ThreadUtil.scala:8)
+	at java.lang.Thread.run(Thread.java:695)
+Exception in thread "Thread-2" java.lang.AssertionError: assertion failed
+	at scala.Predef$.assert(Predef.scala:151)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply$mcVI$sp(LazySkipList.scala:52)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at ox.cads.collection.LazySkipList.find(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList.add(LazySkipList.scala:81)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at ox.cads.testing.Log.log1(Log.scala:67)
+	at ox.cads.testing.DFSLinearizabilityTester.log(DFSLinearizabilityTester.scala:53)
+	at BadHashSetTest$$anonfun$worker$1.apply$mcVI$sp(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at BadHashSetTest$.worker(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at ox.cads.testing.DFSLinearizabilityTester$$anonfun$apply$1.apply$mcVI$sp(DFSLinearizabilityTester.scala:98)
+	at ox.cads.util.ThreadUtil$$anonfun$1$$anonfun$apply$1.apply$mcV$sp(ThreadUtil.scala:13)
+	at ox.cads.util.ThreadUtil$$anon$1.run(ThreadUtil.scala:8)
+	at java.lang.Thread.run(Thread.java:695)
+Exception in thread "Thread-3" java.lang.AssertionError: assertion failed
+	at scala.Predef$.assert(Predef.scala:151)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply$mcVI$sp(LazySkipList.scala:52)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList$$anonfun$find$1.apply(LazySkipList.scala:47)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at ox.cads.collection.LazySkipList.find(LazySkipList.scala:47)
+	at ox.cads.collection.LazySkipList.add(LazySkipList.scala:81)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1$$anonfun$apply$mcVI$sp$3.apply(BadHashSetTest.scala:33)
+	at ox.cads.testing.Log.log1(Log.scala:67)
+	at ox.cads.testing.DFSLinearizabilityTester.log(DFSLinearizabilityTester.scala:53)
+	at BadHashSetTest$$anonfun$worker$1.apply$mcVI$sp(BadHashSetTest.scala:33)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$worker$1.apply(BadHashSetTest.scala:27)
+	at scala.collection.immutable.Range.foreach(Range.scala:166)
+	at BadHashSetTest$.worker(BadHashSetTest.scala:27)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at BadHashSetTest$$anonfun$1.apply(BadHashSetTest.scala:94)
+	at ox.cads.testing.DFSLinearizabilityTester$$anonfun$apply$1.apply$mcVI$sp(DFSLinearizabilityTester.scala:98)
+	at ox.cads.util.ThreadUtil$$anonfun$1$$anonfun$apply$1.apply$mcV$sp(ThreadUtil.scala:13)
+	at ox.cads.util.ThreadUtil$$anon$1.run(ThreadUtil.scala:8)
+	at java.lang.Thread.run(Thread.java:695)
+java.lang.AssertionError: assertion failed: BoundedBuffer: filled 24 out of 560000
+	at scala.Predef$.assert(Predef.scala:165)
+	at ox.cads.collection.BoundedBuffer.getAll(BoundedBuffer.scala:20)
+	at ox.cads.testing.Log.getLog(Log.scala:75)
+	at ox.cads.testing.DFSLinearizabilityTester.apply(DFSLinearizabilityTester.scala:99)
+	at BadHashSetTest$.main(BadHashSetTest.scala:95)
+	at BadHashSetTest.main(BadHashSetTest.scala)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at scala.reflect.internal.util.ScalaClassLoader$$anonfun$run$1.apply(ScalaClassLoader.scala:70)
+	at scala.reflect.internal.util.ScalaClassLoader$class.asContext(ScalaClassLoader.scala:31)
+	at scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.asContext(ScalaClassLoader.scala:101)
+	at scala.reflect.internal.util.ScalaClassLoader$class.run(ScalaClassLoader.scala:70)
+	at scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.run(ScalaClassLoader.scala:101)
+	at scala.tools.nsc.CommonRunner$class.run(ObjectRunner.scala:22)
+	at scala.tools.nsc.ObjectRunner$.run(ObjectRunner.scala:39)
+	at scala.tools.nsc.CommonRunner$class.runAndCatch(ObjectRunner.scala:29)
+	at scala.tools.nsc.ObjectRunner$.runAndCatch(ObjectRunner.scala:39)
+	at scala.tools.nsc.MainGenericRunner.runTarget$1(MainGenericRunner.scala:65)
+	at scala.tools.nsc.MainGenericRunner.run$1(MainGenericRunner.scala:87)
+	at scala.tools.nsc.MainGenericRunner.process(MainGenericRunner.scala:98)
+	at scala.tools.nsc.MainGenericRunner$.main(MainGenericRunner.scala:103)
+	at scala.tools.nsc.MainGenericRunner.main(MainGenericRunner.scala)
+
+$ time scala-2.11  -J-Xms18000m -J-Xmx18000m -cp ..:. BadHashSetTest --collisionResistantLazySkipList --iters 70000
+.
+39775
+
+real	0m41.949s
+user	1m19.323s
+sys	0m19.459s
+
+Memory usage: ~7 GB
+
+# We disabled the bad hash in BadHashString; otherwise, non-linearizable
+$ time scala-2.11  -J-Xms18000m -J-Xmx18000m -cp ..:. BadHashSetTest --lockFreeSkipList --iters 70000
+.
+40424
+
+real	0m42.107s
+user	1m23.430s
+sys	0m19.555s
