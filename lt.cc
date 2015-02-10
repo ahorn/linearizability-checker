@@ -1425,6 +1425,8 @@ private:
       {
         // initialize sub-log
         assert(entry_ptr->is_call());
+        assert(last_entry_ptr == nullptr);
+
         log_info.m_log_head_ptr = entry_ptr;
         log_info.m_number_of_entries = 1U;
       }
