@@ -5343,7 +5343,7 @@ static void hashset_experiment(const std::string& benchmark,
     file.open(filename);
     assert(file.is_open());
 
-    std::cout << filename << std::endl;
+    std::cout << filename << ": ";
     HashsetParser hashset_parser;
     hashset_parser.parse(file);
 
