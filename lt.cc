@@ -750,6 +750,8 @@ private:
   }
 
 public:
+  Log(const Log&) = delete;
+
   /// A history with at most capacity entries
   Log(Size capacity)
   : m_entry_id{0U},
@@ -5350,7 +5352,7 @@ static void hashset_experiment(const std::string& benchmark,
 /*
     start = std::chrono::system_clock::now();
     {
-      Log<state::Set> log_copy{hashset_parser.log};
+      Log<state::Set> log_copy{hashset_parser.log.info()};
       LinearizabilityTester<state::Set, false> t{log_copy.info(), max_duration};
       t.check(result);
       assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
@@ -5364,7 +5366,7 @@ static void hashset_experiment(const std::string& benchmark,
 
     start = std::chrono::system_clock::now();
     {
-      Log<state::Set> log_copy{hashset_parser.log};
+      Log<state::Set> log_copy{hashset_parser.log.info()};
       LinearizabilityTester<state::Set, true> t{log_copy.info(), max_duration};
       t.check(result);
       assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
@@ -5379,7 +5381,7 @@ static void hashset_experiment(const std::string& benchmark,
 
     start = std::chrono::system_clock::now();
     {
-      Log<state::Set> log_copy{hashset_parser.log};
+      Log<state::Set> log_copy{hashset_parser.log.info()};
       compositional_check(log_copy, result, number_of_partitions, max_duration);
       assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
     }
