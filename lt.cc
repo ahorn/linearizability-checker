@@ -4758,7 +4758,7 @@ static void embb_experiment(bool is_linearizable)
   constexpr std::chrono::hours max_duration{1};
   constexpr std::size_t N = 3000000U;
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
+  constexpr WorkerConfiguration worker_configuration = {'\24', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "embb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4903,7 +4903,7 @@ static void tbb_worker(
 static void tbb_functional_test(bool is_linearizable)
 {
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 1000U};
+  constexpr WorkerConfiguration worker_configuration = {'\24', 1000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   Result<state::Set> result;
@@ -4929,7 +4929,7 @@ static void tbb_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
+  constexpr WorkerConfiguration worker_configuration = {'\24', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
@@ -4994,7 +4994,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
   constexpr unsigned number_of_threads = 4U;
-  constexpr WorkerConfiguration worker_configuration = {'\27', 70000U};
+  constexpr WorkerConfiguration worker_configuration = {'\24', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
 
   std::cout << "tbb_comprehensive_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
