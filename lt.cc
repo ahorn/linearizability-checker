@@ -11,6 +11,7 @@
 // 3) Unit tests and experiments with TBB, EMBB, and etcd.
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include <tuple>
 #include <memory>
 #include <vector>
@@ -1680,6 +1681,9 @@ namespace state
       RetOp(Ret r)
       : Op<S>(), ret{r} {}
 
+      RetOp(Ret r, unsigned partition)
+      : Op<S>(partition), ret{r} {}
+
 #ifdef _LT_DEBUG_
       std::ostream& print(std::ostream& os) const override
       {
@@ -2160,7 +2164,7 @@ namespace state
     struct TryPushCallOp : public internal::ArgOp<Stack<N>, Value, s_try_push_op_name>
     {
       typedef internal::ArgOp<Stack<N>, Value, s_try_push_op_name> Base;
-      TryPushCallOp(Value v) : Base(v) {}
+      TryPushCallOp(Value v) : Base(false, v) {}
 
       std::pair<bool, Stack<N>> internal_apply(const Stack<N>& stack, const Op<Stack<N>>& op) override
       {
@@ -2177,16 +2181,23 @@ namespace state
     struct TryPopRetOp : public Op<Stack<N>>
     {
     private:
+      const bool m_ok;
       const Value m_value;
 
     public:
-      TryPopRetOp(const std::pair<bool, Value>& pair)
-      : Op<Stack<N>>(pair.first, pair.second),
-        m_value{pair.second} {}
+      TryPopRetOp(bool ok, Value value)
+      : Op<Stack<N>>(),
+        m_ok{ok},
+        m_value{value} {}
+
+      TryPopRetOp(bool ok, std::size_t height, Value value)
+      : Op<Stack<N>>(height),
+        m_ok{ok},
+        m_value{value} {}
 
       bool ok() const
       {
-        return Op<Stack<N>>::is_partitionable();
+        return m_ok;
       }
 
       /// \pre: ok()
@@ -2326,6 +2337,12 @@ namespace state
       return make_unique<RetOp>(ok);
     }
 
+    static StackOpPtr make_try_push_ret(bool ok, std::size_t height)
+    {
+      typedef internal::RetOp<Stack<N>, bool> RetOp;
+      return make_unique<RetOp>(ok, height);
+    }
+
     static StackOpPtr make_try_pop_call()
     {
       return make_unique<TryPopCallOp>();
@@ -2333,7 +2350,12 @@ namespace state
 
     static StackOpPtr make_try_pop_ret(bool ok, Value v)
     {
-      return make_unique<TryPopRetOp>(std::make_pair(ok, v));
+      return make_unique<TryPopRetOp>(ok, v);
+    }
+
+    static StackOpPtr make_try_pop_ret(bool ok, std::size_t height, Value v)
+    {
+      return make_unique<TryPopRetOp>(ok, height, v);
     }
 
    private:
@@ -4320,13 +4342,13 @@ static void test_stack_history_000()
   try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
   try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
 
-  assert(try_push_x_call_entry_ptr->is_partitionable());
-  assert(try_push_y_call_entry_ptr->is_partitionable());
-  assert(try_pop_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_y_call_entry_ptr->is_partitionable());
+  assert(not try_pop_x_call_entry_ptr->is_partitionable());
 
-  assert(try_push_x_ret_entry_ptr->is_partitionable());
-  assert(try_push_y_ret_entry_ptr->is_partitionable());
-  assert(try_pop_x_ret_entry_ptr->is_partitionable());
+  assert(not try_push_x_ret_entry_ptr->is_partitionable());
+  assert(not try_push_y_ret_entry_ptr->is_partitionable());
+  assert(not try_pop_x_ret_entry_ptr->is_partitionable());
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
@@ -4351,13 +4373,13 @@ static void test_stack_history_001()
   try_pop_x_call_entry_ptr = log.add_call(state::Stack<N>::make_try_pop_call());
   try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
 
-  assert(try_push_x_call_entry_ptr->is_partitionable());
-  assert(try_push_y_call_entry_ptr->is_partitionable());
-  assert(try_pop_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_y_call_entry_ptr->is_partitionable());
+  assert(not try_pop_x_call_entry_ptr->is_partitionable());
 
-  assert(try_push_x_ret_entry_ptr->is_partitionable());
-  assert(try_push_y_ret_entry_ptr->is_partitionable());
-  assert(try_pop_x_ret_entry_ptr->is_partitionable());
+  assert(not try_push_x_ret_entry_ptr->is_partitionable());
+  assert(not try_push_y_ret_entry_ptr->is_partitionable());
+  assert(not try_pop_x_ret_entry_ptr->is_partitionable());
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(not t.check());
@@ -4387,21 +4409,13 @@ static void test_stack_history_002()
   try_pop_x_ret_entry_ptr = log.add_ret(try_pop_x_call_entry_ptr, state::Stack<N>::make_try_pop_ret(true, x));
   try_push_y_ret_entry_ptr = log.add_ret(try_push_y_call_entry_ptr, state::Stack<N>::make_try_push_ret(true));
 
-  assert(try_push_x_call_entry_ptr->is_partitionable());
-  assert(try_push_y_call_entry_ptr->is_partitionable());
-  assert(try_pop_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_x_call_entry_ptr->is_partitionable());
+  assert(not try_push_y_call_entry_ptr->is_partitionable());
+  assert(not try_pop_x_call_entry_ptr->is_partitionable());
 
-  assert(try_push_x_ret_entry_ptr->is_partitionable());
-  assert(try_push_y_ret_entry_ptr->is_partitionable());
-  assert(try_pop_x_ret_entry_ptr->is_partitionable());
-
-  assert(try_push_x_call_entry_ptr->op().partition() == x);
-  assert(try_push_y_call_entry_ptr->op().partition() == y);
-  assert(try_pop_x_call_entry_ptr->op().partition() == x);
-
-  assert(try_push_x_ret_entry_ptr->op().partition() == x);
-  assert(try_push_y_ret_entry_ptr->op().partition() == y);
-  assert(try_pop_x_ret_entry_ptr->op().partition() == x);
+  assert(not try_push_x_ret_entry_ptr->is_partitionable());
+  assert(not try_push_y_ret_entry_ptr->is_partitionable());
+  assert(not try_pop_x_ret_entry_ptr->is_partitionable());
 
   LinearizabilityTester<state::Stack<N>> t{log.info()};
   assert(t.check());
@@ -4714,6 +4728,207 @@ std::string mem_usage(const Result<S>& result)
 #endif
 }
 
+#ifdef _ENABLE_STACK_
+template<class T>
+class ConcurrentStack
+{
+private:
+  std::size_t m_top;
+  std::vector<T> m_vector;
+  std::mutex m_mutex;
+
+public:
+  ConcurrentStack(std::size_t capacity)
+  : m_top{0},
+    m_vector(capacity),
+    m_mutex{} {}
+
+  std::pair<std::size_t, bool> try_push(const T& t)
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    std::size_t top{m_top};
+    bool ok{top < m_vector.size()};
+
+    if (ok)
+    {
+      m_vector[m_top++] = t;
+    }
+
+    return {top, ok};
+  }
+
+  std::pair<std::size_t, bool> try_pop(T& t)
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    bool ok{0U < m_top};
+    if (ok)
+      t = m_vector[--m_top];
+
+    return {m_top, ok};
+  }
+};
+
+static void test_concurrent_stack()
+{
+  ConcurrentStack<char> stack{2};
+  std::size_t height;
+  bool ok;
+  char c;
+
+  std::tie(height, ok) = stack.try_pop(c);
+  assert(height == 0);
+  assert(not ok);
+
+  std::tie(height, ok) = stack.try_push('A');
+  assert(height == 0);
+  assert(ok);
+
+  std::tie(height, ok) = stack.try_pop(c);
+  assert(height == 0);
+  assert(ok);
+  assert(c == 'A');
+
+  std::tie(height, ok) = stack.try_push('B');
+  assert(height == 0);
+  assert(ok);
+
+  std::tie(height, ok) = stack.try_push('C');
+  assert(height == 1);
+  assert(ok);
+
+  std::tie(height, ok) = stack.try_push('D');
+  assert(height == 2);
+  assert(not ok);
+
+  std::tie(height, ok) = stack.try_pop(c);
+  assert(height == 1);
+  assert(ok);
+  assert(c == 'C');
+}
+
+template<std::size_t N>
+static void stack_worker(
+  const WorkerConfiguration& worker_configuration,
+  ConcurrentLog<state::Stack<N>>& concurrent_log,
+  ConcurrentStack<char>& concurrent_stack)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> value_dist('\0', worker_configuration.max_value);
+  std::uniform_int_distribution<> percentage_dist(0, 100);
+
+  std::size_t height;
+  char value;
+  bool ret;
+
+  unsigned percentage;
+  EntryPtr<state::Stack<N>> call_entry_ptr;
+  for (unsigned number_of_ops{0U};
+       number_of_ops < worker_configuration.number_of_ops;
+       ++number_of_ops)
+  {
+    value = value_dist(rd);
+    percentage = percentage_dist(rd);
+    if (percentage < 30)
+    {
+      call_entry_ptr = concurrent_log.push_back(state::Stack<N>::make_try_push_call(value));
+      std::tie(height, ret) = concurrent_stack.try_push(value);
+      concurrent_log.push_back(call_entry_ptr, state::Stack<N>::make_try_push_ret(ret, height));
+    }
+    else
+    {
+      call_entry_ptr = concurrent_log.push_back(state::Stack<N>::make_try_pop_call());
+      std::tie(height, ret) = concurrent_stack.try_pop(value);
+      concurrent_log.push_back(call_entry_ptr, state::Stack<N>::make_try_pop_ret(ret, height, value));
+    }
+  }
+}
+
+/// Test simplistic stack implementation
+static void stack_experiment(bool is_linearizable)
+{
+  constexpr std::chrono::hours max_duration{1};
+  constexpr std::size_t N = 560000U;
+  constexpr unsigned number_of_threads = 4U;
+  constexpr WorkerConfiguration worker_configuration = {'\24', 70000U};
+  constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
+
+  std::cout << "stack_experiment : " << (is_linearizable ? "" : "not ") << "linearizable" << std::endl;
+
+  Result<state::Stack<N>> result;
+  ConcurrentLog<state::Stack<N>> concurrent_log{2U * log_size};
+  ConcurrentStack<char> concurrent_stack(N);
+
+  if (not is_linearizable)
+  {
+    std::pair<std::size_t, bool> p{concurrent_stack.try_push(5)};
+    assert(p.first == 0);
+    assert(p.second);
+  }
+
+  // create history
+  start_threads(number_of_threads, stack_worker<N>, std::cref(worker_configuration),
+    std::ref(concurrent_log), std::ref(concurrent_stack));
+
+  const std::size_t number_of_entries{concurrent_log.number_of_entries()};
+  const LogInfo<state::Stack<N>> log_info{concurrent_log.info()};
+  // std::cout << log_info << std::endl;
+
+  auto start = std::chrono::system_clock::now();
+  auto end = std::chrono::system_clock::now();
+  std::chrono::seconds seconds;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
+    LinearizabilityTester<state::Stack<N>, true> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=on), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
+    LinearizabilityTester<state::Stack<N>, false> tester{log_copy.info(), max_duration};
+    tester.check(result);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "History length: " << number_of_entries
+            << ", enabled state cache (LRU=off), O(1) hash: "
+            << seconds.count() << " s "
+            << mem_usage(result) << std::endl;
+
+  const unsigned number_of_partitions{N};
+
+  start = std::chrono::system_clock::now();
+  {
+    Log<state::Stack<N>> log_copy{log_info};
+    assert(log_copy.number_of_entries() == number_of_entries);
+
+    compositional_check(log_copy, result, number_of_partitions, max_duration);
+    assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
+  }
+  end = std::chrono::system_clock::now();
+  seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << "History length: " << number_of_entries
+            << ", compositional: " << seconds.count() << " s " << mem_usage(result) << std::endl;
+}
+#endif
+
 #ifdef _ENABLE_EMBB_
 template<std::size_t N>
 static void embb_worker(
@@ -4756,7 +4971,7 @@ static void embb_worker(
 static void embb_experiment(bool is_linearizable)
 {
   constexpr std::chrono::hours max_duration{1};
-  constexpr std::size_t N = 3000000U;
+  constexpr std::size_t N = 560000U;
   constexpr unsigned number_of_threads = 4U;
   constexpr WorkerConfiguration worker_configuration = {'\24', 70000U};
   constexpr unsigned log_size = number_of_threads * worker_configuration.number_of_ops;
@@ -5508,6 +5723,12 @@ int main()
 
   tbb_experiment(true);
   tbb_experiment(false);
+#endif
+
+#ifdef _ENABLE_STACK_
+  test_concurrent_stack();
+  stack_experiment(true);
+  stack_experiment(false);
 #endif
 
   return 0;
