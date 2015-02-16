@@ -1,0 +1,1800 @@
+TBB benchmark: 0
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.223 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.332 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.332 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.352 MiB; Resident set size: 105.621 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.012 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.012 MiB]
+
+TBB benchmark: 1
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 403.336 MiB; Resident set size: 110.547 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.047 MiB; Resident set size: 106.422 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.047 MiB; Resident set size: 106.422 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.3 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.844 MiB]
+
+TBB benchmark: 2
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.918 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.09 MiB; Resident set size: 9499.36 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.289 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.09 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.09 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.289 MiB; Resident set size: 105.699 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.918 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.1 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.09 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.09 MiB]
+
+TBB benchmark: 3
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9792.23 MiB; Resident set size: 9499.57 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.098 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.098 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.602 MiB; Resident set size: 105.902 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.035 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.035 MiB]
+
+TBB benchmark: 4
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.223 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.785 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.785 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.414 MiB; Resident set size: 105.621 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.29 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.539 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.539 MiB]
+
+TBB benchmark: 5
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.211 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.031 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.031 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.836 MiB; Resident set size: 105.094 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.828 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102 MiB]
+
+TBB benchmark: 6
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.29 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.727 MiB; Resident set size: 108.988 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.727 MiB; Resident set size: 108.988 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 401.727 MiB; Resident set size: 108.988 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 413.398 MiB; Resident set size: 120.59 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 404.145 MiB; Resident set size: 111.309 MiB]
+
+TBB benchmark: 7
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.215 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.004 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.004 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.863 MiB; Resident set size: 106.129 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 407.898 MiB; Resident set size: 115.152 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.324 MiB; Resident set size: 108.707 MiB]
+
+TBB benchmark: 8
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.766 MiB; Resident set size: 379.23 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.086 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.086 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.277 MiB; Resident set size: 105.375 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.281 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.281 MiB]
+
+TBB benchmark: 9
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9792.23 MiB; Resident set size: 9499.57 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.328 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.328 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.027 MiB; Resident set size: 105.391 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+
+TBB benchmark: 10
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.359 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.359 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.852 MiB; Resident set size: 105.133 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.555 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.555 MiB]
+
+TBB benchmark: 11
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.23 MiB; Resident set size: 9499.55 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.23 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.277 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.277 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.172 MiB; Resident set size: 105.371 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.02 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.02 MiB]
+
+TBB benchmark: 12
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.617 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.617 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.242 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+
+TBB benchmark: 13
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.219 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.266 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.266 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.242 MiB; Resident set size: 105.617 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.629 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.629 MiB]
+
+TBB benchmark: 14
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.29 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.219 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.297 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.297 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.176 MiB; Resident set size: 105.359 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 402.531 MiB; Resident set size: 109.742 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.531 MiB; Resident set size: 109.742 MiB]
+
+TBB benchmark: 15
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.219 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.324 MiB; Resident set size: 108.453 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.324 MiB; Resident set size: 108.453 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 401.324 MiB; Resident set size: 108.453 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.277 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.277 MiB]
+
+TBB benchmark: 16
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.102 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.102 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.379 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.359 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.359 MiB]
+
+TBB benchmark: 17
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.844 MiB]
+History length: 560000, compositional: 2 s [Virtual memory: 398.75 MiB; Resident set size: 105.906 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 13 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 103 s [Virtual memory: 9792.09 MiB; Resident set size: 9499.3 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+
+TBB benchmark: 18
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.039 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.195 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 111 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.297 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.297 MiB]
+
+TBB benchmark: 19
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 13 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 104 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 407.227 MiB; Resident set size: 114.41 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 400.922 MiB; Resident set size: 108.223 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 400.922 MiB; Resident set size: 108.223 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 415.008 MiB; Resident set size: 122.145 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 404.816 MiB; Resident set size: 112.09 MiB]
+
+TBB benchmark: 20
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.203 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.797 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.797 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.176 MiB; Resident set size: 105.344 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.26 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 101.992 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 101.992 MiB]
+
+TBB benchmark: 21
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 7 s [Virtual memory: 671.77 MiB; Resident set size: 379.207 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.637 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.637 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.445 MiB; Resident set size: 106.637 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.27 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.008 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.008 MiB]
+
+TBB benchmark: 22
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.93 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.11 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.301 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.09 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.09 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.293 MiB; Resident set size: 105.441 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.918 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 104 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.1 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 407.629 MiB; Resident set size: 114.98 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.535 MiB]
+
+TBB benchmark: 23
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.227 MiB; Resident set size: 103.562 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.227 MiB; Resident set size: 103.562 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.922 MiB; Resident set size: 105.109 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 407.762 MiB; Resident set size: 114.906 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.461 MiB]
+
+TBB benchmark: 24
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 112 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.215 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.262 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.262 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.703 MiB; Resident set size: 105.871 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.262 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.262 MiB]
+
+TBB benchmark: 25
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.273 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.273 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.629 MiB; Resident set size: 105.883 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.016 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.016 MiB]
+
+TBB benchmark: 26
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.949 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.13 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.32 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.625 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.625 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.316 MiB; Resident set size: 105.719 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.938 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.12 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 404.273 MiB; Resident set size: 111.648 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.582 MiB; Resident set size: 106.75 MiB]
+
+TBB benchmark: 27
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.789 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.789 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.262 MiB; Resident set size: 105.625 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.789 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.789 MiB]
+
+TBB benchmark: 28
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.844 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.246 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+
+TBB benchmark: 29
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 7 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.48 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.48 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 401.191 MiB; Resident set size: 108.48 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 103 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.809 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.809 MiB]
+
+TBB benchmark: 30
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.223 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.055 MiB; Resident set size: 108.199 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.055 MiB; Resident set size: 108.199 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 401.055 MiB; Resident set size: 108.199 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.28 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.727 MiB; Resident set size: 108.973 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.727 MiB; Resident set size: 108.973 MiB]
+
+TBB benchmark: 31
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 402.664 MiB; Resident set size: 110.031 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.664 MiB; Resident set size: 110.031 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 402.664 MiB; Resident set size: 110.031 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.812 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.812 MiB]
+
+TBB benchmark: 32
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.551 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.551 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.438 MiB; Resident set size: 105.645 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.84 MiB]
+
+TBB benchmark: 33
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 9 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.789 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.789 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.34 MiB; Resident set size: 105.625 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 13 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.105 MiB; Resident set size: 105.367 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.105 MiB; Resident set size: 105.367 MiB]
+
+TBB benchmark: 34
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.219 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.523 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.523 MiB]
+History length: 560000, compositional: 2 s [Virtual memory: 398.066 MiB; Resident set size: 105.359 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.523 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.523 MiB]
+
+TBB benchmark: 35
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 103 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 7 s [Virtual memory: 671.77 MiB; Resident set size: 379.238 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.027 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.027 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.18 MiB; Resident set size: 105.379 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.285 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.285 MiB]
+
+TBB benchmark: 36
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.828 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.199 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.246 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.246 MiB]
+History length: 560000, compositional: 2 s [Virtual memory: 397.859 MiB; Resident set size: 105.082 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.816 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 103 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.246 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.246 MiB]
+
+TBB benchmark: 37
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.902 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.08 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.273 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.578 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.578 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.16 MiB; Resident set size: 105.414 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.891 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 104 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.094 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.094 MiB]
+
+TBB benchmark: 38
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.891 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.262 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.824 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.824 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.328 MiB; Resident set size: 105.66 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 114 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 405.617 MiB; Resident set size: 112.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 400.254 MiB; Resident set size: 107.465 MiB]
+
+TBB benchmark: 39
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.207 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.574 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.574 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.711 MiB; Resident set size: 105.863 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.824 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.348 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.348 MiB]
+
+TBB benchmark: 40
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.848 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.766 MiB; Resident set size: 105.91 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.836 MiB; Resident set size: 105.137 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.836 MiB; Resident set size: 105.137 MiB]
+
+TBB benchmark: 41
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 115 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 10 s [Virtual memory: 671.77 MiB; Resident set size: 379.258 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.594 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.594 MiB]
+History length: 560000, compositional: 2 s [Virtual memory: 397.945 MiB; Resident set size: 105.141 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 16 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 112 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.562 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.562 MiB]
+
+TBB benchmark: 42
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.902 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.08 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.273 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.578 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.578 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.258 MiB; Resident set size: 105.672 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.891 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 405.348 MiB; Resident set size: 112.633 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.984 MiB; Resident set size: 107.219 MiB]
+
+TBB benchmark: 43
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.31 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.551 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.551 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.871 MiB; Resident set size: 105.129 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.066 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.066 MiB]
+
+TBB benchmark: 44
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.207 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.254 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.254 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.789 MiB; Resident set size: 105.863 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.824 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.82 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.285 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.285 MiB]
+
+TBB benchmark: 45
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.898 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9792.36 MiB; Resident set size: 9499.59 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.27 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.059 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.059 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.297 MiB; Resident set size: 105.668 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.574 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.574 MiB]
+
+TBB benchmark: 46
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.191 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.012 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.012 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.277 MiB; Resident set size: 105.332 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.809 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9498.99 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 102.754 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 102.754 MiB]
+
+TBB benchmark: 47
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.219 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.91 MiB; Resident set size: 106.195 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.91 MiB; Resident set size: 106.195 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.91 MiB; Resident set size: 106.195 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.898 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.08 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.586 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.586 MiB]
+
+TBB benchmark: 48
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 102 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 409.105 MiB; Resident set size: 116.473 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402 MiB; Resident set size: 109.254 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 402 MiB; Resident set size: 109.254 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.035 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.035 MiB]
+
+TBB benchmark: 49
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.898 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.08 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.27 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 412.594 MiB; Resident set size: 119.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 403.742 MiB; Resident set size: 111.082 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.258 MiB; Resident set size: 105.668 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.832 MiB]
+
+TBB benchmark: 50
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.293 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.293 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.246 MiB; Resident set size: 105.387 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.551 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.551 MiB]
+
+TBB benchmark: 51
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.242 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.289 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.289 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.242 MiB; Resident set size: 105.641 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.289 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.289 MiB]
+
+TBB benchmark: 52
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.23 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 400.52 MiB; Resident set size: 107.691 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 400.52 MiB; Resident set size: 107.691 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 400.52 MiB; Resident set size: 107.691 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.371 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.371 MiB]
+
+TBB benchmark: 53
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.941 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.12 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.312 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.617 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.617 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.66 MiB; Resident set size: 105.969 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.93 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.11 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.043 MiB; Resident set size: 106.484 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.043 MiB; Resident set size: 106.484 MiB]
+
+TBB benchmark: 54
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.828 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.199 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.793 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.629 MiB; Resident set size: 103.793 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.27 MiB; Resident set size: 105.598 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.816 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.25 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.504 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.504 MiB]
+
+TBB benchmark: 55
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.328 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.094 MiB; Resident set size: 103.328 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.414 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.812 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.812 MiB]
+
+TBB benchmark: 56
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.258 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.305 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.305 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.277 MiB; Resident set size: 105.656 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.047 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.047 MiB]
+
+TBB benchmark: 57
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.258 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.562 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.562 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.734 MiB; Resident set size: 105.914 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.941 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.12 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.113 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.113 MiB]
+
+TBB benchmark: 58
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.258 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.078 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.078 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.297 MiB; Resident set size: 105.656 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.305 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.305 MiB]
+
+TBB benchmark: 59
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.035 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.035 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.367 MiB; Resident set size: 105.645 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.809 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.809 MiB]
+
+TBB benchmark: 60
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.227 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.016 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.016 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.402 MiB; Resident set size: 105.625 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.043 MiB; Resident set size: 106.141 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.043 MiB; Resident set size: 106.141 MiB]
+
+TBB benchmark: 61
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.836 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.207 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.027 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.027 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.523 MiB; Resident set size: 105.863 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.824 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 419.031 MiB; Resident set size: 126.23 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 406.961 MiB; Resident set size: 114.113 MiB]
+
+TBB benchmark: 62
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.223 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 402.398 MiB; Resident set size: 109.746 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.398 MiB; Resident set size: 109.746 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 402.398 MiB; Resident set size: 109.746 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.527 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.527 MiB]
+
+TBB benchmark: 63
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.191 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.238 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.238 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.254 MiB; Resident set size: 105.332 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.809 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9498.99 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.559 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.559 MiB]
+
+TBB benchmark: 64
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.875 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.395 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.836 MiB; Resident set size: 105.145 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.836 MiB; Resident set size: 105.145 MiB]
+
+TBB benchmark: 65
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.934 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.11 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.305 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.156 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.156 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.066 MiB; Resident set size: 105.445 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.922 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.1 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.734 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.734 MiB]
+
+TBB benchmark: 66
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.293 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.293 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.062 MiB; Resident set size: 105.387 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.809 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.809 MiB]
+
+TBB benchmark: 67
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.949 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.13 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.32 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.945 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.945 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.41 MiB; Resident set size: 105.719 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.938 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.12 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.719 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.719 MiB]
+
+TBB benchmark: 68
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.559 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.559 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.742 MiB; Resident set size: 105.137 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.57 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.57 MiB]
+
+TBB benchmark: 69
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.242 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.805 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.805 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.152 MiB; Resident set size: 105.383 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.031 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.031 MiB]
+
+TBB benchmark: 70
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.203 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.578 MiB; Resident set size: 106.891 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.578 MiB; Resident set size: 106.891 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.578 MiB; Resident set size: 106.891 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.055 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.055 MiB]
+
+TBB benchmark: 71
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.211 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.258 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.258 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.625 MiB; Resident set size: 105.867 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.523 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.191 MiB; Resident set size: 108.523 MiB]
+
+TBB benchmark: 72
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.91 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9793.3 MiB; Resident set size: 9500.64 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.281 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 410.312 MiB; Resident set size: 117.539 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.535 MiB; Resident set size: 109.805 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 402.535 MiB; Resident set size: 109.805 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.898 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.08 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.391 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.164 MiB; Resident set size: 104.391 MiB]
+
+TBB benchmark: 73
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.949 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.13 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.32 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 400.52 MiB; Resident set size: 107.781 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 400.52 MiB; Resident set size: 107.781 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 400.52 MiB; Resident set size: 107.781 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.938 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.12 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.625 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.625 MiB]
+
+TBB benchmark: 74
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.3 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.23 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.703 MiB; Resident set size: 104.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.703 MiB; Resident set size: 104.855 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.438 MiB; Resident set size: 105.629 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.535 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.535 MiB]
+
+TBB benchmark: 75
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.96 MiB; Resident set size: 9499.32 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.25 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.617 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.617 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.355 MiB; Resident set size: 105.648 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.039 MiB]
+
+TBB benchmark: 76
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.215 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.777 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.777 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.379 MiB; Resident set size: 105.613 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 410.582 MiB; Resident set size: 117.73 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.668 MiB; Resident set size: 109.996 MiB]
+
+TBB benchmark: 77
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.859 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.23 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.371 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.238 MiB; Resident set size: 105.371 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.238 MiB; Resident set size: 105.629 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.848 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.02 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.02 MiB]
+
+TBB benchmark: 78
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.844 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.215 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.551 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.551 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.344 MiB; Resident set size: 105.613 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.777 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.422 MiB; Resident set size: 102.777 MiB]
+
+TBB benchmark: 79
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.03 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.223 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.527 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.152 MiB; Resident set size: 102.527 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.898 MiB; Resident set size: 105.105 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.02 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.59 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.434 MiB; Resident set size: 104.59 MiB]
+
+TBB benchmark: 80
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.891 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.262 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.227 MiB; Resident set size: 103.598 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.227 MiB; Resident set size: 103.598 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.926 MiB; Resident set size: 105.145 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.879 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.051 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.051 MiB]
+
+TBB benchmark: 81
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.559 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.559 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.707 MiB; Resident set size: 105.91 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.043 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.043 MiB]
+
+TBB benchmark: 82
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.969 MiB; Resident set size: 105.395 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.969 MiB; Resident set size: 105.395 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.227 MiB; Resident set size: 105.652 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.957 MiB; Resident set size: 103.332 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.957 MiB; Resident set size: 103.332 MiB]
+
+TBB benchmark: 83
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 99 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.957 MiB; Resident set size: 103.074 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.957 MiB; Resident set size: 103.074 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.648 MiB; Resident set size: 105.91 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.043 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.043 MiB]
+
+TBB benchmark: 84
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.84 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.02 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.211 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.258 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.258 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.312 MiB; Resident set size: 105.609 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.828 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.01 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.578 MiB; Resident set size: 106.641 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.578 MiB; Resident set size: 106.641 MiB]
+
+TBB benchmark: 85
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.898 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.08 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.27 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.773 MiB; Resident set size: 105.926 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.773 MiB; Resident set size: 105.926 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.773 MiB; Resident set size: 105.926 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.887 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.09 MiB; Resident set size: 9499.32 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 402.801 MiB; Resident set size: 110.051 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.801 MiB; Resident set size: 110.051 MiB]
+
+TBB benchmark: 86
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.238 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.285 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.02 MiB; Resident set size: 102.285 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.68 MiB; Resident set size: 105.895 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.801 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.555 MiB; Resident set size: 102.801 MiB]
+
+TBB benchmark: 87
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.203 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.25 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.25 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.492 MiB; Resident set size: 105.859 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 101.992 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 101.992 MiB]
+
+TBB benchmark: 88
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.078 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.824 MiB; Resident set size: 103.078 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.727 MiB; Resident set size: 105.914 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.031 MiB; Resident set size: 104.367 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.031 MiB; Resident set size: 104.367 MiB]
+
+TBB benchmark: 89
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.09 MiB; Resident set size: 9499.3 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.238 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.312 MiB; Resident set size: 106.668 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.312 MiB; Resident set size: 106.668 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.312 MiB; Resident set size: 106.668 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 398.91 MiB; Resident set size: 106.152 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 398.91 MiB; Resident set size: 106.152 MiB]
+
+TBB benchmark: 90
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.238 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.574 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.359 MiB; Resident set size: 103.574 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.574 MiB; Resident set size: 105.895 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.855 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.23 MiB; Resident set size: 9499.55 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.566 MiB; Resident set size: 104.863 MiB]
+
+TBB benchmark: 91
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.234 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 401.055 MiB; Resident set size: 108.211 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 401.055 MiB; Resident set size: 108.211 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 401.055 MiB; Resident set size: 108.211 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.852 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.03 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.023 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.023 MiB]
+
+TBB benchmark: 92
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.234 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.066 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.066 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.34 MiB; Resident set size: 105.645 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.031 MiB; Resident set size: 104.355 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.031 MiB; Resident set size: 104.355 MiB]
+
+TBB benchmark: 93
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.895 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.07 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.266 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 404.812 MiB; Resident set size: 112.109 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.715 MiB; Resident set size: 106.953 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.715 MiB; Resident set size: 106.953 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9792.09 MiB; Resident set size: 9499.32 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.086 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.688 MiB; Resident set size: 103.086 MiB]
+
+TBB benchmark: 94
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.883 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.06 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.254 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.621 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 397.301 MiB; Resident set size: 104.621 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.906 MiB; Resident set size: 105.137 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.871 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.043 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.043 MiB]
+
+TBB benchmark: 95
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.922 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.1 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.293 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 402.934 MiB; Resident set size: 110.074 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 402.934 MiB; Resident set size: 110.074 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 402.934 MiB; Resident set size: 110.074 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.91 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.09 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.598 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 395.285 MiB; Resident set size: 102.598 MiB]
+
+TBB benchmark: 96
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.238 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.68 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 399.445 MiB; Resident set size: 106.68 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 399.445 MiB; Resident set size: 106.68 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.867 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.05 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.102 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.102 MiB]
+
+TBB benchmark: 97
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.832 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 101 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.01 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.203 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.797 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.496 MiB; Resident set size: 103.797 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.246 MiB; Resident set size: 105.344 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.82 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.055 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.898 MiB; Resident set size: 104.055 MiB]
+
+TBB benchmark: 98
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 12 s [Virtual memory: 669.633 MiB; Resident set size: 376.875 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.05 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.246 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.098 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 396.762 MiB; Resident set size: 104.098 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 398.602 MiB; Resident set size: 105.902 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.863 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.83 MiB; Resident set size: 9499.04 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.035 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.035 MiB]
+
+TBB benchmark: 99
+g++ -g -std=c++11 -D_ENABLE_TBB_ -L/nas/ahorn/linearizability-checker/tbb43_20141009oss/build/linux_intel64_gcc_cc4.8.3_libc2.18_kernel3.17.4_release -I/nas/ahorn/linearizability-checker/tbb43_20141009oss/include -lpthread -ltbb lt.cc -o lt-tbb-test
+./lt-tbb-test
+tbb_comprehensive_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.922 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.82 MiB; Resident set size: 9499.1 MiB]
+History length: 560000, compositional: 6 s [Virtual memory: 671.77 MiB; Resident set size: 379.293 MiB]
+tbb_comprehensive_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.34 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.883 MiB; Resident set size: 102.34 MiB]
+History length: 560000, compositional: 1 s [Virtual memory: 397.883 MiB; Resident set size: 105.176 MiB]
+tbb_experiment : linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 11 s [Virtual memory: 669.633 MiB; Resident set size: 376.91 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 100 s [Virtual memory: 9791.69 MiB; Resident set size: 9499.09 MiB]
+tbb_experiment : not linearizable
+History length: 560000, enabled state cache (LRU=on), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.082 MiB]
+History length: 560000, enabled state cache (LRU=off), O(1) hash: 0 s [Virtual memory: 394.75 MiB; Resident set size: 102.082 MiB]
+
