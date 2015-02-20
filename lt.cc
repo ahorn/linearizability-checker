@@ -5495,7 +5495,7 @@ static void jepsen_etcd_experiment()
 
     start = std::chrono::system_clock::now();
     {
-      LinearizabilityTester<state::Atomic, true> t{jepsen_etcd_parser.log.info(), max_duration};
+      LinearizabilityTester<state::Atomic, false> t{jepsen_etcd_parser.log.info(), max_duration};
       t.check(result);
       assert(result.is_linearizable() == expect);
     }
