@@ -5354,12 +5354,17 @@ static void test_parse_jepsen_etcd()
 // this test to complete within a reasonable amount of time.
 static void jepsen_etcd_experiment()
 {
+  static constexpr std::chrono::hours max_duration{1};
   static constexpr char s_etcd_prefix[] = "jepsen/etcd_";
   static constexpr char s_etcd_postfix[] = ".log";
 
   unsigned i{0};
   std::string zeros, filename;
   Result<state::Atomic> result;
+
+  auto start = std::chrono::system_clock::now();
+  auto end = std::chrono::system_clock::now();
+  std::chrono::seconds seconds;
 
   bool expected[] = { false, // 000
                       false, // 001
@@ -5484,13 +5489,20 @@ static void jepsen_etcd_experiment()
     file.open(filename);
     assert(file.is_open());
 
-    std::cout << filename << std::endl;
+    std::cout << filename << ": ";
     JepsenEtcdParser jepsen_etcd_parser;
     jepsen_etcd_parser.parse(file);
 
-    LinearizabilityTester<state::Atomic> t{jepsen_etcd_parser.log.info()};
-    t.check(result);
-    assert(result.is_linearizable() == expect);
+    start = std::chrono::system_clock::now();
+    {
+      LinearizabilityTester<state::Atomic, true> t{jepsen_etcd_parser.log.info(), max_duration};
+      t.check(result);
+      assert(result.is_linearizable() == expect);
+    }
+    end = std::chrono::system_clock::now();
+    seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    std::cout << seconds.count() << " s "
+              << mem_usage(result) << std::endl;
 
     ++i;
   }
