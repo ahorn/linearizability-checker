@@ -1006,7 +1006,7 @@ public:
       std::make_pair(std::move(key), m_list.end()))};
 
     if (pair.second)
-      pair.first->second = m_list.insert(m_list.cend(), pair.first->first);
+      pair.first->second = m_list.insert(m_list.end(), pair.first->first);
     else
       m_list.splice(m_list.end(), m_list, pair.first->second);
 
