@@ -172,11 +172,18 @@ public:
   }
 };
 
+enum class Option : unsigned char
+{
+  NEVER_CACHE,
+  LRU_CACHE,
+  ALWAYS_CACHE,
+};
+
 template<class S> class Entry;
 template<class S> class Log;
 template<class S> class ConcurrentLog;
 template<class S> class Slicer;
-template<class S, bool> class LinearizabilityTester;
+template<class S, Option> class LinearizabilityTester;
 
 /// A kind of "functor" in C++ terminology
 
@@ -417,8 +424,9 @@ class Entry
 private:
   friend class Log<S>;
   friend class Slicer<S>;
-  friend class LinearizabilityTester<S, true>;
-  friend class LinearizabilityTester<S, false>;
+  friend class LinearizabilityTester<S, Option::NEVER_CACHE>;
+  friend class LinearizabilityTester<S, Option::LRU_CACHE>;
+  friend class LinearizabilityTester<S, Option::ALWAYS_CACHE>;
 
   // Ref counted pointer because we need to copy logs so that we
   // can experimentally compare different linearizability testers
@@ -855,8 +863,9 @@ template<class S>
 class Result
 {
 private:
-  friend class LinearizabilityTester<S, true>;
-  friend class LinearizabilityTester<S, false>;
+  friend class LinearizabilityTester<S, Option::NEVER_CACHE>;
+  friend class LinearizabilityTester<S, Option::LRU_CACHE>;
+  friend class LinearizabilityTester<S, Option::ALWAYS_CACHE>;
   typedef std::vector<EntryPtr<S>> EntryPtrs;
 
   bool m_is_linearizable;
@@ -1022,15 +1031,14 @@ public:
   }
 };
 
-/// S - sequential data type
-template<class S, bool enable_cache_eviction = false>
-class LinearizabilityTester
+namespace cache
 {
-private:
   // regardless of caching, we need to keep track of the current state of type S
-  typedef std::pair<Bitset, S> State;
+  template<class S>
+  using State = std::pair<Bitset, S>;
 
   // if caching is enabled, we use these hash functions
+  template<class S>
   class StateHash
   {
   private:
@@ -1052,16 +1060,55 @@ private:
   public:
     StateHash() : m_bitset_hash{}, m_s_hash{} {}
 
-    std::size_t operator()(const State& state) const noexcept
+    std::size_t operator()(const State<S>& state) const noexcept
     {
       return hash_combine(m_bitset_hash(state.first), m_s_hash(state.second));
     }
   };
 
-  typedef typename std::conditional<
-    /* if */ enable_cache_eviction,
-    /* then */ LruCache<State, StateHash>,
-    /* else */ std::unordered_set<State, StateHash>>::type StateCache;
+  template<class S, Option option = Option::NEVER_CACHE>
+  struct Switch
+  {
+    typedef std::nullptr_t Type;
+
+    static bool try_insert(const S& s, const EntryPtr<S>  entry_ptr,
+      Type& cache, Bitset& bitset)
+    {
+      return true;
+    }
+  };
+
+  template<class S>
+  struct Switch<S, Option::LRU_CACHE>
+  {
+    typedef LruCache<State<S>, StateHash<S>> Type;
+
+    static bool try_insert(const S& s, const EntryPtr<S>  entry_ptr,
+      Type& cache, Bitset& bitset)
+    {
+      return cache.insert(std::make_pair(bitset.immutable_set(entry_ptr->entry_id()), s));
+    }
+  };
+
+  template<class S>
+  struct Switch<S, Option::ALWAYS_CACHE>
+  {
+    typedef std::unordered_set<State<S>, StateHash<S>> Type;
+
+    static bool try_insert(const S& s, const EntryPtr<S>  entry_ptr,
+      Type& cache, Bitset& bitset)
+    {
+      return std::get<1>(cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), s));
+    }
+  };
+}
+
+/// S - sequential data type
+template<class S, Option option = Option::ALWAYS_CACHE>
+class LinearizabilityTester
+{
+private:
+  typedef cache::Switch<S, option> Cache;
 
   // Maximum number of call/ret entries, i.e. half of the
   // total number of entry pointers reachable in m_log_head
@@ -1159,25 +1206,11 @@ private:
     call.next->prev = call_entry_ptr;
   }
 
-  // TODO: Consider pending operations
-  static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    LruCache<State, StateHash>& state_cache, Bitset& bitset)
-  {
-    return state_cache.insert(std::make_pair(bitset.immutable_set(entry_ptr->entry_id()), new_s));
-  }
-
-  // TODO: Consider pending operations
-  static bool cache_state(const S& new_s, const EntryPtr<S>  entry_ptr,
-    std::unordered_set<State, StateHash>& state_cache, Bitset& bitset)
-  {
-    return std::get<1>(state_cache.emplace(bitset.immutable_set(entry_ptr->entry_id()), new_s));
-  }
-
   void internal_check(Result<S>& result, unsigned& global_linearized_entry_id)
   {
     S s, new_s;
-    StateCache state_cache;
     bool is_entry_linearizable;
+    typename Cache::Type cache;
     EntryPtr<S> pop_entry_ptr, entry_ptr{m_log_head.next};
 
     double virtual_memory_usage;
@@ -1213,7 +1246,7 @@ private:
         std::tie(is_entry_linearizable, new_s) =
           entry_ptr->op().apply(s, entry_ptr->match()->op());
 
-        if (is_entry_linearizable and cache_state(new_s, entry_ptr, state_cache, linearized_entries))
+        if (is_entry_linearizable and Cache::try_insert(new_s, entry_ptr, cache, linearized_entries))
         {
           // call entry is always matched up with a return entry
           assert(entry_ptr->next != nullptr);
@@ -4885,7 +4918,7 @@ static void stack_experiment(bool is_linearizable)
     Log<state::Stack<N>> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Stack<N>, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, Option::LRU_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -4901,7 +4934,7 @@ static void stack_experiment(bool is_linearizable)
     Log<state::Stack<N>> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Stack<N>, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, Option::ALWAYS_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5005,7 +5038,7 @@ static void embb_experiment(bool is_linearizable)
     Log<state::Stack<N>> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Stack<N>, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, Option::LRU_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5021,7 +5054,7 @@ static void embb_experiment(bool is_linearizable)
     Log<state::Stack<N>> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Stack<N>, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Stack<N>, Option::ALWAYS_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5176,7 +5209,7 @@ static void tbb_experiment(bool is_linearizable)
     Log<state::Set> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, Option::LRU_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5192,7 +5225,7 @@ static void tbb_experiment(bool is_linearizable)
     Log<state::Set> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, Option::ALWAYS_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5241,7 +5274,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
     Log<state::Set> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Set, true> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, Option::LRU_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5257,7 +5290,7 @@ static void tbb_comprehensive_experiment(bool is_linearizable)
     Log<state::Set> log_copy{log_info};
     assert(log_copy.number_of_entries() == number_of_entries);
 
-    LinearizabilityTester<state::Set, false> tester{log_copy.info(), max_duration};
+    LinearizabilityTester<state::Set, Option::ALWAYS_CACHE> tester{log_copy.info(), max_duration};
     tester.check(result);
     assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
   }
@@ -5580,7 +5613,7 @@ static void hashset_experiment(const std::string& benchmark,
     start = std::chrono::system_clock::now();
     {
       Log<state::Set> log_copy{hashset_parser.log.info()};
-      LinearizabilityTester<state::Set, false> t{log_copy.info(), max_duration};
+      LinearizabilityTester<state::Set, Option::ALWAYS_CACHE> t{log_copy.info(), max_duration};
       t.check(result);
       assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
     }
@@ -5594,7 +5627,7 @@ static void hashset_experiment(const std::string& benchmark,
     start = std::chrono::system_clock::now();
     {
       Log<state::Set> log_copy{hashset_parser.log.info()};
-      LinearizabilityTester<state::Set, true> t{log_copy.info(), max_duration};
+      LinearizabilityTester<state::Set, Option::LRU_CACHE> t{log_copy.info(), max_duration};
       t.check(result);
       assert(result.is_timeout() or result.is_linearizable() == is_linearizable);
     }
