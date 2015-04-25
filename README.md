@@ -76,15 +76,17 @@ run the following command:
 In addition, by downloading, compiling and configuring TBB and EMBB in the
 [Makefile][Makefile], you will also be able to run the other experiments.
 
-You may be also interested in running experiments with [etcd][etcd] which
-we did not have space to discuss in the paper:
+You may be also interested in running experiments with [etcd 2.0][etcd]
+which we did not have space to discuss in the paper:
 
     $ make etcd-test 
 
 This runs our tool against 100 collected etcd histories, and completes in a few
 seconds. By contrast, [Knossos][Knossos] times out on benchmark 7 and 99, and
 runs out of memory on 40, 57, 85 and 97 (all benchmarks can be found in the
-[jepsen directory][jepsen-benchmarks]).
+[jepsen directory][jepsen-benchmarks]). These failures in etcd are expected
+here because we allow read requests to bypass the consensus protocol (by
+setting `quorum=false')!
 
 ## Conclusion
 
