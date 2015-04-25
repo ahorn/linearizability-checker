@@ -2678,8 +2678,6 @@ public:
 
       if (args == s_timeout)
       {
-        assert(entry_kind == EntryKind::INFO);
-
         switch (opname)
         {
         case Opname::READ:
@@ -5499,6 +5497,9 @@ static void jepsen_etcd_experiment()
                       false, // 097
                       true,  // 098
                       false, // 099
+                      true,  // 100
+                      true,  // 101
+                      true,  // 102
                     };
 
   for (bool expect : expected)
