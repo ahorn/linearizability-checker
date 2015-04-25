@@ -84,9 +84,9 @@ which we did not have space to discuss in the paper:
 This runs our tool against 100 collected etcd histories, and completes in a few
 seconds. By contrast, [Knossos][Knossos] times out on benchmark 7 and 99, and
 runs out of memory on 40, 57, 85 and 97 (all benchmarks can be found in the
-[jepsen directory][jepsen-benchmarks]). These failures in etcd are expected
-here because we allow read requests to bypass the consensus protocol (by
-setting `quorum=false')! As a sanity check, we have also tried one test
+[jepsen directory][jepsen-benchmarks]). Note that the failures in etcd are
+expected here because we allow read requests to bypass the consensus protocol
+(by setting `quorum=false`)! As a sanity check, we have also tried three tests
 with `quorum=true' and we did not find any linearizability bugs.
 
 ## Conclusion
