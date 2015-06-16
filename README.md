@@ -33,7 +33,8 @@ Consider the following history `H` of read and write operations on a register:
 
 The `write(1)` happens-before the two remaining `read()` and `write(2)` operations.
 Note that `read()` and `write(2)` happen concurrently because neither finishes before
-the other. Then `H` is linearizable because the operations can be reordered as follows:
+the other starts. Then `H` is linearizable because the operations can be reordered as
+follows:
 
         write(1); write(2); read()
 
